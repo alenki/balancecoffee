@@ -31,7 +31,7 @@ export function Header() {
   return (
     <header className={`${styles.header} ${isScrolled ? styles.scrolled : ''}`}>
       <div className={styles.container}>
-        <Logo size="md" />
+        <Logo size="md" variant={isScrolled ? 'default' : 'light'} />
 
         <nav className={styles.desktopNav}>
           <NavLink
@@ -53,7 +53,7 @@ export function Header() {
         </nav>
 
         <div className={styles.actions}>
-          <CitySelector />
+          <CitySelector variant={isScrolled ? 'default' : 'light'} />
 
           <button
             className={`${styles.menuButton} ${isMobileMenuOpen ? styles.open : ''}`}
