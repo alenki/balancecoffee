@@ -101,13 +101,81 @@
 }
 
 /* ============================================
+   CORNER ACCENTS
+   ============================================ */
+.cornerTopLeft,
+.cornerTopRight {
+  position: absolute;
+  top: var(--space-5);
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.cornerTopLeft {
+  left: var(--space-5);
+}
+
+.cornerTopRight {
+  right: var(--space-5);
+}
+
+.cornerLabel {
+  font-size: var(--text-xs);
+  font-weight: var(--font-medium);
+  color: rgba(255, 255, 255, 0.7);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.cornerStat {
+  font-size: var(--text-xs);
+  font-weight: var(--font-normal);
+  color: rgba(255, 255, 255, 0.7);
+  letter-spacing: 0.02em;
+}
+
+.cornerDivider {
+  width: 1px;
+  height: 12px;
+  background: rgba(255, 255, 255, 0.3);
+}
+
+@media (min-width: 768px) {
+  .cornerTopLeft,
+  .cornerTopRight {
+    top: var(--space-8);
+  }
+
+  .cornerTopLeft {
+    left: var(--space-8);
+  }
+
+  .cornerTopRight {
+    right: var(--space-8);
+  }
+
+  .cornerLabel,
+  .cornerStat {
+    font-size: var(--text-sm);
+  }
+}
+
+@media (max-width: 600px) {
+  .cornerTopLeft,
+  .cornerTopRight {
+    display: none;
+  }
+}
+
+/* ============================================
    BRAND SECTION (Centered)
    ============================================ */
 .brandSection {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--space-4);
 }
 
 .brandLogo {
@@ -119,17 +187,20 @@
 .tagline {
   font-size: var(--text-base);
   font-weight: var(--font-light);
-  color: rgba(255, 255, 255, 0.85);
-  letter-spacing: 0.06em;
+  color: rgba(255, 255, 255, 0.8);
+  letter-spacing: 0.08em;
   text-align: center;
   margin: 0;
+  margin-top: var(--space-4);
 }
 
 @media (min-width: 768px) {
   .tagline {
     font-size: var(--text-lg);
+    margin-top: var(--space-5);
   }
 }
+
 
 /* ============================================
    SCROLL INDICATOR

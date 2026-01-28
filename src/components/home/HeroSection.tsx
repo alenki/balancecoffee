@@ -20,6 +20,27 @@ export function HeroSection() {
           <div className={styles.videoOverlay} />
         </div>
 
+        {/* Corner accents */}
+        <motion.div
+          className={styles.cornerTopLeft}
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.6, delay: 0.6, ease: [0.16, 1, 0.3, 1] }}
+        >
+          <span className={styles.cornerLabel}>Specialty Coffee</span>
+        </motion.div>
+
+        <motion.div
+          className={styles.cornerTopRight}
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.6, delay: 0.7, ease: [0.16, 1, 0.3, 1] }}
+        >
+          <span className={styles.cornerStat}>6 городов</span>
+          <span className={styles.cornerDivider} />
+          <span className={styles.cornerStat}>16 кофеен</span>
+        </motion.div>
+
         {/* Centered content */}
         <div className={styles.content}>
           <motion.div
@@ -34,6 +55,16 @@ export function HeroSection() {
               className={styles.brandLogo}
             />
           </motion.div>
+
+          <motion.p
+            className={styles.tagline}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
+          >
+            Кофе, созданный с намерением
+          </motion.p>
+
         </div>
 
         {/* Scroll indicator */}
@@ -41,7 +72,7 @@ export function HeroSection() {
           className={styles.scrollHint}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 0.6, delay: 0.8 }}
+          transition={{ duration: 0.6, delay: 1 }}
         >
           <motion.div
             className={styles.scrollIcon}
