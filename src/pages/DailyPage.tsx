@@ -9,148 +9,107 @@ interface DailyItem {
   artist?: string;
   quote?: string;
   spotifyUrl?: string;
-  size?: 'small' | 'medium' | 'large' | 'tall';
 }
 
+// Items ordered for optimal column-based masonry flow (top to bottom, left to right)
+// With 3 columns: items 1-7 = left, items 8-14 = middle, items 15-21 = right
+// Quote/music cards only in middle column (positions 9 and 12)
 const dailyItems: DailyItem[] = [
+  // LEFT COLUMN (items 1-7) - images only
   {
     id: '1',
     type: 'image',
     image: '/cafe photos/image.png',
-    size: 'medium',
   },
   {
     id: '2',
     type: 'image',
     image: '/cafe photos/image_2.png',
-    size: 'large',
   },
   {
     id: '3',
     type: 'image',
     image: '/cafe photos/image_3.png',
-    size: 'small',
   },
   {
     id: '4',
     type: 'image',
     image: '/cafe photos/image_4.png',
-    size: 'tall',
   },
   {
     id: '5',
-    type: 'music',
-    title: 'Espresso',
-    artist: 'Sabrina Carpenter',
-    quote: 'Now he\'s thinkin\' bout me every night, oh. Is it that sweet? I guess so. Say you can\'t sleep, baby, I know. That\'s that me espresso.',
-    spotifyUrl: 'https://open.spotify.com/track/2qSkIjg1o9h3YT9RAgYN75',
-    size: 'medium',
+    type: 'image',
+    image: '/cafe photos/image_5.png',
   },
   {
     id: '6',
     type: 'image',
-    image: '/cafe photos/image_5.png',
-    size: 'small',
+    image: '/cafe photos/image_6.png',
   },
   {
     id: '7',
     type: 'image',
-    image: '/cafe photos/image_6.png',
-    size: 'medium',
+    image: '/cafe photos/image_7.png',
   },
+  // MIDDLE COLUMN (items 8-14) - images + 2 quote cards spread out
   {
     id: '8',
-    type: 'quote',
-    quote: 'Кофе — это не просто напиток. Это момент паузы в бесконечном ритме жизни.',
-    size: 'medium',
+    type: 'image',
+    image: '/cafe photos/image_8.png',
   },
   {
     id: '9',
-    type: 'image',
-    image: '/cafe photos/image_7.png',
-    size: 'tall',
+    type: 'quote',
+    quote: 'Каждая чашка кофе — маленькое путешествие. От Эфиопии до Бразилии, от зерна до аромата.',
   },
   {
     id: '10',
     type: 'image',
-    image: '/cafe photos/image_8.png',
-    size: 'small',
+    image: '/cafe photos/image_9.png',
   },
   {
     id: '11',
-    type: 'music',
-    title: 'Summertime Sadness',
-    artist: 'Lana Del Rey',
-    quote: 'Kiss me hard before you go. Summertime sadness. I just wanted you to know. That, baby, you\'re the best.',
-    spotifyUrl: 'https://open.spotify.com/track/3NO0M2ABPJcc9x5WUl14B6',
-    size: 'medium',
+    type: 'image',
+    image: '/cafe photos/image_10.png',
   },
   {
     id: '12',
-    type: 'image',
-    image: '/cafe photos/image_9.png',
-    size: 'large',
+    type: 'quote',
+    quote: 'Кофе — это не просто напиток. Это момент паузы в бесконечном ритме жизни.',
   },
   {
     id: '13',
     type: 'image',
-    image: '/cafe photos/image_10.png',
-    size: 'medium',
+    image: '/cafe photos/image_11.png',
   },
   {
     id: '14',
     type: 'image',
-    image: '/cafe photos/image_11.png',
-    size: 'small',
+    image: '/cafe photos/image_12.png',
   },
+  // RIGHT COLUMN (items 15-21) - images only
   {
     id: '15',
-    type: 'quote',
-    quote: 'Каждая чашка кофе — маленькое путешествие. От Эфиопии до Бразилии, от зерна до аромата.',
-    size: 'medium',
+    type: 'image',
+    image: '/cafe photos/image_13.png',
   },
   {
     id: '16',
     type: 'image',
-    image: '/cafe photos/image_12.png',
-    size: 'tall',
+    image: '/cafe photos/image_14.png',
   },
   {
     id: '17',
     type: 'image',
-    image: '/cafe photos/image_13.png',
-    size: 'medium',
-  },
-  {
-    id: '18',
-    type: 'image',
-    image: '/cafe photos/image_14.png',
-    size: 'small',
-  },
-  {
-    id: '19',
-    type: 'music',
-    title: 'Coffee',
-    artist: 'Beabadoobee',
-    quote: 'I like my coffee with two sugars in. And she likes hers black with a lot of caffeine.',
-    spotifyUrl: 'https://open.spotify.com/track/0zzpO2O3yzEKCCxYpvEWul',
-    size: 'medium',
-  },
-  {
-    id: '20',
-    type: 'image',
     image: '/cafe photos/image_15.png',
-    size: 'large',
   },
 ];
 
 function DailyCard({ item, index }: { item: DailyItem; index: number }) {
-  const sizeClass = item.size ? styles[item.size] : styles.medium;
-
   if (item.type === 'image') {
     return (
       <motion.div
-        className={`${styles.card} ${styles.imageCard} ${sizeClass}`}
+        className={`${styles.card} ${styles.imageCard}`}
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{
@@ -167,7 +126,7 @@ function DailyCard({ item, index }: { item: DailyItem; index: number }) {
   if (item.type === 'quote') {
     return (
       <motion.div
-        className={`${styles.card} ${styles.quoteCard} ${sizeClass}`}
+        className={`${styles.card} ${styles.quoteCard}`}
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{
@@ -187,7 +146,7 @@ function DailyCard({ item, index }: { item: DailyItem; index: number }) {
   if (item.type === 'music') {
     return (
       <motion.div
-        className={`${styles.card} ${styles.musicCard} ${sizeClass}`}
+        className={`${styles.card} ${styles.musicCard}`}
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{

@@ -44,7 +44,7 @@
 }
 
 /* ============================================
-   MASONRY GRID
+   MASONRY GRID - True Column-based Masonry
    ============================================ */
 .gridSection {
   padding: 0 var(--space-4);
@@ -53,69 +53,40 @@
 }
 
 .masonry {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--space-4);
-  grid-auto-flow: dense;
+  column-count: 3;
+  column-gap: var(--space-4);
 }
 
 @media (max-width: 1024px) {
   .masonry {
-    grid-template-columns: repeat(2, 1fr);
-    gap: var(--space-3);
+    column-count: 2;
+    column-gap: var(--space-3);
   }
 }
 
 @media (max-width: 640px) {
   .masonry {
-    grid-template-columns: 1fr;
-    gap: var(--space-3);
+    column-count: 1;
+    column-gap: var(--space-3);
   }
 }
 
 /* ============================================
-   CARD SIZES
+   CARD BASE
    ============================================ */
 .card {
   overflow: hidden;
   position: relative;
+  break-inside: avoid;
+  margin-bottom: var(--space-4);
 }
 
-.small {
-  aspect-ratio: 1 / 1;
-}
-
-.medium {
-  aspect-ratio: 4 / 3;
-}
-
-.large {
-  grid-column: span 1;
-  aspect-ratio: 16 / 10;
-}
-
-.tall {
-  grid-row: span 2;
-  aspect-ratio: auto;
-  min-height: 500px;
-}
-
-@media (min-width: 1025px) {
-  .large {
-    grid-column: span 2;
+@media (max-width: 1024px) {
+  .card {
+    margin-bottom: var(--space-3);
   }
 }
 
-@media (max-width: 640px) {
-  .tall {
-    grid-row: span 1;
-    min-height: 400px;
-  }
-
-  .large {
-    grid-column: span 1;
-  }
-}
 
 /* ============================================
    IMAGE CARDS
@@ -123,12 +94,13 @@
 .imageCard {
   background: var(--color-bg-light);
   cursor: pointer;
+  line-height: 0; /* Remove any extra space below image */
 }
 
 .cardImage {
   width: 100%;
-  height: 100%;
-  object-fit: cover;
+  height: auto;
+  display: block;
   transition: transform 0.7s cubic-bezier(0.25, 0.1, 0.25, 1);
 }
 
@@ -144,7 +116,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: var(--space-10);
+  padding: var(--space-12) var(--space-8);
+  min-height: 280px;
 }
 
 .quoteContent {
@@ -183,6 +156,7 @@
   flex-direction: column;
   justify-content: flex-end;
   padding: var(--space-8);
+  min-height: 320px;
 }
 
 .musicContent {
