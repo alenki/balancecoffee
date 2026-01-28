@@ -9,8 +9,8 @@ export function HomePage() {
     <main>
       <HeroSection />
       <AboutSection />
-      <GallerySection />
       <MenuPreview />
+      <GallerySection />
       <LocationSection />
     </main>
   );
