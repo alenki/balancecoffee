@@ -1,78 +1,159 @@
+import { useRef } from 'react';
 import { Link } from 'react-router-dom';
+import { motion, useInView } from 'motion/react';
 import { Logo } from '../common/Logo';
 import { useCity } from '../../hooks/useCity';
-import { contactInfo } from '../../data/locations';
+import { contactInfo, cities } from '../../data/locations';
 import styles from './Footer.module.css';
+
+const ease = [0.16, 1, 0.3, 1] as const;
+
+function AnimatedSection({ children, className, delay = 0 }: {
+  children: React.ReactNode;
+  className?: string;
+  delay?: number;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+  const inView = useInView(ref, { once: true, margin: '-60px' });
+
+  return (
+    <motion.div
+      ref={ref}
+      className={className}
+      initial={{ opacity: 0, y: 30 }}
+      animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+      transition={{ duration: 0.8, ease, delay }}
+    >
+      {children}
+    </motion.div>
+  );
+}
 
 export function Footer() {
   const { currentCity } = useCity();
   const currentYear = new Date().getFullYear();
+  const brandRef = useRef<HTMLDivElement>(null);
+  const brandInView = useInView(brandRef, { once: true, margin: '-40px' });
 
   return (
     <footer className={styles.footer}>
+      {/* ── Brand Band ── */}
+      <div className={styles.brandBand} ref={brandRef}>
+        <motion.div
+          className={styles.brandInner}
+          initial={{ opacity: 0, scale: 0.96 }}
+          animate={brandInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.96 }}
+          transition={{ duration: 1, ease }}
+        >
+          <span className={styles.brandLabel}>Specialty Coffee</span>
+          <h2 className={styles.brandText}>BALANCE COFFEE</h2>
+          <p className={styles.brandTagline}>Кофе, созданный с намерением</p>
+        </motion.div>
+      </div>
+
+      {/* ── Triptych Panels ── */}
       <div className={styles.container}>
-        <div className={styles.top}>
-          <div className={styles.brand}>
-            <Logo size="lg" variant="light" />
-            <p className={styles.tagline}>
-              Уютные кофейни с душой
-            </p>
-          </div>
-
-          <div className={styles.links}>
-            <div className={styles.column}>
-              <h4 className={styles.columnTitle}>Навигация</h4>
-              <Link to="/" className={styles.link}>Главная</Link>
-              <Link to="/menu" className={styles.link}>Меню</Link>
-            </div>
-
-            <div className={styles.column}>
-              <h4 className={styles.columnTitle}>Контакты</h4>
-              <a href={contactInfo.phoneHref} className={styles.link}>
+        <div className={styles.triptych}>
+          <AnimatedSection className={styles.panel} delay={0}>
+            <span className={styles.panelLabel}>Контакты</span>
+            <h3 className={styles.panelHeading}>Свяжитесь<br />с нами</h3>
+            <div className={styles.panelContent}>
+              <a href={contactInfo.phoneHref} className={styles.contactLink}>
                 {contactInfo.phone}
               </a>
-              <a href={contactInfo.telegram} className={styles.link} target="_blank" rel="noopener noreferrer">
+              <a
+                href={contactInfo.telegram}
+                className={styles.contactLink}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 Telegram
               </a>
             </div>
+            <div className={styles.panelFooter}>
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <circle cx="8" cy="8" r="6.5" stroke="currentColor" strokeWidth="1.5"/>
+                <path d="M8 4.5V8L10.5 10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+              </svg>
+              <span>{contactInfo.deliveryHours.start} — {contactInfo.deliveryHours.end}</span>
+            </div>
+          </AnimatedSection>
 
-            <div className={styles.column}>
-              <h4 className={styles.columnTitle}>{currentCity.name}</h4>
-              {currentCity.locations.slice(0, 3).map((location, index) => (
+          <AnimatedSection className={styles.panel} delay={0.1}>
+            <span className={styles.panelLabel}>Навигация</span>
+            <h3 className={styles.panelHeading}>Наши<br />страницы</h3>
+            <nav className={styles.panelContent}>
+              <Link to="/" className={styles.navLink}>
+                <span>Главная</span>
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <path d="M6 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </Link>
+              <Link to="/menu" className={styles.navLink}>
+                <span>Меню</span>
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <path d="M6 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </Link>
+              <Link to="/daily" className={styles.navLink}>
+                <span>Daily</span>
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <path d="M6 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </Link>
+            </nav>
+          </AnimatedSection>
+
+          <AnimatedSection className={`${styles.panel} ${styles.panelLocations}`} delay={0.2}>
+            <span className={styles.panelLabel}>{currentCity.name}</span>
+            <h3 className={styles.panelHeading}>Наши<br />кофейни</h3>
+            <div className={styles.panelContent}>
+              {currentCity.locations.slice(0, 4).map((location, index) => (
                 <span key={index} className={styles.address}>
                   {location.address}
-                  {location.isComingSoon && <span className={styles.soon}> скоро</span>}
+                  {location.isComingSoon && <span className={styles.soon}>скоро</span>}
                 </span>
               ))}
-              {currentCity.locations.length > 3 && (
-                <span className={styles.more}>
-                  и ещё {currentCity.locations.length - 3}...
+              {currentCity.locations.length > 4 && (
+                <span className={styles.moreLocations}>
+                  +{currentCity.locations.length - 4}
                 </span>
               )}
             </div>
-          </div>
+            <div className={styles.panelFooter}>
+              <span className={styles.cityCount}>
+                {cities.length} городов · {cities.reduce((sum, c) => sum + c.locations.length, 0)} кофеен
+              </span>
+            </div>
+          </AnimatedSection>
         </div>
 
-        <div className={styles.bottom}>
+        {/* ── Brand Row ── */}
+        <AnimatedSection className={styles.brandRow} delay={0.3}>
+          <div className={styles.brandRowLeft}>
+            <span className={styles.brandRowDescriptor}>Кофе, выпечка, свежевыжатые соки</span>
+          </div>
+          <div className={styles.brandRowCenter}>
+            <Logo size="lg" variant="light" />
+          </div>
+          <div className={styles.brandRowRight}>
+            <span className={styles.brandRowDescriptor}>Specialty Coffee · Open 7/7</span>
+          </div>
+        </AnimatedSection>
+
+        {/* ── Colophon ── */}
+        <AnimatedSection className={styles.colophon} delay={0.35}>
+          <div className={styles.colophonLinks}>
+            <Link to="/" className={styles.colophonLink}>Главная</Link>
+            <Link to="/menu" className={styles.colophonLink}>Меню</Link>
+            <a href={contactInfo.telegram} className={styles.colophonLink} target="_blank" rel="noopener noreferrer">
+              Telegram
+            </a>
+          </div>
           <p className={styles.copyright}>
-            {currentYear} Balance Coffee. Все права защищены.
+            &copy; {currentYear} Balance Coffee
           </p>
-          <div className={styles.hours}>
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <circle cx="8" cy="8" r="6.5" stroke="currentColor" strokeWidth="1.5"/>
-              <path d="M8 4.5V8L10.5 10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-            </svg>
-            <span>Доставка {contactInfo.deliveryHours.start} — {contactInfo.deliveryHours.end}</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Decorative coffee bean pattern */}
-      <div className={styles.decoration} aria-hidden="true">
-        <svg viewBox="0 0 100 100" className={styles.bean}>
-          <ellipse cx="50" cy="50" rx="30" ry="45" fill="currentColor" opacity="0.05"/>
-          <path d="M50 10 Q55 50 50 90" stroke="currentColor" strokeWidth="2" fill="none" opacity="0.08"/>
-        </svg>
+        </AnimatedSection>
       </div>
     </footer>
   );
