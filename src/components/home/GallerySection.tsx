@@ -6,91 +6,109 @@ import styles from './GallerySection.module.css';
 
 export function GallerySection() {
   const { ref, isVisible } = useScrollAnimation();
-  const sectionRef = useRef<HTMLElement>(null);
+  const sectionRef = useRef<HTMLDivElement>(null);
 
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ['start end', 'end start'],
   });
 
-  const imageY = useTransform(scrollYProgress, [0, 1], ['0%', '8%']);
+  // Parallax effects for images
+  const y1 = useTransform(scrollYProgress, [0, 1], [40, -40]);
+  const y2 = useTransform(scrollYProgress, [0, 1], [60, -60]);
+  const y3 = useTransform(scrollYProgress, [0, 1], [20, -20]);
 
   return (
     <section className={styles.section} ref={sectionRef}>
-      {/* Left: Large Image */}
-      <div className={styles.imagePanel}>
-        <motion.div className={styles.imageWrapper} style={{ y: imageY }}>
-          <img
-            src="/cafe photos/image_16.png"
-            alt="Balance Coffee"
-            className={styles.image}
-            loading="lazy"
-          />
+      <div className={styles.card} ref={ref}>
+        {/* Header Label */}
+        <motion.div
+          className={styles.sectionHeader}
+          initial={{ opacity: 0, y: 20 }}
+          animate={isVisible ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+        >
+          <span className={styles.headerLabel}>Daily Journal</span>
         </motion.div>
-      </div>
 
-      {/* Right: Editorial Content */}
-      <div className={styles.contentPanel} ref={ref}>
-        <div className={styles.content}>
-          <motion.span
-            className={styles.eyebrow}
-            initial={{ opacity: 0, y: 16 }}
+        {/* Image Grid - Top Area */}
+        <div className={styles.imageGrid}>
+          <motion.div
+            className={styles.gridImage1}
+            style={{ y: y1 }}
+            initial={{ opacity: 0, y: 30 }}
             animate={isVisible ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.6 }}
+            transition={{ duration: 0.7, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
           >
-            Журнал
-          </motion.span>
-
-          <motion.h2
-            className={styles.title}
-            initial={{ opacity: 0, y: 24 }}
-            animate={isVisible ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.7, delay: 0.1 }}
-          >
-            Daily
-          </motion.h2>
-
-          <motion.p
-            className={styles.description}
-            initial={{ opacity: 0, y: 20 }}
-            animate={isVisible ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.6, delay: 0.2 }}
-          >
-            Вдохновение, моменты и атмосфера,
-            которые делают каждый день особенным.
-          </motion.p>
+            <img
+              src="/cafe photos/image_3.png"
+              alt="Balance Coffee atmosphere"
+              className={styles.gridImage}
+            />
+          </motion.div>
 
           <motion.div
-            initial={{ opacity: 0, y: 16 }}
+            className={styles.gridImage2}
+            style={{ y: y2 }}
+            initial={{ opacity: 0, y: 30 }}
             animate={isVisible ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.5, delay: 0.3 }}
+            transition={{ duration: 0.7, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
           >
-            <Link to="/daily" className={styles.ctaLink}>
-              Читать
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-            </Link>
+            <img
+              src="/cafe photos/image_4.png"
+              alt="Balance Coffee interior"
+              className={styles.gridImage}
+            />
+          </motion.div>
+
+          <motion.div
+            className={styles.gridImage3}
+            style={{ y: y3 }}
+            initial={{ opacity: 0, y: 30 }}
+            animate={isVisible ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.7, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <img
+              src="/cafe photos/image_5.png"
+              alt="Balance Coffee community"
+              className={styles.gridImage}
+            />
           </motion.div>
         </div>
 
-        {/* Bottom image strip */}
-        <motion.div
-          className={styles.imageStrip}
-          initial={{ opacity: 0 }}
-          animate={isVisible ? { opacity: 1 } : {}}
-          transition={{ duration: 0.8, delay: 0.4 }}
-        >
-          <div className={styles.stripImage}>
-            <img src="/cafe photos/image_10.png" alt="" loading="lazy" />
-          </div>
-          <div className={styles.stripImage}>
-            <img src="/cafe photos/image_3.png" alt="" loading="lazy" />
-          </div>
-          <div className={styles.stripImage}>
-            <img src="/cafe photos/image_9.png" alt="" loading="lazy" />
-          </div>
-        </motion.div>
+        {/* Manifesto Content - Center */}
+        <div className={styles.manifestoContent}>
+          <motion.h2
+            className={styles.manifestoTitle}
+            initial={{ opacity: 0, y: 30 }}
+            animate={isVisible ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.7, delay: 0.35, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <span className={styles.manifestoLine}>Мы за</span>
+            <span className={styles.manifestoLineAccent}>уникальную</span>
+            <span className={styles.manifestoLine}>эстетику</span>
+          </motion.h2>
+
+          <motion.p
+            className={styles.manifestoText}
+            initial={{ opacity: 0, y: 20 }}
+            animate={isVisible ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.6, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
+          >
+            Мы за красивое и хорошее, творить и делиться.<br/>
+            Мы за уникальную эстетику.
+          </motion.p>
+
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            animate={isVisible ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.5, delay: 0.6, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <Link to="/daily" className={styles.manifestoCta}>
+              Lifestyle
+            </Link>
+          </motion.div>
+        </div>
       </div>
     </section>
   );
