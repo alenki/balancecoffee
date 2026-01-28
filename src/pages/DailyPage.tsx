@@ -19,12 +19,7 @@ const dailyItems: DailyItem[] = [
   {
     id: '1',
     type: 'image',
-    image: '/cafe photos/image.png',
-  },
-  {
-    id: '2',
-    type: 'image',
-    image: '/cafe photos/image_2.png',
+    image: '/cafe photos/image_16.png',
   },
   {
     id: '3',
