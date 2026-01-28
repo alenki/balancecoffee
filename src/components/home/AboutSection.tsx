@@ -15,17 +15,16 @@ export function AboutSection() {
     offset: ["start end", "end start"]
   });
 
-  const backgroundY = useTransform(scrollYProgress, [0, 1], ["0%", "20%"]);
+  const backgroundY = useTransform(scrollYProgress, [0, 1], ["0%", "15%"]);
   const floatingY1 = useTransform(scrollYProgress, [0, 1], ["0%", "-15%"]);
   const floatingY2 = useTransform(scrollYProgress, [0, 1], ["0%", "10%"]);
-  const textOpacity = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [0.03, 0.08, 0.08, 0.03]);
 
   return (
     <section className={styles.section} ref={sectionRef}>
       {/* Decorative background text */}
       <motion.div
         className={styles.backgroundText}
-        style={{ y: backgroundY, opacity: textOpacity }}
+        style={{ y: backgroundY }}
       >
         <span className={styles.bgTextLine}>BALANCE</span>
         <span className={styles.bgTextLine}>COFFEE</span>
@@ -134,16 +133,6 @@ export function AboutSection() {
             </div>
           </motion.div>
         </div>
-
-        {/* Bottom corner tagline */}
-        <motion.div
-          className={styles.bottomTagline}
-          initial={{ opacity: 0 }}
-          animate={isVisible ? { opacity: 1 } : {}}
-          transition={{ duration: 1, delay: 0.6 }}
-        >
-          <span>Крепко. Честно. Кофе на первом месте.</span>
-        </motion.div>
 
         {/* Stats section - redesigned as floating cards */}
         <div className={styles.statsSection}>
