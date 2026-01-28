@@ -63,6 +63,14 @@ export function Header() {
           >
             Меню
           </NavLink>
+          <NavLink
+            to="/daily"
+            className={({ isActive }) =>
+              `${styles.navLink} ${isActive ? styles.active : ''}`
+            }
+          >
+            Daily
+          </NavLink>
         </nav>
 
         <div className={styles.actions}>
@@ -101,6 +109,15 @@ export function Header() {
             onClick={() => setIsMobileMenuOpen(false)}
           >
             Меню
+          </NavLink>
+          <NavLink
+            to="/daily"
+            className={({ isActive }) =>
+              `${styles.mobileNavLink} ${isActive ? styles.active : ''}`
+            }
+            onClick={() => setIsMobileMenuOpen(false)}
+          >
+            Daily
           </NavLink>
         </nav>
       </div>
