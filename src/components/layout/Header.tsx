@@ -17,21 +17,9 @@ export function Header() {
   const [lang, setLang] = useState<Lang>('RU');
   const location = useLocation();
 
-  const isHomePage = location.pathname === '/';
-
   useEffect(() => {
-    const handleScroll = () => {
-      if (isHomePage) {
-        setIsVisible(window.scrollY > 100);
-      } else {
-        setIsVisible(true);
-      }
-    };
-
-    handleScroll();
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [isHomePage]);
+    setIsVisible(true);
+  }, []);
 
   useEffect(() => {
     if (isMobileMenuOpen) {

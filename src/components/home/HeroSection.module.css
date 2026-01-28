@@ -1,6 +1,8 @@
 /* ============================================
-   HERO SECTION - Cinematic Video Card
-   Full-bleed video with floating card effect
+   HERO SECTION — Bold Editorial Cinema
+   Video card with massive typography,
+   asymmetric bottom-anchored layout,
+   and cinematic grain overlay
    ============================================ */
 
 .hero {
@@ -10,30 +12,30 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: var(--space-6);
+  padding: calc(var(--space-6) + 64px) var(--space-6) var(--space-6);
   background: #ffffff;
 }
 
 @media (min-width: 768px) {
   .hero {
-    padding: var(--space-12);
+    padding: calc(var(--space-12) + 72px) var(--space-12) var(--space-12);
   }
 }
 
 @media (min-width: 1200px) {
   .hero {
-    padding: var(--space-16);
+    padding: calc(var(--space-16) + 72px) var(--space-16) var(--space-16);
   }
 }
 
 /* ============================================
-   VIDEO CARD CONTAINER
+   VIDEO CARD
    ============================================ */
 .videoCard {
   position: relative;
   width: 100%;
-  height: calc(100vh - var(--space-12));
-  height: calc(100svh - var(--space-12));
+  height: calc(100vh - var(--space-12) - 64px);
+  height: calc(100svh - var(--space-12) - 64px);
   border-radius: var(--radius-xl);
   overflow: hidden;
   box-shadow:
@@ -43,22 +45,22 @@
 
 @media (min-width: 768px) {
   .videoCard {
-    height: calc(100vh - var(--space-24));
-    height: calc(100svh - var(--space-24));
+    height: calc(100vh - var(--space-24) - 72px);
+    height: calc(100svh - var(--space-24) - 72px);
     border-radius: var(--radius-2xl);
   }
 }
 
 @media (min-width: 1200px) {
   .videoCard {
-    height: calc(100vh - var(--space-32));
-    height: calc(100svh - var(--space-32));
+    height: calc(100vh - var(--space-32) - 72px);
+    height: calc(100svh - var(--space-32) - 72px);
     border-radius: 32px;
   }
 }
 
 /* ============================================
-   VIDEO BACKGROUND
+   VIDEO BACKGROUND + OVERLAYS
    ============================================ */
 .videoBackground {
   position: absolute;
@@ -73,166 +75,198 @@
   object-position: center;
 }
 
-/* Gradient overlay for text readability */
+/* Cinematic multi-layer gradient:
+   - Vignette from edges for depth
+   - Heavy bottom fade for headline readability
+   - Subtle top darken for corner text */
 .videoOverlay {
   position: absolute;
   inset: 0;
-  background: radial-gradient(
-    ellipse at center,
-    rgba(0, 0, 0, 0.25) 0%,
-    rgba(0, 0, 0, 0.15) 50%,
-    rgba(0, 0, 0, 0.3) 100%
-  );
+  background:
+    radial-gradient(
+      ellipse at center,
+      rgba(0, 0, 0, 0.05) 0%,
+      rgba(0, 0, 0, 0.18) 55%,
+      rgba(0, 0, 0, 0.4) 100%
+    ),
+    linear-gradient(
+      to top,
+      rgba(0, 0, 0, 0.6) 0%,
+      rgba(0, 0, 0, 0.25) 35%,
+      rgba(0, 0, 0, 0.0) 60%
+    ),
+    linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.15) 0%,
+      rgba(0, 0, 0, 0.0) 18%
+    );
   pointer-events: none;
 }
 
-/* ============================================
-   CONTENT LAYOUT
-   ============================================ */
-.content {
+/* Grain texture — matching About section */
+.grain {
   position: absolute;
   inset: 0;
-  z-index: 2;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: var(--space-6);
+  opacity: 0.04;
+  pointer-events: none;
+  z-index: 1;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
 }
 
 /* ============================================
    CORNER ACCENTS
    ============================================ */
-.cornerTopLeft,
-.cornerTopRight {
+.cornerTopLeft {
   position: absolute;
-  top: var(--space-5);
+  top: var(--space-6);
+  left: var(--space-6);
   z-index: 3;
   display: flex;
   align-items: center;
   gap: var(--space-3);
 }
 
-.cornerTopLeft {
-  left: var(--space-5);
-}
-
-.cornerTopRight {
-  right: var(--space-5);
-}
-
-.cornerLabel {
-  font-size: var(--text-xs);
-  font-weight: var(--font-medium);
-  color: rgba(255, 255, 255, 0.7);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
-
-.cornerStat {
-  font-size: var(--text-xs);
-  font-weight: var(--font-normal);
-  color: rgba(255, 255, 255, 0.7);
-  letter-spacing: 0.02em;
-}
-
-.cornerDivider {
-  width: 1px;
-  height: 12px;
-  background: rgba(255, 255, 255, 0.3);
-}
-
 @media (min-width: 768px) {
-  .cornerTopLeft,
-  .cornerTopRight {
-    top: var(--space-8);
-  }
-
   .cornerTopLeft {
-    left: var(--space-8);
+    top: var(--space-10);
+    left: var(--space-10);
   }
+}
 
-  .cornerTopRight {
-    right: var(--space-8);
-  }
-
-  .cornerLabel,
-  .cornerStat {
-    font-size: var(--text-sm);
+@media (min-width: 1200px) {
+  .cornerTopLeft {
+    top: var(--space-12);
+    left: var(--space-12);
   }
 }
 
 @media (max-width: 600px) {
-  .cornerTopLeft,
-  .cornerTopRight {
+  .cornerTopLeft {
     display: none;
   }
 }
 
-/* ============================================
-   BRAND SECTION (Centered)
-   ============================================ */
-.brandSection {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.brandLogo {
-  height: clamp(80px, 18vw, 160px);
-  width: auto;
-  filter: brightness(0) invert(1);
-}
-
-.tagline {
-  font-size: var(--text-base);
-  font-weight: var(--font-light);
-  color: rgba(255, 255, 255, 0.8);
-  letter-spacing: 0.08em;
-  text-align: center;
-  margin: 0;
-  margin-top: var(--space-4);
+.cornerLabel {
+  font-family: var(--font-primary);
+  font-size: var(--text-xs);
+  font-weight: var(--font-medium);
+  color: rgba(255, 255, 255, 0.55);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
 }
 
 @media (min-width: 768px) {
-  .tagline {
-    font-size: var(--text-lg);
-    margin-top: var(--space-5);
+  .cornerLabel {
+    font-size: var(--text-sm);
   }
 }
 
-
 /* ============================================
-   SCROLL INDICATOR
+   BOTTOM RIGHT LOGO
    ============================================ */
-.scrollHint {
+.bottomRightLogo {
   position: absolute;
-  bottom: var(--space-6);
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
   z-index: 3;
+  bottom: var(--space-10);
+  right: var(--space-6);
+  height: clamp(28px, 5vw, 48px);
+  width: auto;
+  opacity: 0.7;
 }
 
 @media (min-width: 768px) {
-  .scrollHint {
-    bottom: var(--space-10);
+  .bottomRightLogo {
+    bottom: var(--space-14);
+    right: var(--space-10);
+    height: clamp(32px, 4vw, 52px);
   }
 }
 
-.scrollIcon {
-  color: rgba(255, 255, 255, 0.6);
-  transition: color var(--transition-base);
+@media (min-width: 1200px) {
+  .bottomRightLogo {
+    bottom: var(--space-20);
+    right: var(--space-12);
+    height: clamp(36px, 3.5vw, 56px);
+  }
 }
 
-.scrollHint:hover .scrollIcon {
-  color: rgba(255, 255, 255, 0.9);
+/* ============================================
+   HEADLINE BLOCK — Massive editorial type
+   Bottom-left anchored, stacked lines with
+   masked slide-up reveal animation.
+
+   Lines 1-2: Bold sans-serif (heavy weight)
+   Line 3: Playfair Display italic (contrast)
+   ============================================ */
+.headlineBlock {
+  position: absolute;
+  z-index: 3;
+  bottom: var(--space-10);
+  left: var(--space-6);
+  right: var(--space-6);
 }
 
-@media (max-width: 767px) {
-  .scrollHint {
-    display: none;
+@media (min-width: 768px) {
+  .headlineBlock {
+    bottom: var(--space-14);
+    left: var(--space-10);
+    right: auto;
+    max-width: 75%;
+  }
+}
+
+@media (min-width: 1200px) {
+  .headlineBlock {
+    bottom: var(--space-20);
+    left: var(--space-12);
+    max-width: 70%;
+  }
+}
+
+/* Each line wrapped in overflow:hidden for
+   the masked reveal effect */
+.lineReveal {
+  overflow: hidden;
+  /* Slight negative margin to tighten line spacing */
+  margin-bottom: -0.05em;
+}
+
+.lineReveal:last-child {
+  margin-bottom: 0;
+}
+
+/* Bold sans-serif lines (lines 1–2) */
+.headlineBold {
+  display: block;
+  font-family: var(--font-primary);
+  font-size: clamp(2.8rem, 9vw, 6.5rem);
+  font-weight: var(--font-heavy);
+  line-height: 1.0;
+  color: rgba(255, 255, 255, 0.95);
+  text-transform: uppercase;
+  letter-spacing: -0.03em;
+}
+
+/* Serif italic line (line 3) — typographic contrast */
+.headlineSerif {
+  display: block;
+  font-family: 'Playfair Display', 'Georgia', serif;
+  font-size: clamp(2.4rem, 7.5vw, 5.5rem);
+  font-weight: 400;
+  font-style: italic;
+  line-height: 1.15;
+  color: rgba(255, 255, 255, 0.85);
+  letter-spacing: -0.01em;
+  padding-top: 0.08em;
+}
+
+/* ============================================
+   REDUCED MOTION
+   ============================================ */
+@media (prefers-reduced-motion: reduce) {
+  .headlineBold,
+  .headlineSerif {
+    transform: none;
   }
 }
