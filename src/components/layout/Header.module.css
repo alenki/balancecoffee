@@ -27,6 +27,13 @@
   opacity: 1;
 }
 
+/* Hidden on scroll-down */
+.header.scrollHidden {
+  transform: translateY(-100%);
+  pointer-events: none;
+  transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
 /* When mobile menu is open, keep header solid */
 .header.menuActive {
   background: #ffffff;

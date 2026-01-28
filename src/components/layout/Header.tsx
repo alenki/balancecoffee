@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { Logo } from '../common/Logo';
 import styles from './Header.module.css';
@@ -11,14 +11,74 @@ const navItems = [
 
 type Lang = 'RU' | 'EN';
 
+/** Minimum scroll distance before triggering hide (prevents jitter) */
+const SCROLL_THRESHOLD = 8;
+/** How long (ms) user must keep scrolling down before header hides */
+const HIDE_DELAY = 600;
+
 export function Header() {
   const [isVisible, setIsVisible] = useState(false);
+  const [isHiddenByScroll, setIsHiddenByScroll] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [lang, setLang] = useState<Lang>('RU');
   const location = useLocation();
 
+  const lastScrollY = useRef(0);
+  const hideTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const scrollingDown = useRef(false);
+
   useEffect(() => {
     setIsVisible(true);
+  }, []);
+
+  // Scroll-based hide/show
+  useEffect(() => {
+    const onScroll = () => {
+      const currentY = window.scrollY;
+      const delta = currentY - lastScrollY.current;
+
+      // Near top of page — always show
+      if (currentY < 80) {
+        setIsHiddenByScroll(false);
+        scrollingDown.current = false;
+        if (hideTimer.current) {
+          clearTimeout(hideTimer.current);
+          hideTimer.current = null;
+        }
+        lastScrollY.current = currentY;
+        return;
+      }
+
+      if (delta > SCROLL_THRESHOLD) {
+        // Scrolling down
+        if (!scrollingDown.current) {
+          scrollingDown.current = true;
+          // Start a timer — hide only if user keeps scrolling down
+          if (hideTimer.current) clearTimeout(hideTimer.current);
+          hideTimer.current = setTimeout(() => {
+            if (scrollingDown.current) {
+              setIsHiddenByScroll(true);
+            }
+          }, HIDE_DELAY);
+        }
+      } else if (delta < -SCROLL_THRESHOLD) {
+        // Scrolling up — show immediately
+        scrollingDown.current = false;
+        if (hideTimer.current) {
+          clearTimeout(hideTimer.current);
+          hideTimer.current = null;
+        }
+        setIsHiddenByScroll(false);
+      }
+
+      lastScrollY.current = currentY;
+    };
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      if (hideTimer.current) clearTimeout(hideTimer.current);
+    };
   }, []);
 
   useEffect(() => {
@@ -44,7 +104,7 @@ export function Header() {
   return (
     <>
       <header
-        className={`${styles.header} ${isVisible ? styles.visible : ''} ${isMobileMenuOpen ? styles.menuActive : ''}`}
+        className={`${styles.header} ${isVisible ? styles.visible : ''} ${isHiddenByScroll && !isMobileMenuOpen ? styles.scrollHidden : ''} ${isMobileMenuOpen ? styles.menuActive : ''}`}
       >
         {/* Thin accent line at top */}
         <div className={styles.accentLine} aria-hidden="true" />
