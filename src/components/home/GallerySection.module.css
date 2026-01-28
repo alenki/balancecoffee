@@ -1,0 +1,114 @@
+/* ============================================
+   GALLERY SECTION
+   Minimal, refined 2x2 grid
+   ============================================ */
+
+.section {
+  padding: var(--space-20) 0 var(--space-24);
+  background: var(--color-bg-white);
+}
+
+@media (min-width: 768px) {
+  .section {
+    padding: var(--space-24) 0 var(--space-32);
+  }
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--space-6);
+}
+
+@media (min-width: 768px) {
+  .container {
+    padding: 0 var(--space-10);
+  }
+}
+
+/* ============================================
+   HEADER
+   ============================================ */
+.header {
+  text-align: center;
+  margin-bottom: var(--space-12);
+}
+
+@media (min-width: 768px) {
+  .header {
+    margin-bottom: var(--space-16);
+  }
+}
+
+.eyebrow {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--color-accent-gold);
+  margin-bottom: var(--space-4);
+}
+
+.title {
+  font-size: clamp(1.75rem, 4vw, 2.75rem);
+  font-weight: 300;
+  color: var(--color-text-dark);
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  text-transform: none;
+}
+
+/* ============================================
+   GRID
+   ============================================ */
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-4);
+}
+
+@media (min-width: 640px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-5);
+  }
+}
+
+@media (min-width: 1024px) {
+  .grid {
+    gap: var(--space-6);
+  }
+}
+
+/* ============================================
+   IMAGE ITEMS
+   ============================================ */
+.item {
+  position: relative;
+}
+
+.imageFrame {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  background: var(--color-bg-light);
+}
+
+@media (min-width: 1024px) {
+  .imageFrame {
+    border-radius: var(--radius-xl);
+  }
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+.imageFrame:hover .image {
+  transform: scale(1.04);
+}

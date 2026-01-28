@@ -1,6 +1,6 @@
 import { HeroSection } from '../components/home/HeroSection';
 import { AboutSection } from '../components/home/AboutSection';
-import { PhotoStrip } from '../components/home/PhotoStrip';
+import { GallerySection } from '../components/home/GallerySection';
 import { MenuPreview } from '../components/home/MenuPreview';
 import { LocationSection } from '../components/home/LocationSection';
 
@@ -9,7 +9,7 @@ export function HomePage() {
     <main>
       <HeroSection />
       <AboutSection />
-      <PhotoStrip />
+      <GallerySection />
       <MenuPreview />
       <LocationSection />
     </main>

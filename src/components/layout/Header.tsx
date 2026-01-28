@@ -1,21 +1,34 @@
 import { useState, useEffect } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import { Logo } from '../common/Logo';
 import { CitySelector } from '../common/CitySelector';
 import styles from './Header.module.css';
 
 export function Header() {
-  const [isScrolled, setIsScrolled] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const location = useLocation();
+
+  // Check if we're on the home page (hero visible)
+  const isHomePage = location.pathname === '/';
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
+      if (isHomePage) {
+        // On home page: show navbar after scrolling past hero threshold
+        setIsVisible(window.scrollY > 100);
+      } else {
+        // On other pages: always show navbar
+        setIsVisible(true);
+      }
     };
+
+    // Initial check
+    handleScroll();
 
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [isHomePage]);
 
   useEffect(() => {
     if (isMobileMenuOpen) {
@@ -29,9 +42,9 @@ export function Header() {
   }, [isMobileMenuOpen]);
 
   return (
-    <header className={`${styles.header} ${isScrolled ? styles.scrolled : ''}`}>
+    <header className={`${styles.header} ${isVisible ? styles.visible : ''}`}>
       <div className={styles.container}>
-        <Logo size="md" variant={isScrolled ? 'default' : 'light'} />
+        <Logo size="md" variant="default" />
 
         <nav className={styles.desktopNav}>
           <NavLink
@@ -53,7 +66,7 @@ export function Header() {
         </nav>
 
         <div className={styles.actions}>
-          <CitySelector variant={isScrolled ? 'default' : 'light'} />
+          <CitySelector variant="default" />
 
           <button
             className={`${styles.menuButton} ${isMobileMenuOpen ? styles.open : ''}`}
