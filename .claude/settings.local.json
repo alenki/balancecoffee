@@ -25,7 +25,8 @@
       "mcp__playwright__browser_wait_for",
       "mcp__playwright__browser_hover",
       "Bash(grep:*)",
-      "mcp__playwright__browser_run_code"
+      "mcp__playwright__browser_run_code",
+      "Bash(npx vite)"
     ]
   }
 }
