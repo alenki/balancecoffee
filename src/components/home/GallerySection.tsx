@@ -13,11 +13,18 @@ export function GallerySection() {
     offset: ['start end', 'end start'],
   });
 
-  // Subtle parallax for depth
+  // Subtle parallax for container depth
   const y1 = useTransform(scrollYProgress, [0, 1], [25, -25]);
   const y2 = useTransform(scrollYProgress, [0, 1], [35, -35]);
   const y3 = useTransform(scrollYProgress, [0, 1], [20, -20]);
   const y4 = useTransform(scrollYProgress, [0, 1], [30, -30]);
+
+  // Image-level parallax (image shifts inside its cropped container)
+  const imgY1 = useTransform(scrollYProgress, [0, 1], ['-5%', '5%']);
+  const imgY2 = useTransform(scrollYProgress, [0, 1], ['-7%', '7%']);
+  const imgY3 = useTransform(scrollYProgress, [0, 1], ['-4%', '4%']);
+  const imgY4 = useTransform(scrollYProgress, [0, 1], ['-6%', '6%']);
+  const imgY5 = useTransform(scrollYProgress, [0, 1], ['-5%', '5%']);
 
   return (
     <section className={styles.section} ref={sectionRef}>
@@ -43,10 +50,11 @@ export function GallerySection() {
               animate={isVisible ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.7, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
             >
-              <img
+              <motion.img
                 src="/cafe photos/image_3.png"
                 alt="Balance Coffee atmosphere"
                 className={styles.gridImg}
+                style={{ y: imgY1 }}
               />
             </motion.div>
 
@@ -57,10 +65,11 @@ export function GallerySection() {
               animate={isVisible ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.7, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
             >
-              <img
+              <motion.img
                 src="/cafe photos/image_6.png"
                 alt="Balance Coffee counter"
                 className={styles.gridImg}
+                style={{ y: imgY2 }}
               />
             </motion.div>
           </div>
@@ -74,10 +83,11 @@ export function GallerySection() {
               animate={isVisible ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.7, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
             >
-              <img
+              <motion.img
                 src="/cafe photos/image_4.png"
                 alt="Balance Coffee interior"
                 className={styles.gridImg}
+                style={{ y: imgY3 }}
               />
             </motion.div>
 
@@ -124,10 +134,11 @@ export function GallerySection() {
               animate={isVisible ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.7, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
             >
-              <img
+              <motion.img
                 src="/cafe photos/image_7.png"
                 alt="Balance Coffee exterior"
                 className={styles.gridImg}
+                style={{ y: imgY4 }}
               />
             </motion.div>
 
@@ -138,10 +149,11 @@ export function GallerySection() {
               animate={isVisible ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.7, delay: 0.25, ease: [0.16, 1, 0.3, 1] }}
             >
-              <img
+              <motion.img
                 src="/cafe photos/image_5.png"
                 alt="Balance Coffee community"
                 className={styles.gridImg}
+                style={{ y: imgY5 }}
               />
             </motion.div>
           </div>
