@@ -77,12 +77,6 @@
   padding: var(--space-10);
   background: var(--color-bg-white);
   border-radius: var(--radius-lg);
-  transition: all var(--transition-base);
-}
-
-.feature:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-lg);
 }
 
 .featureIcon {

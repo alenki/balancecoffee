@@ -103,17 +103,6 @@ export function AboutSection() {
         </motion.div>
       </div>
 
-      {/* Decorative quote */}
-      <motion.div
-        className={styles.quote}
-        initial={{ opacity: 0 }}
-        animate={isVisible ? { opacity: 1 } : {}}
-        transition={{ duration: 0.8, delay: 0.7 }}
-      >
-        <span className={styles.quoteText}>
-          "Кофе — это жидкое объятие для вашей души"
-        </span>
-      </motion.div>
     </section>
   );
 }
