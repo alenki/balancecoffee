@@ -54,20 +54,20 @@
 
 .masonry {
   column-count: 3;
-  column-gap: var(--space-4);
+  column-gap: var(--space-16);
 }
 
 @media (max-width: 1024px) {
   .masonry {
     column-count: 2;
-    column-gap: var(--space-3);
+    column-gap: var(--space-12);
   }
 }
 
 @media (max-width: 640px) {
   .masonry {
     column-count: 1;
-    column-gap: var(--space-3);
+    column-gap: var(--space-12);
   }
 }
 
@@ -78,12 +78,12 @@
   overflow: hidden;
   position: relative;
   break-inside: avoid;
-  margin-bottom: var(--space-4);
+  margin-bottom: var(--space-16);
 }
 
 @media (max-width: 1024px) {
   .card {
-    margin-bottom: var(--space-3);
+    margin-bottom: var(--space-12);
   }
 }
 

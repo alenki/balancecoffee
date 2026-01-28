@@ -54,33 +54,33 @@ const dailyItems: DailyItem[] = [
   // MIDDLE COLUMN (items 8-14) - images + 2 quote cards spread out
   {
     id: '8',
-    type: 'image',
-    image: '/cafe photos/image_8.png',
-  },
-  {
-    id: '9',
     type: 'quote',
     quote: 'Каждая чашка кофе — маленькое путешествие. От Эфиопии до Бразилии, от зерна до аромата.',
   },
   {
-    id: '10',
+    id: '9',
     type: 'image',
     image: '/cafe photos/image_9.png',
   },
   {
-    id: '11',
+    id: '10',
     type: 'image',
-    image: '/cafe photos/image_10.png',
+    image: '/cafe photos/image_8.png',
   },
   {
-    id: '12',
+    id: '11',
     type: 'quote',
     quote: 'Кофе — это не просто напиток. Это момент паузы в бесконечном ритме жизни.',
   },
   {
-    id: '13',
+    id: '12',
     type: 'image',
     image: '/cafe photos/image_11.png',
+  },
+  {
+    id: '13',
+    type: 'image',
+    image: '/cafe photos/image_10.png',
   },
   {
     id: '14',
