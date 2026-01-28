@@ -46,7 +46,7 @@
 }
 
 .badgeNew {
-  background: var(--color-accent-terracotta);
+  background: var(--color-primary);
   color: var(--color-white);
 }
 
@@ -91,7 +91,7 @@
   font-family: var(--font-body);
   font-size: 1.1rem;
   font-weight: 600;
-  color: var(--color-accent-terracotta);
+  color: var(--color-primary);
 }
 
 /* Price variants */
@@ -119,5 +119,5 @@
 .variantPrice {
   font-size: 0.95rem;
   font-weight: 600;
-  color: var(--color-accent-terracotta);
+  color: var(--color-primary);
 }

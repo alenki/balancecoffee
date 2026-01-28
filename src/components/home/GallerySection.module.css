@@ -377,7 +377,7 @@
 
 .manifestoLineAccent {
   display: block;
-  color: var(--color-accent-terracotta);
+  color: var(--color-primary);
 }
 
 .manifestoText {
