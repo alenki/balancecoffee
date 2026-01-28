@@ -66,8 +66,7 @@
    CONTAINER
    ============================================ */
 .container {
-  max-width: 1280px;
-  margin: 0 auto;
+  width: 100%;
   padding: 0 var(--space-6);
   position: relative;
   z-index: 1;
@@ -150,6 +149,10 @@
   flex-direction: column;
   gap: var(--space-3);
   flex: 1;
+}
+
+nav.panelContent {
+  gap: 0;
 }
 
 .panelFooter {
@@ -326,25 +329,39 @@
   }
 }
 
-.colophonLinks {
-  display: flex;
-  gap: var(--space-8);
-  flex-wrap: wrap;
-}
-
-.colophonLink {
-  font-family: var(--font-primary);
-  font-size: var(--text-xs);
-  font-weight: var(--font-normal);
-  color: rgba(255, 255, 255, 0.4);
+/* ── KARAF Developer Credit ── */
+.karafBadge {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 6px;
   text-decoration: none;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  transition: color var(--transition-fast);
 }
 
-.colophonLink:hover {
-  color: rgba(255, 255, 255, 0.8);
+.karafText {
+  font-family: var(--font-primary);
+  font-size: 0.6875rem;
+  font-weight: var(--font-normal);
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: rgba(255, 255, 255, 0.32);
+  line-height: 1;
+  transition: color 0.5s ease;
+}
+
+.karafBadge:hover .karafText {
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.karafLine {
+  display: block;
+  height: 1px;
+  width: 0;
+  background: rgba(255, 255, 255, 0.35);
+  transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.karafBadge:hover .karafLine {
+  width: 100%;
 }
 
 .copyright {

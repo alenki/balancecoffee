@@ -58,8 +58,13 @@ export function Footer() {
             <span className={styles.panelLabel}>Контакты</span>
             <h3 className={styles.panelHeading}>Свяжитесь<br />с нами</h3>
             <div className={styles.panelContent}>
-              <a href={contactInfo.phoneHref} className={styles.contactLink}>
-                {contactInfo.phone}
+              <a
+                href="https://www.instagram.com/balancecoffee.ru/"
+                className={styles.contactLink}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Instagram
               </a>
               <a
                 href={contactInfo.telegram}
@@ -68,6 +73,9 @@ export function Footer() {
                 rel="noopener noreferrer"
               >
                 Telegram
+              </a>
+              <a href={contactInfo.phoneHref} className={styles.contactLink}>
+                {contactInfo.phone}
               </a>
             </div>
             <div className={styles.panelFooter}>
@@ -143,13 +151,15 @@ export function Footer() {
 
         {/* ── Colophon ── */}
         <AnimatedSection className={styles.colophon} delay={0.35}>
-          <div className={styles.colophonLinks}>
-            <Link to="/" className={styles.colophonLink}>Главная</Link>
-            <Link to="/menu" className={styles.colophonLink}>Меню</Link>
-            <a href={contactInfo.telegram} className={styles.colophonLink} target="_blank" rel="noopener noreferrer">
-              Telegram
-            </a>
-          </div>
+          <a
+            href="https://okaraf.ru"
+            className={styles.karafBadge}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <span className={styles.karafText}>Made by Karaf</span>
+            <span className={styles.karafLine} aria-hidden="true" />
+          </a>
           <p className={styles.copyright}>
             &copy; {currentYear} Balance Coffee
           </p>
