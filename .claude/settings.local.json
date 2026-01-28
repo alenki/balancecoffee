@@ -19,7 +19,9 @@
       "Bash(timeout:*)",
       "mcp__playwright__browser_press_key",
       "mcp__playwright__browser_evaluate",
-      "Bash(ping:*)"
+      "Bash(ping:*)",
+      "mcp__playwright__browser_snapshot",
+      "mcp__playwright__browser_resize"
     ]
   }
 }
