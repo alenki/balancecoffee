@@ -62,12 +62,6 @@ function CityRow({
         </div>
 
         <div className={styles.rowRight}>
-          {/* First address preview on desktop */}
-          <span className={styles.addressPreview}>
-            {city.locations[0].address}
-            {hasMultiple && ` +${city.locations.length - 1}`}
-          </span>
-
           <span
             className={`${styles.expandIcon} ${isExpanded ? styles.expandIconActive : ''}`}
           >
