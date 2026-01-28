@@ -1,5 +1,4 @@
 import { HashRouter, Routes, Route } from 'react-router-dom';
-import { CityProvider } from './context/CityContext';
 import { Header } from './components/layout/Header';
 import { Footer } from './components/layout/Footer';
 import { HomePage } from './pages/HomePage';
@@ -26,11 +25,9 @@ function AppContent() {
 
 function App() {
   return (
-    <CityProvider>
-      <HashRouter>
-        <AppContent />
-      </HashRouter>
-    </CityProvider>
+    <HashRouter>
+      <AppContent />
+    </HashRouter>
   );
 }
 

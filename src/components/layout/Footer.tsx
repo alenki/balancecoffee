@@ -2,7 +2,6 @@ import { useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, useInView } from 'motion/react';
 import { Logo } from '../common/Logo';
-import { useCity } from '../../hooks/useCity';
 import { contactInfo, cities } from '../../data/locations';
 import styles from './Footer.module.css';
 
@@ -30,7 +29,6 @@ function AnimatedSection({ children, className, delay = 0 }: {
 }
 
 export function Footer() {
-  const { currentCity } = useCity();
   const currentYear = new Date().getFullYear();
   const brandRef = useRef<HTMLDivElement>(null);
   const brandInView = useInView(brandRef, { once: true, margin: '-40px' });
@@ -113,20 +111,18 @@ export function Footer() {
           </AnimatedSection>
 
           <AnimatedSection className={`${styles.panel} ${styles.panelLocations}`} delay={0.2}>
-            <span className={styles.panelLabel}>{currentCity.name}</span>
+            <span className={styles.panelLabel}>География</span>
             <h3 className={styles.panelHeading}>Наши<br />кофейни</h3>
             <div className={styles.panelContent}>
-              {currentCity.locations.slice(0, 4).map((location, index) => (
-                <span key={index} className={styles.address}>
-                  {location.address}
-                  {location.isComingSoon && <span className={styles.soon}>скоро</span>}
-                </span>
-              ))}
-              {currentCity.locations.length > 4 && (
-                <span className={styles.moreLocations}>
-                  +{currentCity.locations.length - 4}
-                </span>
-              )}
+              <div className={styles.cityList}>
+                {cities.map((city) => (
+                  <div key={city.id} className={styles.cityItem}>
+                    <span className={styles.cityName}>{city.name}</span>
+                    <span className={styles.cityDots} />
+                    <span className={styles.cityLocationCount}>{city.locations.length}</span>
+                  </div>
+                ))}
+              </div>
             </div>
             <div className={styles.panelFooter}>
               <span className={styles.cityCount}>

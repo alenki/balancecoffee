@@ -25,16 +25,12 @@ Uses `HashRouter` from react-router-dom (hash-based routing for static hosting c
 - `/` - HomePage
 - `/menu` - MenuPage
 
-### State Management
-
-City selection is managed via React Context (`CityContext`) with localStorage persistence. Access it via the `useCity` hook.
-
 ### Component Organization
 
 ```
 src/
 ├── components/
-│   ├── common/     # Reusable UI (Button, Logo, CitySelector)
+│   ├── common/     # Reusable UI (Button, Logo)
 │   ├── layout/     # App shell (Header, Footer)
 │   ├── home/       # HomePage sections
 │   └── menu/       # MenuPage components

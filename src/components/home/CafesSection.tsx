@@ -20,7 +20,6 @@ function CityRow({
   onToggle: () => void;
   isVisible: boolean;
 }) {
-  const hasMultiple = city.locations.length > 1;
   const hasComingSoon = city.locations.some((l) => l.isComingSoon);
 
   return (

@@ -65,7 +65,3 @@ export const contactInfo: ContactInfo = {
   },
 };
 
-export const getDefaultCity = (): City => cities[0];
-
-export const getCityById = (id: string): City | undefined =>
-  cities.find(city => city.id === id);
