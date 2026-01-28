@@ -1,4 +1,5 @@
-import { motion } from 'motion/react';
+import { useRef } from 'react';
+import { motion, useScroll, useTransform } from 'motion/react';
 import styles from './DailyPage.module.css';
 
 interface DailyItem {
@@ -100,22 +101,41 @@ const dailyItems: DailyItem[] = [
   },
 ];
 
+function ParallaxImage({ src, index }: { src: string; index: number }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ['start end', 'end start'],
+  });
+
+  const y = useTransform(scrollYProgress, [0, 1], ['-5%', '5%']);
+
+  return (
+    <motion.div
+      ref={ref}
+      className={`${styles.card} ${styles.imageCard}`}
+      initial={{ opacity: 0, y: 40 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{
+        duration: 0.7,
+        delay: 0.05 * Math.min(index, 12),
+        ease: [0.25, 0.1, 0.25, 1],
+      }}
+    >
+      <motion.img
+        src={src}
+        alt=""
+        className={styles.cardImage}
+        loading="lazy"
+        style={{ y }}
+      />
+    </motion.div>
+  );
+}
+
 function DailyCard({ item, index }: { item: DailyItem; index: number }) {
   if (item.type === 'image') {
-    return (
-      <motion.div
-        className={`${styles.card} ${styles.imageCard}`}
-        initial={{ opacity: 0, y: 40 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{
-          duration: 0.7,
-          delay: 0.05 * Math.min(index, 12),
-          ease: [0.25, 0.1, 0.25, 1],
-        }}
-      >
-        <img src={item.image} alt="" className={styles.cardImage} loading="lazy" />
-      </motion.div>
-    );
+    return <ParallaxImage src={item.image!} index={index} />;
   }
 
   if (item.type === 'quote') {
