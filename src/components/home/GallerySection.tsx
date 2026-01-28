@@ -46,8 +46,8 @@ export function GallerySection() {
             <motion.div
               className={styles.imgLeftTop}
               style={{ y: y1 }}
-              initial={{ opacity: 0, y: 30 }}
-              animate={isVisible ? { opacity: 1, y: 0 } : {}}
+              initial={{ opacity: 0 }}
+              animate={isVisible ? { opacity: 1 } : {}}
               transition={{ duration: 0.7, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
             >
               <motion.img
@@ -61,8 +61,8 @@ export function GallerySection() {
             <motion.div
               className={styles.imgLeftBottom}
               style={{ y: y2 }}
-              initial={{ opacity: 0, y: 30 }}
-              animate={isVisible ? { opacity: 1, y: 0 } : {}}
+              initial={{ opacity: 0 }}
+              animate={isVisible ? { opacity: 1 } : {}}
               transition={{ duration: 0.7, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
             >
               <motion.img
@@ -79,8 +79,8 @@ export function GallerySection() {
             <motion.div
               className={styles.imgCenter}
               style={{ y: y3 }}
-              initial={{ opacity: 0, y: 30 }}
-              animate={isVisible ? { opacity: 1, y: 0 } : {}}
+              initial={{ opacity: 0 }}
+              animate={isVisible ? { opacity: 1 } : {}}
               transition={{ duration: 0.7, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
             >
               <motion.img
@@ -130,8 +130,8 @@ export function GallerySection() {
             <motion.div
               className={styles.imgRightTop}
               style={{ y: y4 }}
-              initial={{ opacity: 0, y: 30 }}
-              animate={isVisible ? { opacity: 1, y: 0 } : {}}
+              initial={{ opacity: 0 }}
+              animate={isVisible ? { opacity: 1 } : {}}
               transition={{ duration: 0.7, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
             >
               <motion.img
@@ -145,8 +145,8 @@ export function GallerySection() {
             <motion.div
               className={styles.imgRightBottom}
               style={{ y: y1 }}
-              initial={{ opacity: 0, y: 30 }}
-              animate={isVisible ? { opacity: 1, y: 0 } : {}}
+              initial={{ opacity: 0 }}
+              animate={isVisible ? { opacity: 1 } : {}}
               transition={{ duration: 0.7, delay: 0.25, ease: [0.16, 1, 0.3, 1] }}
             >
               <motion.img
