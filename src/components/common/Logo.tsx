@@ -10,7 +10,7 @@ export function Logo({ variant = 'default', size = 'md' }: LogoProps) {
   return (
     <Link to="/" className={`${styles.logo} ${styles[variant]} ${styles[size]}`}>
       <img
-        src="/logos/balance_3.png"
+        src="/logos/balance_5.png"
         alt="Balance Coffee"
         className={styles.logoImage}
       />
