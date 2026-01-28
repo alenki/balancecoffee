@@ -12,6 +12,7 @@ export const menuData: MenuCategory[] = [
       {
         id: 'espresso',
         name: 'Эспрессо',
+        description: 'Плотный, насыщенный, с бархатной крема',
         price: 120,
         image: placeholder,
         isPopular: true,
@@ -28,6 +29,7 @@ export const menuData: MenuCategory[] = [
       {
         id: 'cappuccino',
         name: 'Капучино',
+        description: 'Мягкий, сливочный, идеальный баланс',
         priceVariants: [
           { size: '250 мл', price: 180 },
           { size: '350 мл', price: 220 },
@@ -53,6 +55,7 @@ export const menuData: MenuCategory[] = [
       {
         id: 'raf',
         name: 'Раф',
+        description: 'Сливочный, ванильный, с нежной пеной',
         priceVariants: [
           { size: '300 мл', price: 250 },
           { size: '400 мл', price: 300 },
@@ -257,7 +260,7 @@ export const menuData: MenuCategory[] = [
       {
         id: 'caesar',
         name: 'Цезарь с курицей',
-        description: 'Романо, курица гриль, пармезан, гренки',
+        description: 'Романо, курица-гриль, пармезан, гренки',
         price: 380,
         image: placeholder,
         isPopular: true,
