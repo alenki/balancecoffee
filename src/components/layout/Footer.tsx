@@ -52,7 +52,47 @@ export function Footer() {
       {/* ── Triptych Panels ── */}
       <div className={styles.container}>
         <div className={styles.triptych}>
-          <AnimatedSection className={styles.panel} delay={0}>
+          <AnimatedSection className={`${styles.panel} ${styles.panelCompact}`} delay={0}>
+            <span className={styles.panelLabel}>География</span>
+            <h3 className={styles.panelHeading}>Наши<br />кофейни</h3>
+            <div className={styles.panelContent}>
+              <div className={styles.cityGrid}>
+                {cities.map((city) => (
+                  <div key={city.id} className={styles.cityCard}>
+                    <span className={styles.cityCardCount}>{city.locations.length}</span>
+                    <span className={styles.cityCardName}>{city.name}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </AnimatedSection>
+
+          <AnimatedSection className={styles.panel} delay={0.1}>
+            <span className={styles.panelLabel}>Навигация</span>
+            <h3 className={styles.panelHeading}>Наши<br />страницы</h3>
+            <nav className={styles.panelContent}>
+              <Link to="/" className={styles.navLink}>
+                <span>Главная</span>
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <path d="M6 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </Link>
+              <Link to="/menu" className={styles.navLink}>
+                <span>Меню</span>
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <path d="M6 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </Link>
+              <Link to="/daily" className={styles.navLink}>
+                <span>Daily</span>
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <path d="M6 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </Link>
+            </nav>
+          </AnimatedSection>
+
+          <AnimatedSection className={styles.panel} delay={0.2}>
             <span className={styles.panelLabel}>Контакты</span>
             <h3 className={styles.panelHeading}>Свяжитесь<br />с нами</h3>
             <div className={styles.panelContent}>
@@ -82,52 +122,6 @@ export function Footer() {
                 <path d="M8 4.5V8L10.5 10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
               </svg>
               <span>{contactInfo.deliveryHours.start} — {contactInfo.deliveryHours.end}</span>
-            </div>
-          </AnimatedSection>
-
-          <AnimatedSection className={styles.panel} delay={0.1}>
-            <span className={styles.panelLabel}>Навигация</span>
-            <h3 className={styles.panelHeading}>Наши<br />страницы</h3>
-            <nav className={styles.panelContent}>
-              <Link to="/" className={styles.navLink}>
-                <span>Главная</span>
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                  <path d="M6 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </Link>
-              <Link to="/menu" className={styles.navLink}>
-                <span>Меню</span>
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                  <path d="M6 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </Link>
-              <Link to="/daily" className={styles.navLink}>
-                <span>Daily</span>
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                  <path d="M6 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </Link>
-            </nav>
-          </AnimatedSection>
-
-          <AnimatedSection className={`${styles.panel} ${styles.panelLocations}`} delay={0.2}>
-            <span className={styles.panelLabel}>География</span>
-            <h3 className={styles.panelHeading}>Наши<br />кофейни</h3>
-            <div className={styles.panelContent}>
-              <div className={styles.cityList}>
-                {cities.map((city) => (
-                  <div key={city.id} className={styles.cityItem}>
-                    <span className={styles.cityName}>{city.name}</span>
-                    <span className={styles.cityDots} />
-                    <span className={styles.cityLocationCount}>{city.locations.length}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div className={styles.panelFooter}>
-              <span className={styles.cityCount}>
-                {cities.length} городов · {cities.reduce((sum, c) => sum + c.locations.length, 0)} кофеен
-              </span>
             </div>
           </AnimatedSection>
         </div>
