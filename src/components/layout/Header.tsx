@@ -7,7 +7,6 @@ const navItems = [
   { to: '/', label: 'Главная' },
   { to: '/menu', label: 'Меню' },
   { to: '/daily', label: 'Daily' },
-  { to: '/reviews', label: 'Отзывы' },
 ] as const;
 
 type Lang = 'RU' | 'EN';
@@ -134,6 +133,15 @@ export function Header() {
               <span className={styles.navText}>Вакансии</span>
               <span className={styles.navDot} aria-hidden="true" />
             </a>
+            <NavLink
+              to="/reviews"
+              className={({ isActive }) =>
+                `${styles.navLink} ${isActive ? styles.active : ''}`
+              }
+            >
+              <span className={styles.navText}>Обратная связь</span>
+              <span className={styles.navDot} aria-hidden="true" />
+            </NavLink>
           </nav>
 
           {/* Zone 2: Logo (center) */}
@@ -245,6 +253,35 @@ export function Header() {
                 />
               </svg>
             </a>
+            <NavLink
+              to="/reviews"
+              className={({ isActive }) =>
+                `${styles.mobileNavLink} ${isActive ? styles.active : ''}`
+              }
+              onClick={closeMobileMenu}
+              style={{ transitionDelay: isMobileMenuOpen ? `${0.08 + (navItems.length + 1) * 0.06}s` : '0s' }}
+            >
+              <span className={styles.mobileNavIndex}>
+                {String(navItems.length + 2).padStart(2, '0')}
+              </span>
+              <span className={styles.mobileNavLabel}>Обратная связь</span>
+              <svg
+                className={styles.mobileNavArrow}
+                width="20"
+                height="20"
+                viewBox="0 0 20 20"
+                fill="none"
+                aria-hidden="true"
+              >
+                <path
+                  d="M4 10H16M16 10L11 5M16 10L11 15"
+                  stroke="currentColor"
+                  strokeWidth="1.25"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </NavLink>
           </nav>
 
           {/* Mobile footer area */}

@@ -37,7 +37,7 @@
   font-size: clamp(0.95rem, 2vw, 1.125rem);
   font-weight: var(--font-normal);
   color: var(--color-text-muted);
-  line-height: 1.8;
+  line-height: 1.5;
   letter-spacing: 0.01em;
   max-width: 600px;
   margin: 0 auto;
@@ -48,6 +48,7 @@
    ============================================ */
 .gridSection {
   padding: 0 var(--space-16);
+  padding-bottom: 15rem;
   width: 100%;
 }
 
