@@ -15,7 +15,14 @@
   position: relative;
   z-index: 1;
   width: 100%;
-  padding: clamp(5rem, 10vw, 8rem) var(--space-6) clamp(4rem, 8vw, 7rem);
+  padding: clamp(5rem, 10vw, 8rem) var(--space-4) clamp(4rem, 8vw, 7rem);
+}
+
+@media (min-width: 640px) {
+  .container {
+    padding-left: var(--space-6);
+    padding-right: var(--space-6);
+  }
 }
 
 @media (min-width: 768px) {
@@ -111,7 +118,8 @@
    ============================================ */
 .grid {
   display: grid;
-  gap: var(--space-6);
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-8) var(--space-4);
   margin-bottom: clamp(var(--space-12), 5vw, var(--space-16));
 }
 
@@ -150,6 +158,13 @@
   background: #c8bfb8;
   margin-bottom: var(--space-5);
   border-radius: 2px;
+}
+
+@media (max-width: 639px) {
+  .imageWrapper {
+    aspect-ratio: 3 / 4;
+    margin-bottom: var(--space-2);
+  }
 }
 
 /* Warm neutral tone tint overlays — each card gets a distinct warm tone */
@@ -199,6 +214,13 @@
   gap: var(--space-4);
 }
 
+@media (max-width: 639px) {
+  .cardInfo {
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+}
+
 .cardTextCol {
   flex: 1;
   min-width: 0;
@@ -215,6 +237,14 @@
   margin-bottom: var(--space-1);
 }
 
+@media (max-width: 639px) {
+  .cardTitle {
+    font-size: 0.72rem;
+    letter-spacing: 0.02em;
+    margin-bottom: 0;
+  }
+}
+
 .cardDescription {
   font-family: var(--font-primary);
   font-size: clamp(0.78rem, 1vw, 0.9rem);
@@ -222,6 +252,13 @@
   color: var(--color-text-muted);
   line-height: 1.45;
   letter-spacing: 0.01em;
+}
+
+@media (max-width: 639px) {
+  .cardDescription {
+    font-size: 0.7rem;
+    line-height: 1.35;
+  }
 }
 
 .cardPrice {
@@ -233,6 +270,12 @@
   white-space: nowrap;
   padding-top: 1px;
   position: relative;
+}
+
+@media (max-width: 639px) {
+  .cardPrice {
+    font-size: 0.72rem;
+  }
 }
 
 /* Subtle underline on price */
@@ -260,6 +303,15 @@
   text-transform: uppercase;
   letter-spacing: 0.1em;
   border-radius: 1px;
+}
+
+@media (max-width: 639px) {
+  .badge {
+    top: var(--space-2);
+    left: var(--space-2);
+    padding: 2px var(--space-2);
+    font-size: 0.55rem;
+  }
 }
 
 .badgeNew {
