@@ -324,6 +324,9 @@
   padding: var(--space-3);
   max-height: 340px;
   overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  pointer-events: auto;
   transform-origin: top center;
 }
 

@@ -16,6 +16,18 @@ export function ReviewsPage() {
   const sectionRef = useRef<HTMLElement>(null);
   const formRef = useRef<HTMLDivElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const dropdownListRef = useRef<HTMLDivElement>(null);
+
+  // Prevent Lenis from intercepting wheel events on the dropdown list
+  useEffect(() => {
+    const el = dropdownListRef.current;
+    if (!el) return;
+    const handleWheel = (e: WheelEvent) => {
+      e.stopPropagation();
+    };
+    el.addEventListener('wheel', handleWheel, { passive: false });
+    return () => el.removeEventListener('wheel', handleWheel);
+  });
 
   const sectionInView = useInView(sectionRef, { once: true, margin: '-40px' });
   const formInView = useInView(formRef, { once: true, margin: '-60px' });
@@ -147,6 +159,7 @@ export function ReviewsPage() {
                       <AnimatePresence>
                         {isDropdownOpen && (
                           <motion.div
+                            ref={dropdownListRef}
                             className={styles.dropdown}
                             initial={{ opacity: 0, y: -8, scaleY: 0.96 }}
                             animate={{ opacity: 1, y: 0, scaleY: 1 }}
