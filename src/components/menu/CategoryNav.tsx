@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, Fragment } from 'react';
+import { useState, useEffect, useRef, useCallback, Fragment } from 'react';
 import { menuData } from '../../data/menu';
 import { useLenisInstance } from '../../hooks/useLenis';
 import styles from './CategoryNav.module.css';
@@ -12,9 +12,19 @@ interface CategoryNavProps {
 
 export function CategoryNav({ activeCategory, onCategoryChange, onScrollStart, onScrollComplete }: CategoryNavProps) {
   const [isSticky, setIsSticky] = useState(false);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(false);
   const navRef = useRef<HTMLDivElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
   const activeButtonRef = useRef<HTMLButtonElement>(null);
   const lenis = useLenisInstance();
+
+  const updateScrollState = useCallback(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    setCanScrollLeft(el.scrollLeft > 2);
+    setCanScrollRight(el.scrollLeft < el.scrollWidth - el.clientWidth - 2);
+  }, []);
 
   useEffect(() => {
     const nav = navRef.current;
@@ -30,6 +40,19 @@ export function CategoryNav({ activeCategory, onCategoryChange, onScrollStart, o
     observer.observe(nav);
     return () => observer.disconnect();
   }, []);
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+
+    updateScrollState();
+    el.addEventListener('scroll', updateScrollState, { passive: true });
+    window.addEventListener('resize', updateScrollState);
+    return () => {
+      el.removeEventListener('scroll', updateScrollState);
+      window.removeEventListener('resize', updateScrollState);
+    };
+  }, [updateScrollState]);
 
   useEffect(() => {
     if (activeButtonRef.current) {
@@ -54,30 +77,37 @@ export function CategoryNav({ activeCategory, onCategoryChange, onScrollStart, o
       } else {
         const elementPosition = element.getBoundingClientRect().top + window.scrollY;
         window.scrollTo({ top: elementPosition - 140, behavior: 'smooth' });
-        // Fallback: unlock after a reasonable duration
         setTimeout(onScrollComplete, 1200);
       }
     }
   };
+
+  const wrapperClasses = [
+    styles.scrollWrapper,
+    canScrollLeft && styles.canScrollLeft,
+    canScrollRight && styles.canScrollRight,
+  ].filter(Boolean).join(' ');
 
   return (
     <>
       <div ref={navRef} className={styles.sentinel} />
       <nav className={`${styles.nav} ${isSticky ? styles.sticky : ''}`}>
         <div className={styles.container}>
-          <div className={styles.scrollContainer}>
-            {menuData.map((category, index) => (
-              <Fragment key={category.id}>
-                {index > 0 && <span className={styles.divider} />}
-                <button
-                  ref={activeCategory === category.id ? activeButtonRef : null}
-                  className={`${styles.tab} ${activeCategory === category.id ? styles.active : ''}`}
-                  onClick={() => handleClick(category.id)}
-                >
-                  {category.name}
-                </button>
-              </Fragment>
-            ))}
+          <div className={wrapperClasses}>
+            <div ref={scrollRef} className={styles.scrollContainer}>
+              {menuData.map((category, index) => (
+                <Fragment key={category.id}>
+                  {index > 0 && <span className={styles.divider} />}
+                  <button
+                    ref={activeCategory === category.id ? activeButtonRef : null}
+                    className={`${styles.tab} ${activeCategory === category.id ? styles.active : ''}`}
+                    onClick={() => handleClick(category.id)}
+                  >
+                    {category.name}
+                  </button>
+                </Fragment>
+              ))}
+            </div>
           </div>
         </div>
       </nav>
