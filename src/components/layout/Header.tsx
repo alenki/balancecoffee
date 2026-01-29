@@ -125,6 +125,15 @@ export function Header() {
                 <span className={styles.navDot} aria-hidden="true" />
               </NavLink>
             ))}
+            <a
+              href="https://docs.google.com/forms/d/e/1FAIpQLSc_POaT-B6XXcHm679E6L1214FlDxsUCgNGQMMXF1Ebg1RK4g/viewform"
+              className={styles.navLink}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <span className={styles.navText}>Вакансии</span>
+              <span className={styles.navDot} aria-hidden="true" />
+            </a>
           </nav>
 
           {/* Zone 2: Logo (center) */}
@@ -207,6 +216,35 @@ export function Header() {
                 </svg>
               </NavLink>
             ))}
+            <a
+              href="https://docs.google.com/forms/d/e/1FAIpQLSc_POaT-B6XXcHm679E6L1214FlDxsUCgNGQMMXF1Ebg1RK4g/viewform"
+              className={styles.mobileNavLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={closeMobileMenu}
+              style={{ transitionDelay: isMobileMenuOpen ? `${0.08 + navItems.length * 0.06}s` : '0s' }}
+            >
+              <span className={styles.mobileNavIndex}>
+                {String(navItems.length + 1).padStart(2, '0')}
+              </span>
+              <span className={styles.mobileNavLabel}>Вакансии</span>
+              <svg
+                className={styles.mobileNavArrow}
+                width="20"
+                height="20"
+                viewBox="0 0 20 20"
+                fill="none"
+                aria-hidden="true"
+              >
+                <path
+                  d="M4 10H16M16 10L11 5M16 10L11 15"
+                  stroke="currentColor"
+                  strokeWidth="1.25"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </a>
           </nav>
 
           {/* Mobile footer area */}
