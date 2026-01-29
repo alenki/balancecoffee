@@ -4,6 +4,7 @@ import { Footer } from './components/layout/Footer';
 import { HomePage } from './pages/HomePage';
 import { MenuPage } from './pages/MenuPage';
 import { DailyPage } from './pages/DailyPage';
+import { ReviewsPage } from './pages/ReviewsPage';
 import { useLenis, LenisContext } from './hooks/useLenis';
 import './index.css';
 
@@ -17,6 +18,7 @@ function AppContent() {
         <Route path="/" element={<HomePage />} />
         <Route path="/menu" element={<MenuPage />} />
         <Route path="/daily" element={<DailyPage />} />
+        <Route path="/reviews" element={<ReviewsPage />} />
       </Routes>
       <Footer />
     </LenisContext.Provider>

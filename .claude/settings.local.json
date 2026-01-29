@@ -26,7 +26,8 @@
       "mcp__playwright__browser_hover",
       "Bash(grep:*)",
       "mcp__playwright__browser_run_code",
-      "Bash(npx vite)"
+      "Bash(npx vite)",
+      "Bash(npx vite --host)"
     ]
   }
 }

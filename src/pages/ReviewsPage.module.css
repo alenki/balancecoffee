@@ -1,0 +1,634 @@
+/* ============================================
+   REVIEWS PAGE — Unified Light Editorial Layout
+   Single white section with editorial typography
+   and refined form with left-border focus accents
+   ============================================ */
+
+.page {
+  padding-top: 80px;
+  background: var(--color-bg-white);
+}
+
+/* ============================================
+   SECTION
+   ============================================ */
+.section {
+  position: relative;
+  overflow: hidden;
+  background: var(--color-bg-white);
+}
+
+/* ── Container ── */
+.container {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: clamp(3.75rem, 7.5vw, 6.5rem) var(--space-6) clamp(6rem, 12vw, 10rem);
+}
+
+@media (min-width: 768px) {
+  .container {
+    padding-left: var(--space-12);
+    padding-right: var(--space-12);
+  }
+}
+
+@media (min-width: 1200px) {
+  .container {
+    padding-left: var(--space-16);
+    padding-right: var(--space-16);
+  }
+}
+
+/* ── Corner Accent ── */
+.cornerAccent {
+  position: absolute;
+  z-index: 2;
+  font-family: var(--font-primary);
+  font-size: var(--text-xs);
+  font-weight: var(--font-medium);
+  color: var(--color-text-muted);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.cornerTL {
+  top: var(--space-8);
+  left: var(--space-8);
+}
+
+@media (max-width: 600px) {
+  .cornerAccent {
+    display: none;
+  }
+}
+
+@media (min-width: 768px) {
+  .cornerTL {
+    top: var(--space-10);
+    left: var(--space-12);
+  }
+}
+
+/* ============================================
+   EDITORIAL HEADER
+   ============================================ */
+.header {
+  text-align: center;
+  margin-bottom: clamp(var(--space-12), 6vw, var(--space-20));
+}
+
+.heroEyebrow {
+  display: block;
+  font-family: 'Playfair Display', 'Georgia', serif;
+  font-size: clamp(1rem, 2.2vw, 1.35rem);
+  font-weight: 400;
+  font-style: italic;
+  color: var(--color-text-muted);
+  letter-spacing: 0.02em;
+  line-height: 1.4;
+  margin-bottom: var(--space-3);
+}
+
+.heroTitle {
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 8vw, 6.5rem);
+  font-weight: var(--font-heavy);
+  line-height: 0.92;
+  text-transform: uppercase;
+  letter-spacing: -0.03em;
+  color: var(--color-text-dark);
+}
+
+.heroTitleItalic {
+  font-family: 'Playfair Display', 'Georgia', serif;
+  font-weight: 400;
+  font-style: italic;
+  text-transform: none;
+  letter-spacing: -0.01em;
+  font-size: 0.85em;
+  color: var(--color-primary);
+}
+
+.heroSubtitle {
+  font-family: var(--font-primary);
+  font-size: var(--text-base);
+  font-weight: var(--font-normal);
+  line-height: 1.7;
+  color: var(--color-text-muted);
+  max-width: 460px;
+  margin: var(--space-6) auto 0;
+}
+
+/* ── Divider ── */
+.divider {
+  width: 48px;
+  height: 1px;
+  background: var(--color-primary-light);
+  margin: 0 auto clamp(var(--space-10), 5vw, var(--space-16));
+  opacity: 0.5;
+}
+
+/* ============================================
+   FORM
+   ============================================ */
+.form {
+  display: flex;
+  flex-direction: column;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* ── Form Header — Editorial numbering ── */
+.formHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  margin-bottom: clamp(var(--space-10), 5vw, var(--space-16));
+}
+
+.formHeaderLabel {
+  font-family: 'Playfair Display', 'Georgia', serif;
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 400;
+  font-style: italic;
+  color: var(--color-primary);
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.formHeaderLine {
+  flex: 1;
+  height: 1px;
+  background: var(--color-border);
+}
+
+.formHeaderText {
+  font-family: var(--font-primary);
+  font-size: var(--text-xs);
+  font-weight: var(--font-medium);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-text-light);
+  flex-shrink: 0;
+}
+
+@media (max-width: 520px) {
+  .formHeaderText {
+    display: none;
+  }
+}
+
+/* ============================================
+   FIELD STACK — Vertical form layout
+   ============================================ */
+.fieldStack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+/* ── Field Group — Each row with label ── */
+.fieldGroup {
+  position: relative;
+  padding: var(--space-5) var(--space-6);
+  border-left: 1px solid var(--color-border);
+  transition: border-color 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.fieldGroupActive {
+  border-left-color: var(--color-primary);
+}
+
+.fieldGroupLarge {
+  padding-bottom: var(--space-6);
+}
+
+.fieldLabel {
+  display: block;
+  font-family: var(--font-primary);
+  font-size: var(--text-xs);
+  font-weight: var(--font-medium);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-text-light);
+  margin-bottom: var(--space-3);
+}
+
+.textareaHeader {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.charCount {
+  font-family: var(--font-primary);
+  font-size: var(--text-xs);
+  font-weight: var(--font-normal);
+  color: var(--color-text-light);
+  letter-spacing: 0.03em;
+}
+
+/* ============================================
+   FIELDS — Light theme underline inputs
+   ============================================ */
+.field {
+  width: 100%;
+  font-family: var(--font-primary);
+  font-size: var(--text-base);
+  font-weight: var(--font-normal);
+  color: var(--color-text-dark);
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--color-border);
+  border-radius: 0;
+  padding: var(--space-3) 0;
+  outline: none;
+  transition: border-color 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.field::placeholder {
+  color: var(--color-text-light);
+  font-weight: var(--font-light);
+}
+
+.field:hover {
+  border-bottom-color: var(--color-border-strong);
+}
+
+.field:focus {
+  border-bottom-color: var(--color-primary);
+}
+
+.textarea {
+  resize: vertical;
+  min-height: 140px;
+  line-height: 1.7;
+  border-bottom: none;
+}
+
+/* ============================================
+   CUSTOM SELECT
+   ============================================ */
+.selectTrigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: var(--font-primary);
+  font-size: var(--text-base);
+  font-weight: var(--font-normal);
+  color: var(--color-text-light);
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--color-border);
+  border-radius: 0;
+  padding: var(--space-3) 0;
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.selectTrigger:hover {
+  border-bottom-color: var(--color-border-strong);
+}
+
+.selectFilled {
+  color: var(--color-text-dark);
+}
+
+.selectChevron {
+  flex-shrink: 0;
+  color: var(--color-primary-light);
+}
+
+.selectValue {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ── Dropdown ── */
+.dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: var(--z-dropdown);
+  background: var(--color-bg-white);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-xl);
+  padding: var(--space-3);
+  max-height: 340px;
+  overflow-y: auto;
+  transform-origin: top center;
+}
+
+.dropdownGroup {
+  padding: var(--space-2) 0;
+}
+
+.dropdownGroup:not(:last-child) {
+  border-bottom: 1px solid var(--color-border);
+}
+
+.dropdownCity {
+  display: block;
+  font-family: var(--font-primary);
+  font-size: var(--text-xs);
+  font-weight: var(--font-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-primary-light);
+  padding: var(--space-2) var(--space-4) var(--space-1);
+}
+
+.dropdownOption {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  text-align: left;
+  font-family: var(--font-primary);
+  font-size: var(--text-sm);
+  font-weight: var(--font-normal);
+  color: var(--color-text-body);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  background: none;
+  border: none;
+}
+
+.dropdownOption:hover {
+  background: var(--color-bg-light);
+  color: var(--color-text-dark);
+}
+
+.dropdownSelected {
+  color: var(--color-primary-dark);
+  font-weight: var(--font-medium);
+  background: var(--color-primary-faded);
+}
+
+.dropdownAddress {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dropdownCheck {
+  flex-shrink: 0;
+  color: var(--color-primary);
+  margin-left: var(--space-3);
+}
+
+.dropdown::-webkit-scrollbar {
+  width: 3px;
+}
+.dropdown::-webkit-scrollbar-track {
+  background: transparent;
+}
+.dropdown::-webkit-scrollbar-thumb {
+  background: var(--color-primary-light);
+  border-radius: 2px;
+}
+
+/* ============================================
+   FORM ACTIONS
+   ============================================ */
+.formActions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-8);
+  margin-top: clamp(var(--space-10), 5vw, var(--space-16));
+  padding-top: var(--space-8);
+  border-top: 1px solid var(--color-border);
+}
+
+/* ── Submit Button ── */
+.submitBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  height: 52px;
+  padding: 0 var(--space-10);
+  font-family: var(--font-primary);
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-white);
+  background: var(--color-primary);
+  border: none;
+  border-radius: 0;
+  cursor: pointer;
+  overflow: hidden;
+  position: relative;
+  transition:
+    background-color 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.submitBtn:hover:not(:disabled) {
+  background: var(--color-primary-dark);
+  transform: translateY(-1px);
+}
+
+.submitBtn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.submitBtn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.submitText {
+  position: relative;
+  z-index: 1;
+}
+
+.submitArrow {
+  flex-shrink: 0;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.submitBtn:hover:not(:disabled) .submitArrow {
+  transform: translateX(3px);
+}
+
+/* ── Alternative Contact ── */
+.altContact {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--space-2);
+}
+
+.altContactLabel {
+  font-family: var(--font-primary);
+  font-size: var(--text-xs);
+  font-weight: var(--font-normal);
+  color: var(--color-text-light);
+  letter-spacing: 0.03em;
+}
+
+.altContactLinks {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.contactLink {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-primary);
+  font-size: var(--text-sm);
+  font-weight: var(--font-normal);
+  color: var(--color-text-muted);
+  text-decoration: none;
+  transition: color 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.contactLink:hover {
+  color: var(--color-primary-dark);
+}
+
+.altContactDot {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--color-border-strong);
+}
+
+/* ============================================
+   SUCCESS STATE
+   ============================================ */
+.success {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: var(--space-8) 0;
+}
+
+.successIcon {
+  margin-bottom: var(--space-8);
+}
+
+.successEyebrow {
+  display: block;
+  font-family: var(--font-primary);
+  font-size: var(--text-xs);
+  font-weight: var(--font-medium);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  margin-bottom: var(--space-4);
+}
+
+.successTitle {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: var(--font-heavy);
+  line-height: 1.0;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  color: var(--color-text-dark);
+  margin-bottom: var(--space-6);
+}
+
+.successTitle em {
+  font-family: 'Playfair Display', 'Georgia', serif;
+  font-weight: 400;
+  font-style: italic;
+  text-transform: none;
+  letter-spacing: -0.01em;
+  color: var(--color-primary);
+  font-size: 0.85em;
+}
+
+.successText {
+  font-family: var(--font-primary);
+  font-size: var(--text-base);
+  font-weight: var(--font-normal);
+  line-height: 1.7;
+  color: var(--color-text-muted);
+  max-width: 380px;
+  margin-bottom: var(--space-10);
+}
+
+.successBtn {
+  display: inline-flex;
+  align-items: center;
+  height: 48px;
+  padding: 0 var(--space-8);
+  font-family: var(--font-primary);
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-primary);
+  background: transparent;
+  border: 1px solid var(--color-primary);
+  border-radius: 0;
+  cursor: pointer;
+  transition:
+    color 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+    background-color 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.successBtn:hover {
+  color: var(--color-white);
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 600px) {
+  .formActions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-6);
+  }
+
+  .submitBtn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .altContact {
+    align-items: center;
+  }
+
+  .formHeader {
+    gap: var(--space-3);
+  }
+}
+
+/* ============================================
+   REDUCED MOTION
+   ============================================ */
+@media (prefers-reduced-motion: reduce) {
+  .submitBtn,
+  .contactLink,
+  .field,
+  .selectTrigger,
+  .dropdownOption,
+  .successBtn,
+  .fieldGroup {
+    transition: none;
+  }
+}

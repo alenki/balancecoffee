@@ -7,6 +7,7 @@ const navItems = [
   { to: '/', label: 'Главная' },
   { to: '/menu', label: 'Меню' },
   { to: '/daily', label: 'Daily' },
+  { to: '/reviews', label: 'Отзывы' },
 ] as const;
 
 type Lang = 'RU' | 'EN';
