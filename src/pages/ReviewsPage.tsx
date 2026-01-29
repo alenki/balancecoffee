@@ -74,38 +74,48 @@ export function ReviewsPage() {
     <main className={styles.page}>
       <section className={styles.section} ref={sectionRef}>
         <div className={styles.container}>
-          {/* Editorial Header */}
-          <div className={styles.header}>
-            <motion.span
-              className={styles.heroEyebrow}
-              initial={{ opacity: 0, y: 10 }}
-              animate={sectionInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.7, ease }}
-            >
-              Ваше мнение важно
-            </motion.span>
+          {/* Editorial Header — hidden after submission */}
+          <AnimatePresence>
+            {!isSubmitted && (
+              <motion.div
+                className={styles.header}
+                initial={{ opacity: 0, y: 24 }}
+                animate={sectionInView ? { opacity: 1, y: 0 } : {}}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.6, ease }}
+              >
+                <motion.span
+                  className={styles.heroEyebrow}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={sectionInView ? { opacity: 1, y: 0 } : {}}
+                  transition={{ duration: 0.7, ease }}
+                >
+                  Ваше мнение важно
+                </motion.span>
 
-            <motion.h1
-              className={styles.heroTitle}
-              initial={{ opacity: 0, y: 24 }}
-              animate={sectionInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.9, delay: 0.08, ease }}
-            >
-              Оставить
-              <br />
-              <span className={styles.heroTitleItalic}>отзыв</span>
-            </motion.h1>
+                <motion.h1
+                  className={styles.heroTitle}
+                  initial={{ opacity: 0, y: 24 }}
+                  animate={sectionInView ? { opacity: 1, y: 0 } : {}}
+                  transition={{ duration: 0.9, delay: 0.08, ease }}
+                >
+                  Оставить
+                  <br />
+                  <span className={styles.heroTitleItalic}>отзыв</span>
+                </motion.h1>
 
-            <motion.p
-              className={styles.heroSubtitle}
-              initial={{ opacity: 0, y: 14 }}
-              animate={sectionInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.7, delay: 0.18, ease }}
-            >
-              Расскажите о вашем опыте — каждый отзыв помогает нам
-              становиться лучше и создавать для вас идеальный кофе
-            </motion.p>
-          </div>
+                <motion.p
+                  className={styles.heroSubtitle}
+                  initial={{ opacity: 0, y: 14 }}
+                  animate={sectionInView ? { opacity: 1, y: 0 } : {}}
+                  transition={{ duration: 0.7, delay: 0.18, ease }}
+                >
+                  Расскажите о вашем опыте — каждый отзыв помогает нам
+                  становиться лучше и создавать для вас идеальный кофе
+                </motion.p>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           {/* Form / Success */}
           <div ref={formRef}>
@@ -284,30 +294,6 @@ export function ReviewsPage() {
                   exit={{ opacity: 0, scale: 0.96 }}
                   transition={{ duration: 0.7, ease }}
                 >
-                  <div className={styles.successIcon}>
-                    <svg width="56" height="56" viewBox="0 0 56 56" fill="none">
-                      <circle cx="28" cy="28" r="26" stroke="var(--color-primary)" strokeWidth="1" opacity="0.4" />
-                      <circle cx="28" cy="28" r="20" stroke="var(--color-primary)" strokeWidth="1" opacity="0.2" />
-                      <motion.path
-                        d="M20 28.5L25.5 34L36 22"
-                        stroke="var(--color-primary)" strokeWidth="2"
-                        strokeLinecap="round" strokeLinejoin="round"
-                        initial={{ pathLength: 0 }}
-                        animate={{ pathLength: 1 }}
-                        transition={{ duration: 0.6, delay: 0.3, ease }}
-                      />
-                    </svg>
-                  </div>
-
-                  <motion.span
-                    className={styles.successEyebrow}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.4, duration: 0.5 }}
-                  >
-                    Отзыв отправлен
-                  </motion.span>
-
                   <motion.h2
                     className={styles.successTitle}
                     initial={{ opacity: 0, y: 10 }}
