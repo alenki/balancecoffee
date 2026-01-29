@@ -4,14 +4,14 @@ import { Footer } from './components/layout/Footer';
 import { HomePage } from './pages/HomePage';
 import { MenuPage } from './pages/MenuPage';
 import { DailyPage } from './pages/DailyPage';
-import { useLenis } from './hooks/useLenis';
+import { useLenis, LenisContext } from './hooks/useLenis';
 import './index.css';
 
 function AppContent() {
-  useLenis();
+  const lenis = useLenis();
 
   return (
-    <>
+    <LenisContext.Provider value={lenis}>
       <Header />
       <Routes>
         <Route path="/" element={<HomePage />} />
@@ -19,7 +19,7 @@ function AppContent() {
         <Route path="/daily" element={<DailyPage />} />
       </Routes>
       <Footer />
-    </>
+    </LenisContext.Provider>
   );
 }
 
