@@ -31,8 +31,15 @@ export function Header() {
     setIsVisible(true);
   }, []);
 
-  // Scroll-based hide/show
+  const isMenuPage = location.pathname === '/menu';
+
+  // Scroll-based hide/show (disabled on menu page)
   useEffect(() => {
+    if (isMenuPage) {
+      setIsHiddenByScroll(false);
+      return;
+    }
+
     const onScroll = () => {
       const currentY = window.scrollY;
       const delta = currentY - lastScrollY.current;
@@ -79,7 +86,7 @@ export function Header() {
       window.removeEventListener('scroll', onScroll);
       if (hideTimer.current) clearTimeout(hideTimer.current);
     };
-  }, []);
+  }, [isMenuPage]);
 
   useEffect(() => {
     if (isMobileMenuOpen) {
