@@ -168,23 +168,24 @@
 .bottomRightLogo {
   position: absolute;
   z-index: 3;
-  bottom: var(--space-10);
+  top: var(--space-6);
   right: var(--space-6);
-  height: clamp(28px, 5vw, 48px);
+  height: clamp(24px, 4vw, 36px);
   width: auto;
   opacity: 0.7;
 }
 
 @media (min-width: 768px) {
   .bottomRightLogo {
-    bottom: var(--space-14);
+    top: var(--space-10);
     right: var(--space-10);
-    height: clamp(32px, 4vw, 52px);
+    height: clamp(28px, 3.5vw, 44px);
   }
 }
 
 @media (min-width: 1200px) {
   .bottomRightLogo {
+    top: auto;
     bottom: var(--space-20);
     right: var(--space-12);
     height: clamp(36px, 3.5vw, 56px);
@@ -205,6 +206,7 @@
   bottom: var(--space-10);
   left: var(--space-6);
   right: var(--space-6);
+  max-width: 85%;
 }
 
 @media (min-width: 768px) {
@@ -212,7 +214,7 @@
     bottom: var(--space-14);
     left: var(--space-10);
     right: auto;
-    max-width: 75%;
+    max-width: 70%;
   }
 }
 
@@ -220,7 +222,7 @@
   .headlineBlock {
     bottom: var(--space-20);
     left: var(--space-12);
-    max-width: 70%;
+    max-width: 65%;
   }
 }
 
@@ -240,7 +242,7 @@
 .headlineBold {
   display: block;
   font-family: var(--font-primary);
-  font-size: clamp(2.8rem, 9vw, 6.5rem);
+  font-size: clamp(2.2rem, 9vw, 6.5rem);
   font-weight: var(--font-heavy);
   line-height: 1.0;
   color: rgba(255, 255, 255, 0.95);
@@ -252,7 +254,7 @@
 .headlineSerif {
   display: block;
   font-family: 'Playfair Display', 'Georgia', serif;
-  font-size: clamp(2.4rem, 7.5vw, 5.5rem);
+  font-size: clamp(1.8rem, 7.5vw, 5.5rem);
   font-weight: 400;
   font-style: italic;
   line-height: 1.15;
