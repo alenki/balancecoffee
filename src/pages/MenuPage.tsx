@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { motion } from 'motion/react';
 import { CategoryNav } from '../components/menu/CategoryNav';
 import { MenuCategory } from '../components/menu/MenuCategory';
@@ -10,11 +10,15 @@ const EASE = [0.16, 1, 0.3, 1] as const;
 
 export function MenuPage() {
   const [activeCategory, setActiveCategory] = useState(menuData[0].id);
+  const programmaticScrollRef = useRef(false);
+  const lockTimeoutRef = useRef<ReturnType<typeof setTimeout>>(undefined);
 
   const totalItems = menuData.reduce((sum, cat) => sum + cat.items.length, 0);
 
   useEffect(() => {
     const handleScroll = () => {
+      if (programmaticScrollRef.current) return;
+
       const scrollPosition = window.scrollY + 200;
 
       for (const category of menuData) {
@@ -31,6 +35,21 @@ export function MenuPage() {
 
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const lockScrollDetection = useCallback(() => {
+    programmaticScrollRef.current = true;
+    clearTimeout(lockTimeoutRef.current);
+    // Safety fallback: unlock after Lenis duration (1.2s) + buffer,
+    // in case onComplete doesn't fire (e.g. animation interrupted by user scroll)
+    lockTimeoutRef.current = setTimeout(() => {
+      programmaticScrollRef.current = false;
+    }, 1500);
+  }, []);
+
+  const unlockScrollDetection = useCallback(() => {
+    clearTimeout(lockTimeoutRef.current);
+    programmaticScrollRef.current = false;
   }, []);
 
   const handleCategoryChange = useCallback((categoryId: string) => {
@@ -91,6 +110,8 @@ export function MenuPage() {
       <CategoryNav
         activeCategory={activeCategory}
         onCategoryChange={handleCategoryChange}
+        onScrollStart={lockScrollDetection}
+        onScrollComplete={unlockScrollDetection}
       />
 
       {/* Menu Content */}

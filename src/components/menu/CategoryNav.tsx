@@ -1,16 +1,20 @@
 import { useState, useEffect, useRef, Fragment } from 'react';
 import { menuData } from '../../data/menu';
+import { useLenisInstance } from '../../hooks/useLenis';
 import styles from './CategoryNav.module.css';
 
 interface CategoryNavProps {
   activeCategory: string;
   onCategoryChange: (categoryId: string) => void;
+  onScrollStart: () => void;
+  onScrollComplete: () => void;
 }
 
-export function CategoryNav({ activeCategory, onCategoryChange }: CategoryNavProps) {
+export function CategoryNav({ activeCategory, onCategoryChange, onScrollStart, onScrollComplete }: CategoryNavProps) {
   const [isSticky, setIsSticky] = useState(false);
   const navRef = useRef<HTMLDivElement>(null);
   const activeButtonRef = useRef<HTMLButtonElement>(null);
+  const lenis = useLenisInstance();
 
   useEffect(() => {
     const nav = navRef.current;
@@ -41,12 +45,18 @@ export function CategoryNav({ activeCategory, onCategoryChange }: CategoryNavPro
     onCategoryChange(categoryId);
     const element = document.getElementById(`category-${categoryId}`);
     if (element) {
-      const offset = 140;
-      const elementPosition = element.getBoundingClientRect().top + window.scrollY;
-      window.scrollTo({
-        top: elementPosition - offset,
-        behavior: 'smooth',
-      });
+      onScrollStart();
+      if (lenis) {
+        lenis.scrollTo(element, {
+          offset: -140,
+          onComplete: onScrollComplete,
+        });
+      } else {
+        const elementPosition = element.getBoundingClientRect().top + window.scrollY;
+        window.scrollTo({ top: elementPosition - 140, behavior: 'smooth' });
+        // Fallback: unlock after a reasonable duration
+        setTimeout(onScrollComplete, 1200);
+      }
     }
   };
 

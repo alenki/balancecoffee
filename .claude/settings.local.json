@@ -27,7 +27,8 @@
       "Bash(grep:*)",
       "mcp__playwright__browser_run_code",
       "Bash(npx vite)",
-      "Bash(npx vite --host)"
+      "Bash(npx vite --host)",
+      "Bash(start /b npx vite:*)"
     ]
   }
 }
