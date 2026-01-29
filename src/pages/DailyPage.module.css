@@ -70,12 +70,12 @@
 
 @media (max-width: 640px) {
   .gridSection {
-    padding: 0 var(--space-12);
+    padding: 0 var(--space-4);
   }
 
   .masonry {
-    column-count: 1;
-    column-gap: var(--space-12);
+    column-count: 2;
+    column-gap: var(--space-4);
   }
 }
 
@@ -92,6 +92,12 @@
 @media (max-width: 1024px) {
   .card {
     margin-bottom: var(--space-12);
+  }
+}
+
+@media (max-width: 640px) {
+  .card {
+    margin-bottom: var(--space-8);
   }
 }
 
@@ -124,6 +130,13 @@
   min-height: 280px;
 }
 
+@media (max-width: 640px) {
+  .quoteCard {
+    padding: var(--space-6) var(--space-4);
+    min-height: 180px;
+  }
+}
+
 .quoteContent {
   text-align: center;
   max-width: 90%;
@@ -140,6 +153,13 @@
   opacity: 0.6;
 }
 
+@media (max-width: 640px) {
+  .quoteMark {
+    font-size: 2.5rem;
+    margin-bottom: var(--space-2);
+  }
+}
+
 .quoteText {
   font-family: 'Playfair Display', 'Georgia', serif;
   font-size: clamp(1.125rem, 2.5vw, 1.5rem);
@@ -148,6 +168,13 @@
   color: var(--color-text-dark);
   line-height: 1.6;
   letter-spacing: 0.01em;
+}
+
+@media (max-width: 640px) {
+  .quoteText {
+    font-size: 0.8rem;
+    line-height: 1.4;
+  }
 }
 
 /* ============================================
@@ -161,6 +188,13 @@
   justify-content: flex-end;
   padding: var(--space-8);
   min-height: 320px;
+}
+
+@media (max-width: 640px) {
+  .musicCard {
+    padding: var(--space-4);
+    min-height: 200px;
+  }
 }
 
 .musicContent {
@@ -195,6 +229,25 @@
   line-height: 1.4;
   color: var(--color-text-on-dark);
   margin-bottom: var(--space-4);
+}
+
+@media (max-width: 640px) {
+  .musicLabel {
+    font-size: 0.6rem;
+  }
+
+  .musicArtist {
+    font-size: 0.7rem;
+  }
+
+  .musicQuote {
+    font-size: 0.75rem;
+    margin-bottom: var(--space-2);
+  }
+
+  .spotifyLink {
+    font-size: 0.6rem;
+  }
 }
 
 .spotifyLink {
