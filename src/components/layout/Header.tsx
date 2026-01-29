@@ -317,11 +317,6 @@ export function Header() {
                   EN
                 </button>
               </div>
-              <div className={styles.mobileTagline}>
-                <span className={styles.mobileTaglineText}>Specialty Coffee</span>
-                <span className={styles.mobileTaglineSeparator} aria-hidden="true" />
-                <span className={styles.mobileTaglineText}>Est. 2021</span>
-              </div>
             </div>
           </div>
         </div>

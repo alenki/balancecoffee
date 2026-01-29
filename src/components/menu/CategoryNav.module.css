@@ -62,48 +62,9 @@
   display: none;
 }
 
-/* ── Fade edges to hint at scrollability ── */
+/* ── Scroll wrapper ── */
 .scrollWrapper {
   position: relative;
-}
-
-.scrollWrapper::before,
-.scrollWrapper::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 48px;
-  pointer-events: none;
-  z-index: 2;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.scrollWrapper::before {
-  left: 0;
-  background: linear-gradient(to right, var(--color-bg-white) 20%, transparent 100%);
-}
-
-.scrollWrapper::after {
-  right: 0;
-  background: linear-gradient(to left, var(--color-bg-white) 20%, transparent 100%);
-}
-
-.scrollWrapper.canScrollLeft::before {
-  opacity: 1;
-}
-
-.scrollWrapper.canScrollRight::after {
-  opacity: 1;
-}
-
-.sticky .scrollWrapper::before {
-  background: linear-gradient(to right, rgba(255, 255, 255, 0.92) 20%, transparent 100%);
-}
-
-.sticky .scrollWrapper::after {
-  background: linear-gradient(to left, rgba(255, 255, 255, 0.92) 20%, transparent 100%);
 }
 
 /* ── Tab — Text link with underline ── */
