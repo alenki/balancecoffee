@@ -2,10 +2,12 @@ import { useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, useScroll, useTransform } from 'motion/react';
 import { useScrollAnimation } from '../../hooks/useScrollAnimation';
+import { useLanguage } from '../../context/LanguageContext';
 import styles from './GallerySection.module.css';
 
 export function GallerySection() {
   const { ref, isVisible } = useScrollAnimation();
+  const { t } = useLanguage();
   const sectionRef = useRef<HTMLDivElement>(null);
 
   const { scrollYProgress } = useScroll({
@@ -118,9 +120,9 @@ export function GallerySection() {
                 animate={isVisible ? { opacity: 1, y: 0 } : {}}
                 transition={{ duration: 0.7, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
               >
-                <span className={styles.manifestoLine}>Мы за</span>
-                <span className={styles.manifestoLineAccent}>уникальную</span>
-                <span className={styles.manifestoLine}>эстетику</span>
+                <span className={styles.manifestoLine}>{t('gallery.manifesto1')}</span>
+                <span className={styles.manifestoLineAccent}>{t('gallery.manifesto2')}</span>
+                <span className={styles.manifestoLine}>{t('gallery.manifesto3')}</span>
               </motion.h2>
 
               <motion.p
@@ -129,8 +131,9 @@ export function GallerySection() {
                 animate={isVisible ? { opacity: 1, y: 0 } : {}}
                 transition={{ duration: 0.6, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
               >
-                Мы за красивое и хорошее, творить и делиться.<br/>
-                Мы за уникальную эстетику.
+                {t('gallery.text').split('\n').map((line, i) => (
+                  <span key={i}>{line}{i === 0 && <br/>}</span>
+                ))}
               </motion.p>
 
               <motion.div

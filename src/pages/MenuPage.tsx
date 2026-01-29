@@ -2,13 +2,16 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { motion } from 'motion/react';
 import { CategoryNav } from '../components/menu/CategoryNav';
 import { MenuCategory } from '../components/menu/MenuCategory';
-import { menuData } from '../data/menu';
+import { getMenuData } from '../data/menu';
+import { useLanguage } from '../context/LanguageContext';
 import { contactInfo } from '../data/locations';
 import styles from './MenuPage.module.css';
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
 export function MenuPage() {
+  const { lang, t } = useLanguage();
+  const menuData = getMenuData(lang);
   const [activeCategory, setActiveCategory] = useState(menuData[0].id);
   const programmaticScrollRef = useRef(false);
   const lockTimeoutRef = useRef<ReturnType<typeof setTimeout>>(undefined);
@@ -35,7 +38,7 @@ export function MenuPage() {
 
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [menuData]);
 
   const lockScrollDetection = useCallback(() => {
     programmaticScrollRef.current = true;
@@ -67,7 +70,7 @@ export function MenuPage() {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.6, delay: 0.3, ease: EASE }}
         >
-          {totalItems} позиций
+          {totalItems} {t('menuPage.items')}
         </motion.div>
 
         <div className={styles.heroContainer}>
@@ -77,7 +80,7 @@ export function MenuPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, ease: EASE }}
           >
-            <h1 className={styles.headerBold}>Меню</h1>
+            <h1 className={styles.headerBold}>{t('menuPage.title')}</h1>
           </motion.div>
 
           <motion.div
@@ -91,12 +94,12 @@ export function MenuPage() {
                 <circle cx="12" cy="12" r="9"/>
                 <path d="M12 6v6l4 2"/>
               </svg>
-              <span>Доставка {contactInfo.deliveryHours.start}–{contactInfo.deliveryHours.end}</span>
+              <span>{t('menuPage.delivery')} {contactInfo.deliveryHours.start}–{contactInfo.deliveryHours.end}</span>
             </div>
             <span className={styles.deliveryDot} />
             <div className={styles.deliveryActions}>
               <a href={contactInfo.phoneHref} className={styles.deliveryLink} target="_blank" rel="noopener noreferrer">
-                Позвонить
+                {t('menuPage.call')}
               </a>
               <a href={contactInfo.telegram} className={styles.deliveryLink} target="_blank" rel="noopener noreferrer">
                 Telegram
@@ -112,6 +115,7 @@ export function MenuPage() {
         onCategoryChange={handleCategoryChange}
         onScrollStart={lockScrollDetection}
         onScrollComplete={unlockScrollDetection}
+        menuData={menuData}
       />
 
       {/* Menu Content */}
@@ -144,7 +148,7 @@ export function MenuPage() {
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.2, ease: EASE }}
             >
-              Свяжитесь любым удобным способом —
+              {t('menuPage.ctaItalic')}
             </motion.span>
             <motion.h2
               className={styles.ctaTitle}
@@ -153,7 +157,7 @@ export function MenuPage() {
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.3, ease: EASE }}
             >
-              Готовы сделать заказ?
+              {t('menuPage.ctaTitle')}
             </motion.h2>
             <motion.div
               className={styles.ctaActions}

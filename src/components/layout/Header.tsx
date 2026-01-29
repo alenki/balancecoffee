@@ -1,15 +1,8 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { Logo } from '../common/Logo';
+import { useLanguage } from '../../context/LanguageContext';
 import styles from './Header.module.css';
-
-const navItems = [
-  { to: '/', label: 'Главная' },
-  { to: '/menu', label: 'Меню' },
-  { to: '/daily', label: 'Daily' },
-] as const;
-
-type Lang = 'RU' | 'EN';
 
 /** Minimum scroll distance before triggering hide (prevents jitter) */
 const SCROLL_THRESHOLD = 8;
@@ -20,7 +13,7 @@ export function Header() {
   const [isVisible, setIsVisible] = useState(false);
   const [isHiddenByScroll, setIsHiddenByScroll] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [lang, setLang] = useState<Lang>('RU');
+  const { lang, setLang, t } = useLanguage();
   const location = useLocation();
 
   const lastScrollY = useRef(0);
@@ -108,6 +101,14 @@ export function Header() {
     setIsMobileMenuOpen(false);
   }, []);
 
+  const navItems = [
+    { to: '/', label: t('nav.home') },
+    { to: '/menu', label: t('nav.menu') },
+    { to: '/daily', label: t('nav.daily') },
+  ];
+
+  const langUpper = lang.toUpperCase();
+
   return (
     <>
       <header
@@ -137,7 +138,7 @@ export function Header() {
               target="_blank"
               rel="noopener noreferrer"
             >
-              <span className={styles.navText}>Вакансии</span>
+              <span className={styles.navText}>{t('nav.vacancies')}</span>
               <span className={styles.navDot} aria-hidden="true" />
             </a>
             <NavLink
@@ -146,7 +147,7 @@ export function Header() {
                 `${styles.navLink} ${isActive ? styles.active : ''}`
               }
             >
-              <span className={styles.navText}>Обратная связь</span>
+              <span className={styles.navText}>{t('nav.feedback')}</span>
               <span className={styles.navDot} aria-hidden="true" />
             </NavLink>
           </nav>
@@ -160,19 +161,19 @@ export function Header() {
           <div className={styles.actions}>
             <div className={`${styles.langSwitch} ${styles.desktopOnly}`} role="radiogroup" aria-label="Language">
               <button
-                className={`${styles.langOption} ${lang === 'RU' ? styles.langActive : ''}`}
-                onClick={() => setLang('RU')}
+                className={`${styles.langOption} ${langUpper === 'RU' ? styles.langActive : ''}`}
+                onClick={() => setLang('ru')}
                 role="radio"
-                aria-checked={lang === 'RU'}
+                aria-checked={langUpper === 'RU'}
               >
                 RU
               </button>
               <span className={styles.langDivider} aria-hidden="true" />
               <button
-                className={`${styles.langOption} ${lang === 'EN' ? styles.langActive : ''}`}
-                onClick={() => setLang('EN')}
+                className={`${styles.langOption} ${langUpper === 'EN' ? styles.langActive : ''}`}
+                onClick={() => setLang('en')}
                 role="radio"
-                aria-checked={lang === 'EN'}
+                aria-checked={langUpper === 'EN'}
               >
                 EN
               </button>
@@ -181,7 +182,7 @@ export function Header() {
             <button
               className={`${styles.menuButton} ${isMobileMenuOpen ? styles.open : ''}`}
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              aria-label={isMobileMenuOpen ? 'Закрыть меню' : 'Открыть меню'}
+              aria-label={isMobileMenuOpen ? t('nav.closeMenu') : t('nav.openMenu')}
               aria-expanded={isMobileMenuOpen}
             >
               <span className={styles.menuLine} />
@@ -242,7 +243,7 @@ export function Header() {
               <span className={styles.mobileNavIndex}>
                 {String(navItems.length + 1).padStart(2, '0')}
               </span>
-              <span className={styles.mobileNavLabel}>Вакансии</span>
+              <span className={styles.mobileNavLabel}>{t('nav.vacancies')}</span>
               <svg
                 className={styles.mobileNavArrow}
                 width="20"
@@ -271,7 +272,7 @@ export function Header() {
               <span className={styles.mobileNavIndex}>
                 {String(navItems.length + 2).padStart(2, '0')}
               </span>
-              <span className={styles.mobileNavLabel}>Обратная связь</span>
+              <span className={styles.mobileNavLabel}>{t('nav.feedback')}</span>
               <svg
                 className={styles.mobileNavArrow}
                 width="20"
@@ -299,19 +300,19 @@ export function Header() {
             <div className={styles.mobileFooterRow}>
               <div className={styles.langSwitch} role="radiogroup" aria-label="Language">
                 <button
-                  className={`${styles.langOption} ${lang === 'RU' ? styles.langActive : ''}`}
-                  onClick={() => setLang('RU')}
+                  className={`${styles.langOption} ${langUpper === 'RU' ? styles.langActive : ''}`}
+                  onClick={() => setLang('ru')}
                   role="radio"
-                  aria-checked={lang === 'RU'}
+                  aria-checked={langUpper === 'RU'}
                 >
                   RU
                 </button>
                 <span className={styles.langDivider} aria-hidden="true" />
                 <button
-                  className={`${styles.langOption} ${lang === 'EN' ? styles.langActive : ''}`}
-                  onClick={() => setLang('EN')}
+                  className={`${styles.langOption} ${langUpper === 'EN' ? styles.langActive : ''}`}
+                  onClick={() => setLang('en')}
                   role="radio"
-                  aria-checked={lang === 'EN'}
+                  aria-checked={langUpper === 'EN'}
                 >
                   EN
                 </button>

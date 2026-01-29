@@ -1,5 +1,6 @@
 import { motion } from 'motion/react';
 import type { MenuItem as MenuItemType } from '../../types';
+import { useLanguage } from '../../context/LanguageContext';
 import styles from './MenuItem.module.css';
 
 const EASE = [0.16, 1, 0.3, 1] as const;
@@ -11,6 +12,7 @@ interface MenuItemProps {
 }
 
 export function MenuItem({ item, index, isVisible }: MenuItemProps) {
+  const { t } = useLanguage();
   const hasVariants = item.priceVariants && item.priceVariants.length > 0;
 
   return (
@@ -28,10 +30,10 @@ export function MenuItem({ item, index, isVisible }: MenuItemProps) {
           loading="lazy"
         />
         {item.isNew && (
-          <span className={`${styles.badge} ${styles.badgeNew}`}>Новинка</span>
+          <span className={`${styles.badge} ${styles.badgeNew}`}>{t('badge.new')}</span>
         )}
         {item.isPopular && !item.isNew && (
-          <span className={styles.badge}>Хит</span>
+          <span className={styles.badge}>{t('badge.hit')}</span>
         )}
       </div>
 

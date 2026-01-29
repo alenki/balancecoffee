@@ -1,9 +1,11 @@
 import { motion } from 'motion/react';
+import { useLanguage } from '../../context/LanguageContext';
 import styles from './HeroSection.module.css';
 
 const ease = [0.16, 1, 0.3, 1] as const;
 
 export function HeroSection() {
+  const { t } = useLanguage();
   return (
     <section className={styles.hero}>
       <div className={styles.videoCard}>
@@ -43,7 +45,7 @@ export function HeroSection() {
               animate={{ y: '0%' }}
               transition={{ duration: 0.9, delay: 0.5, ease }}
             >
-              Кофе,
+              {t('hero.line1')}
             </motion.span>
           </div>
           {/* Line 2 */}
@@ -54,7 +56,7 @@ export function HeroSection() {
               animate={{ y: '0%' }}
               transition={{ duration: 0.9, delay: 0.62, ease }}
             >
-              созданный
+              {t('hero.line2')}
             </motion.span>
           </div>
           {/* Line 3 — Playfair italic for contrast */}
@@ -65,7 +67,7 @@ export function HeroSection() {
               animate={{ y: '0%' }}
               transition={{ duration: 0.9, delay: 0.74, ease }}
             >
-              с намерением
+              {t('hero.line3')}
             </motion.span>
           </div>
         </div>

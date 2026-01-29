@@ -2,6 +2,7 @@ import { motion } from 'motion/react';
 import { Link } from 'react-router-dom';
 import { useScrollAnimation } from '../../hooks/useScrollAnimation';
 import { getPopularItems } from '../../data/menu';
+import { useLanguage } from '../../context/LanguageContext';
 import type { MenuItem } from '../../types';
 import styles from './MenuPreview.module.css';
 
@@ -9,7 +10,8 @@ const EASE = [0.16, 1, 0.3, 1] as const;
 
 export function MenuPreview() {
   const { ref, isVisible } = useScrollAnimation();
-  const popularItems = getPopularItems().slice(0, 6);
+  const { lang, t } = useLanguage();
+  const popularItems = getPopularItems(lang).slice(0, 6);
 
   return (
     <section className={styles.section} ref={ref}>
@@ -20,7 +22,7 @@ export function MenuPreview() {
         animate={isVisible ? { opacity: 1, x: 0 } : {}}
         transition={{ duration: 0.6, delay: 0.2, ease: EASE }}
       >
-        Меню
+        {t('menuPreview.label')}
       </motion.div>
       <motion.div
         className={`${styles.cornerAccent} ${styles.cornerTR}`}
@@ -28,7 +30,7 @@ export function MenuPreview() {
         animate={isVisible ? { opacity: 1, x: 0 } : {}}
         transition={{ duration: 0.6, delay: 0.3, ease: EASE }}
       >
-        50+ позиций
+        {t('menuPreview.itemCount')}
       </motion.div>
 
       <div className={styles.container}>
@@ -40,11 +42,11 @@ export function MenuPreview() {
           transition={{ duration: 0.7, ease: EASE }}
         >
           <span className={styles.headerItalic}>
-            Каждая позиция в нашем меню —
+            {t('menuPreview.headerItalic')}
           </span>
           <h2 className={styles.headerBold}>
-            Продумана<br />
-            <span className={styles.headerBoldAccent}>до деталей</span>
+            {t('menuPreview.headerBold1')}<br />
+            <span className={styles.headerBoldAccent}>{t('menuPreview.headerBold2')}</span>
           </h2>
         </motion.div>
 
@@ -56,6 +58,7 @@ export function MenuPreview() {
               item={item}
               index={index}
               isVisible={isVisible}
+              t={t}
             />
           ))}
         </div>
@@ -76,7 +79,7 @@ export function MenuPreview() {
           transition={{ duration: 0.5, delay: 0.6, ease: EASE }}
         >
           <Link to="/menu" className={styles.ctaButton}>
-            Смотреть меню
+            {t('menuPreview.cta')}
           </Link>
         </motion.div>
       </div>
@@ -88,12 +91,13 @@ interface ProductCardProps {
   item: MenuItem;
   index: number;
   isVisible: boolean;
+  t: (key: string) => string;
 }
 
-function ProductCard({ item, index, isVisible }: ProductCardProps) {
+function ProductCard({ item, index, isVisible, t }: ProductCardProps) {
   const price = item.price || item.priceVariants?.[0]?.price;
   const priceLabel = item.priceVariants
-    ? `от ${price} ₽`
+    ? `${t('menuPreview.from')} ${price} ₽`
     : `${price} ₽`;
 
   // Build description from item description or generate from category context
@@ -116,11 +120,11 @@ function ProductCard({ item, index, isVisible }: ProductCardProps) {
           />
           {item.isNew && (
             <span className={`${styles.badge} ${styles.badgeNew}`}>
-              Новинка
+              {t('badge.new')}
             </span>
           )}
           {item.isPopular && !item.isNew && (
-            <span className={styles.badge}>Хит</span>
+            <span className={styles.badge}>{t('badge.hit')}</span>
           )}
         </div>
         <div className={styles.cardInfo}>

@@ -1,11 +1,13 @@
 import { motion, useScroll, useTransform, useInView } from 'motion/react';
 import { useRef } from 'react';
 import { cities } from '../../data/locations';
+import { useLanguage } from '../../context/LanguageContext';
 import styles from './AboutSection.module.css';
 
 const ease = [0.16, 1, 0.3, 1] as const;
 
 export function AboutSection() {
+  const { t } = useLanguage();
   const sectionRef = useRef<HTMLElement>(null);
   const manifestoRef = useRef<HTMLDivElement>(null);
 
@@ -36,7 +38,7 @@ export function AboutSection() {
           animate={manifestoInView ? { opacity: 1 } : {}}
           transition={{ duration: 1, delay: 0.6, ease }}
         >
-          О нас
+          {t('about.label')}
         </motion.span>
         <motion.span
           className={`${styles.cornerAccent} ${styles.cornerTR}`}
@@ -59,12 +61,9 @@ export function AboutSection() {
               animate={manifestoInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 1, delay: 0, ease }}
             >
-              5 лет назад мы открыли Balance Coffee с одной простой
-              идеей — создать пространство,{' '}
-              <em className={styles.manifestoEmphasis}>где современные, прогрессивные и
-              деятельные люди</em>{' '}
-              могли бы собираться вместе, обмениваться
-              идеями и вдохновляться друг другом.
+              {t('about.manifesto1')}{' '}
+              <em className={styles.manifestoEmphasis}>{t('about.manifesto1em')}</em>{' '}
+              {t('about.manifesto1end')}
             </motion.p>
 
             <motion.p
@@ -73,10 +72,8 @@ export function AboutSection() {
               animate={manifestoInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 1, delay: 0.15, ease }}
             >
-              Сегодня наши кофейни посещает более 6000 таких удивительных
-              людей каждый день. Мы мечтаем объединить таких людей по всей
-              территории{' '}
-              <em className={styles.manifestoEmphasis}>России и за её пределами.</em>
+              {t('about.manifesto2')}{' '}
+              <em className={styles.manifestoEmphasis}>{t('about.manifesto2em')}</em>
             </motion.p>
           </div>
 
@@ -90,17 +87,17 @@ export function AboutSection() {
             <div className={styles.stat}>
               <span className={styles.statNumber}>{cities.length}</span>
               <span className={styles.statDivider} />
-              <span className={styles.statLabel}>городов</span>
+              <span className={styles.statLabel}>{t('about.statCities')}</span>
             </div>
             <div className={styles.stat}>
               <span className={styles.statNumber}>{totalLocations}</span>
               <span className={styles.statDivider} />
-              <span className={styles.statLabel}>кофеен</span>
+              <span className={styles.statLabel}>{t('about.statCafes')}</span>
             </div>
             <div className={styles.stat}>
               <span className={styles.statNumber}>50+</span>
               <span className={styles.statDivider} />
-              <span className={styles.statLabel}>позиций</span>
+              <span className={styles.statLabel}>{t('about.statItems')}</span>
             </div>
           </motion.div>
         </motion.div>

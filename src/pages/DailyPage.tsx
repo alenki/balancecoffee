@@ -1,5 +1,6 @@
 import { useRef } from 'react';
 import { motion, useScroll, useTransform } from 'motion/react';
+import { useLanguage } from '../context/LanguageContext';
 import styles from './DailyPage.module.css';
 
 interface DailyItem {
@@ -9,6 +10,7 @@ interface DailyItem {
   title?: string;
   artist?: string;
   quote?: string;
+  quoteKey?: string;
   spotifyUrl?: string;
 }
 
@@ -51,7 +53,7 @@ const dailyItems: DailyItem[] = [
   {
     id: '8',
     type: 'quote',
-    quote: 'Каждая чашка кофе — маленькое путешествие. От Эфиопии до Бразилии, от зерна до аромата.',
+    quoteKey: 'daily.quote1',
   },
   {
     id: '9',
@@ -66,7 +68,7 @@ const dailyItems: DailyItem[] = [
   {
     id: '11',
     type: 'quote',
-    quote: 'Кофе — это не просто напиток. Это момент паузы в бесконечном ритме жизни.',
+    quoteKey: 'daily.quote2',
   },
   {
     id: '12',
@@ -134,11 +136,14 @@ function ParallaxImage({ src, index }: { src: string; index: number }) {
 }
 
 function DailyCard({ item, index }: { item: DailyItem; index: number }) {
+  const { t } = useLanguage();
+
   if (item.type === 'image') {
     return <ParallaxImage src={item.image!} index={index} />;
   }
 
   if (item.type === 'quote') {
+    const quoteText = item.quoteKey ? t(item.quoteKey) : item.quote;
     return (
       <motion.div
         className={`${styles.card} ${styles.quoteCard}`}
@@ -152,7 +157,7 @@ function DailyCard({ item, index }: { item: DailyItem; index: number }) {
       >
         <div className={styles.quoteContent}>
           <span className={styles.quoteMark}>"</span>
-          <p className={styles.quoteText}>{item.quote}</p>
+          <p className={styles.quoteText}>{quoteText}</p>
         </div>
       </motion.div>
     );
@@ -193,6 +198,8 @@ function DailyCard({ item, index }: { item: DailyItem; index: number }) {
 }
 
 export function DailyPage() {
+  const { t } = useLanguage();
+
   return (
     <main className={styles.page}>
       {/* Hero */}
@@ -211,9 +218,9 @@ export function DailyPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.15, ease: [0.25, 0.1, 0.25, 1] }}
         >
-          Добро пожаловать в журнал Balance Coffee.<br />
-          Здесь мы делимся вдохновением, моментами и атмосферой,<br />
-          которые делают каждый день особенным.
+          {t('daily.subtitle').split('\n').map((line, i, arr) => (
+            <span key={i}>{line}{i < arr.length - 1 && <br />}</span>
+          ))}
         </motion.p>
       </section>
 

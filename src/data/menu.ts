@@ -1,4 +1,6 @@
 import type { MenuCategory } from '../types';
+import type { Lang } from '../context/LanguageContext';
+import { menuDataEn } from './menu.en';
 
 export const menuData: MenuCategory[] = [
   {
@@ -500,11 +502,15 @@ export const menuData: MenuCategory[] = [
   },
 ];
 
-export const getPopularItems = () =>
-  menuData.flatMap(category => category.items.filter(item => item.isPopular));
+export function getMenuData(lang: Lang): MenuCategory[] {
+  return lang === 'en' ? menuDataEn : menuData;
+}
 
-export const getNewItems = () =>
-  menuData.flatMap(category => category.items.filter(item => item.isNew));
+export const getPopularItems = (lang: Lang = 'ru') =>
+  getMenuData(lang).flatMap(category => category.items.filter(item => item.isPopular));
 
-export const getCategoryBySlug = (slug: string) =>
-  menuData.find(category => category.slug === slug);
+export const getNewItems = (lang: Lang = 'ru') =>
+  getMenuData(lang).flatMap(category => category.items.filter(item => item.isNew));
+
+export const getCategoryBySlug = (slug: string, lang: Lang = 'ru') =>
+  getMenuData(lang).find(category => category.slug === slug);

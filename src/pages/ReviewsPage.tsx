@@ -1,11 +1,13 @@
 import { useState, useRef, useEffect, type FormEvent } from 'react';
 import { motion, useInView, AnimatePresence } from 'motion/react';
 import { cities, contactInfo } from '../data/locations';
+import { useLanguage } from '../context/LanguageContext';
 import styles from './ReviewsPage.module.css';
 
 const ease = [0.16, 1, 0.3, 1] as const;
 
 export function ReviewsPage() {
+  const { t } = useLanguage();
   const [selectedCafe, setSelectedCafe] = useState('');
   const [contact, setContact] = useState('');
   const [review, setReview] = useState('');
@@ -90,7 +92,7 @@ export function ReviewsPage() {
                   animate={sectionInView ? { opacity: 1, y: 0 } : {}}
                   transition={{ duration: 0.7, ease }}
                 >
-                  Ваше мнение важно
+                  {t('reviews.eyebrow')}
                 </motion.span>
 
                 <motion.h1
@@ -99,9 +101,9 @@ export function ReviewsPage() {
                   animate={sectionInView ? { opacity: 1, y: 0 } : {}}
                   transition={{ duration: 0.9, delay: 0.08, ease }}
                 >
-                  Оставить
+                  {t('reviews.title1')}
                   <br />
-                  <span className={styles.heroTitleItalic}>отзыв</span>
+                  <span className={styles.heroTitleItalic}>{t('reviews.title2')}</span>
                 </motion.h1>
 
                 <motion.p
@@ -110,8 +112,7 @@ export function ReviewsPage() {
                   animate={sectionInView ? { opacity: 1, y: 0 } : {}}
                   transition={{ duration: 0.7, delay: 0.18, ease }}
                 >
-                  Расскажите о вашем опыте — каждый отзыв помогает нам
-                  становиться лучше и создавать для вас идеальный кофе
+                  {t('reviews.subtitle')}
                 </motion.p>
               </motion.div>
             )}
@@ -137,7 +138,7 @@ export function ReviewsPage() {
                       className={`${styles.fieldGroup} ${focusedField === 'cafe' ? styles.fieldGroupActive : ''}`}
                       ref={dropdownRef}
                     >
-                      <label className={styles.fieldLabel}>Кофейня</label>
+                      <label className={styles.fieldLabel}>{t('reviews.cafeLabel')}</label>
                       <button
                         type="button"
                         className={`${styles.selectTrigger} ${selectedCafe ? styles.selectFilled : ''}`}
@@ -151,7 +152,7 @@ export function ReviewsPage() {
                         <span className={styles.selectValue}>
                           {selectedLabel
                             ? selectedLabel.label
-                            : 'Выберите кофейню'}
+                            : t('reviews.cafePlaceholder')}
                         </span>
                         <motion.svg
                           className={styles.selectChevron}
@@ -215,11 +216,11 @@ export function ReviewsPage() {
 
                     {/* Contact */}
                     <div className={`${styles.fieldGroup} ${focusedField === 'contact' ? styles.fieldGroupActive : ''}`}>
-                      <label className={styles.fieldLabel}>Контакт для связи</label>
+                      <label className={styles.fieldLabel}>{t('reviews.contactLabel')}</label>
                       <input
                         type="text"
                         className={styles.field}
-                        placeholder="Телефон, email или Telegram"
+                        placeholder={t('reviews.contactPlaceholder')}
                         value={contact}
                         onChange={e => setContact(e.target.value)}
                         onFocus={() => setFocusedField('contact')}
@@ -230,14 +231,14 @@ export function ReviewsPage() {
                     {/* Review textarea */}
                     <div className={`${styles.fieldGroup} ${styles.fieldGroupLarge} ${focusedField === 'review' ? styles.fieldGroupActive : ''}`}>
                       <div className={styles.textareaHeader}>
-                        <label className={styles.fieldLabel}>Ваш отзыв</label>
+                        <label className={styles.fieldLabel}>{t('reviews.reviewLabel')}</label>
                         <span className={styles.charCount}>
-                          {review.length > 0 && `${review.length} симв.`}
+                          {review.length > 0 && `${review.length} ${t('reviews.charCount')}`}
                         </span>
                       </div>
                       <textarea
                         className={`${styles.field} ${styles.textarea}`}
-                        placeholder="Поделитесь впечатлениями о кофейне, напитках, атмосфере..."
+                        placeholder={t('reviews.reviewPlaceholder')}
                         rows={6}
                         value={review}
                         onChange={e => setReview(e.target.value)}
@@ -254,7 +255,7 @@ export function ReviewsPage() {
                       className={styles.submitBtn}
                       disabled={!selectedCafe || !review.trim()}
                     >
-                      <span className={styles.submitText}>Отправить отзыв</span>
+                      <span className={styles.submitText}>{t('reviews.submit')}</span>
                       <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true" className={styles.submitArrow}>
                         <path d="M3.75 9H14.25M14.25 9L9.75 4.5M14.25 9L9.75 13.5"
                           stroke="currentColor" strokeWidth="1.5"
@@ -263,14 +264,14 @@ export function ReviewsPage() {
                     </button>
 
                     <div className={styles.altContact}>
-                      <span className={styles.altContactLabel}>или свяжитесь напрямую</span>
+                      <span className={styles.altContactLabel}>{t('reviews.altContact')}</span>
                       <div className={styles.altContactLinks}>
-                        <a href={contactInfo.phoneHref} className={styles.contactLink} aria-label="Позвонить">
+                        <a href={contactInfo.phoneHref} className={styles.contactLink} aria-label={t('reviews.phone')}>
                           <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
                             <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"
                               stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                           </svg>
-                          <span>Телефон</span>
+                          <span>{t('reviews.phone')}</span>
                         </a>
                         <span className={styles.altContactDot} />
                         <a href={contactInfo.telegram} className={styles.contactLink}
@@ -300,9 +301,9 @@ export function ReviewsPage() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.5, duration: 0.6, ease }}
                   >
-                    Спасибо за
+                    {t('reviews.successTitle1')}
                     <br />
-                    <em>обратную связь</em>
+                    <em>{t('reviews.successTitle2')}</em>
                   </motion.h2>
 
                   <motion.p
@@ -311,8 +312,7 @@ export function ReviewsPage() {
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.7, duration: 0.5 }}
                   >
-                    Мы обязательно прочитаем ваш отзыв и постараемся
-                    стать ещё лучше. Ваше мнение — наш ориентир.
+                    {t('reviews.successText')}
                   </motion.p>
 
                   <motion.button
@@ -323,7 +323,7 @@ export function ReviewsPage() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.9, duration: 0.5, ease }}
                   >
-                    Оставить ещё один отзыв
+                    {t('reviews.another')}
                   </motion.button>
                 </motion.div>
               )}

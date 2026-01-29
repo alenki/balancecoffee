@@ -2,6 +2,7 @@ import { useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, useInView } from 'motion/react';
 import { Logo } from '../common/Logo';
+import { useLanguage } from '../../context/LanguageContext';
 import { contactInfo, cities } from '../../data/locations';
 import styles from './Footer.module.css';
 
@@ -29,6 +30,7 @@ function AnimatedSection({ children, className, delay = 0 }: {
 }
 
 export function Footer() {
+  const { t } = useLanguage();
   const currentYear = new Date().getFullYear();
   const brandRef = useRef<HTMLDivElement>(null);
   const brandInView = useInView(brandRef, { once: true, margin: '-40px' });
@@ -45,7 +47,7 @@ export function Footer() {
         >
           <span className={styles.brandLabel}>Specialty Coffee</span>
           <h2 className={styles.brandText}>BALANCE COFFEE</h2>
-          <p className={styles.brandTagline}>Кофе, созданный с намерением</p>
+          <p className={styles.brandTagline}>{t('footer.tagline')}</p>
         </motion.div>
       </div>
 
@@ -53,8 +55,8 @@ export function Footer() {
       <div className={styles.container}>
         <div className={styles.triptych}>
           <AnimatedSection className={`${styles.panel} ${styles.panelCompact}`} delay={0}>
-            <span className={styles.panelLabel}>География</span>
-            <h3 className={styles.panelHeading}>Наши<br />кофейни</h3>
+            <span className={styles.panelLabel}>{t('footer.geography')}</span>
+            <h3 className={styles.panelHeading}>{t('footer.ourCafes').split('\n').map((line, i) => <span key={i}>{line}{i === 0 && <br />}</span>)}</h3>
             <div className={styles.panelContent}>
               <div className={styles.cityGrid}>
                 {cities.map((city) => (
@@ -68,17 +70,17 @@ export function Footer() {
           </AnimatedSection>
 
           <AnimatedSection className={styles.panel} delay={0.1}>
-            <span className={styles.panelLabel}>Навигация</span>
-            <h3 className={styles.panelHeading}>Наши<br />страницы</h3>
+            <span className={styles.panelLabel}>{t('footer.navigation')}</span>
+            <h3 className={styles.panelHeading}>{t('footer.ourPages').split('\n').map((line, i) => <span key={i}>{line}{i === 0 && <br />}</span>)}</h3>
             <nav className={styles.panelContent}>
               <Link to="/" className={styles.navLink}>
-                <span>Главная</span>
+                <span>{t('footer.home')}</span>
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
                   <path d="M6 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
               </Link>
               <Link to="/menu" className={styles.navLink}>
-                <span>Меню</span>
+                <span>{t('footer.menu')}</span>
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
                   <path d="M6 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
@@ -90,7 +92,7 @@ export function Footer() {
                 </svg>
               </Link>
               <Link to="/reviews" className={styles.navLink}>
-                <span>Отзывы</span>
+                <span>{t('footer.reviews')}</span>
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
                   <path d="M6 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
@@ -99,8 +101,8 @@ export function Footer() {
           </AnimatedSection>
 
           <AnimatedSection className={styles.panel} delay={0.2}>
-            <span className={styles.panelLabel}>Контакты</span>
-            <h3 className={styles.panelHeading}>Свяжитесь<br />с нами</h3>
+            <span className={styles.panelLabel}>{t('footer.contacts')}</span>
+            <h3 className={styles.panelHeading}>{t('footer.contactUs').split('\n').map((line, i) => <span key={i}>{line}{i === 0 && <br />}</span>)}</h3>
             <div className={styles.panelContent}>
               <a
                 href="https://www.instagram.com/balancecoffee.ru/"
@@ -135,7 +137,7 @@ export function Footer() {
         {/* ── Brand Row ── */}
         <AnimatedSection className={styles.brandRow} delay={0.3}>
           <div className={styles.brandRowLeft}>
-            <span className={styles.brandRowDescriptor}>Кофе, выпечка, свежевыжатые соки</span>
+            <span className={styles.brandRowDescriptor}>{t('footer.descriptor')}</span>
           </div>
           <div className={styles.brandRowCenter}>
             <Logo size="lg" variant="light" />

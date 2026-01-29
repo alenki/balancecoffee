@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback, Fragment } from 'react';
-import { menuData } from '../../data/menu';
 import { useLenisInstance } from '../../hooks/useLenis';
+import type { MenuCategory } from '../../types';
 import styles from './CategoryNav.module.css';
 
 interface CategoryNavProps {
@@ -8,9 +8,10 @@ interface CategoryNavProps {
   onCategoryChange: (categoryId: string) => void;
   onScrollStart: () => void;
   onScrollComplete: () => void;
+  menuData: MenuCategory[];
 }
 
-export function CategoryNav({ activeCategory, onCategoryChange, onScrollStart, onScrollComplete }: CategoryNavProps) {
+export function CategoryNav({ activeCategory, onCategoryChange, onScrollStart, onScrollComplete, menuData }: CategoryNavProps) {
   const [isSticky, setIsSticky] = useState(false);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);

@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react';
 import { motion, AnimatePresence, useInView } from 'motion/react';
 import { cities, contactInfo } from '../../data/locations';
+import { useLanguage } from '../../context/LanguageContext';
 import type { City } from '../../types';
 import styles from './CafesSection.module.css';
 
@@ -13,12 +14,14 @@ function CityRow({
   isExpanded,
   onToggle,
   isVisible,
+  t,
 }: {
   city: City;
   index: number;
   isExpanded: boolean;
   onToggle: () => void;
   isVisible: boolean;
+  t: (key: string) => string;
 }) {
   const hasComingSoon = city.locations.some((l) => l.isComingSoon);
 
@@ -50,12 +53,12 @@ function CityRow({
           <span className={styles.cityMeta}>
             {city.locations.length}{' '}
             {city.locations.length === 1
-              ? 'кофейня'
+              ? t('cafes.cafe1')
               : city.locations.length < 5
-                ? 'кофейни'
-                : 'кофеен'}
+                ? t('cafes.cafe2to4')
+                : t('cafes.cafe5plus')}
             {hasComingSoon && (
-              <span className={styles.soonDot} aria-label="Скоро открытие" />
+              <span className={styles.soonDot} aria-label={t('cafes.soonLabel')} />
             )}
           </span>
         </div>
@@ -113,7 +116,7 @@ function CityRow({
                     {location.address}
                   </span>
                   {location.isComingSoon && (
-                    <span className={styles.soonBadge}>скоро</span>
+                    <span className={styles.soonBadge}>{t('cafes.soon')}</span>
                   )}
                 </motion.div>
               ))}
@@ -141,6 +144,7 @@ function CityRow({
 }
 
 export function CafesSection() {
+  const { t } = useLanguage();
   const [expandedCity, setExpandedCity] = useState<string | null>(null);
   const sectionRef = useRef<HTMLElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
@@ -164,7 +168,7 @@ export function CafesSection() {
         animate={headerInView ? { opacity: 1, x: 0 } : {}}
         transition={{ duration: 0.7, delay: 0.3, ease }}
       >
-        Кофейни
+        {t('cafes.label')}
       </motion.span>
       <motion.span
         className={`${styles.cornerAccent} ${styles.cornerTR}`}
@@ -172,7 +176,7 @@ export function CafesSection() {
         animate={headerInView ? { opacity: 1, x: 0 } : {}}
         transition={{ duration: 0.7, delay: 0.4, ease }}
       >
-        {cities.length} городов
+        {cities.length} {t('cafes.cityCount')}
       </motion.span>
 
       <div className={styles.container}>
@@ -184,7 +188,7 @@ export function CafesSection() {
             animate={headerInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.7, delay: 0.1, ease }}
           >
-            Мы по всей России
+            {t('cafes.headerItalic')}
           </motion.span>
 
           <motion.h2
@@ -193,9 +197,9 @@ export function CafesSection() {
             animate={headerInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.8, delay: 0.15, ease }}
           >
-            Наши
+            {t('cafes.headerBold1')}
             <br />
-            <span className={styles.headerBoldAccent}>кофейни</span>
+            <span className={styles.headerBoldAccent}>{t('cafes.headerBold2')}</span>
           </motion.h2>
         </div>
 
@@ -209,6 +213,7 @@ export function CafesSection() {
               isExpanded={expandedCity === city.id}
               onToggle={() => toggleCity(city.id)}
               isVisible={listInView}
+              t={t}
             />
           ))}
 
@@ -236,12 +241,12 @@ export function CafesSection() {
           >
             <span className={styles.statItem}>
               <span className={styles.statNumber}>{cities.length}</span>
-              <span className={styles.statLabel}>городов</span>
+              <span className={styles.statLabel}>{t('cafes.statCities')}</span>
             </span>
             <span className={styles.statDivider} />
             <span className={styles.statItem}>
               <span className={styles.statNumber}>{totalLocations}</span>
-              <span className={styles.statLabel}>кофеен</span>
+              <span className={styles.statLabel}>{t('cafes.statCafes')}</span>
             </span>
           </motion.div>
 
@@ -253,7 +258,7 @@ export function CafesSection() {
             transition={{ duration: 0.5, delay: 0.25, ease }}
           >
             <a href={contactInfo.telegram} target="_blank" rel="noopener noreferrer" className={styles.ctaButton}>
-              Связаться с нами
+              {t('cafes.cta')}
             </a>
           </motion.div>
         </div>

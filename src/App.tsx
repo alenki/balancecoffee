@@ -5,6 +5,7 @@ import { HomePage } from './pages/HomePage';
 import { MenuPage } from './pages/MenuPage';
 import { DailyPage } from './pages/DailyPage';
 import { ReviewsPage } from './pages/ReviewsPage';
+import { LanguageProvider } from './context/LanguageContext';
 import { useLenis, LenisContext } from './hooks/useLenis';
 import './index.css';
 
@@ -28,7 +29,9 @@ function AppContent() {
 function App() {
   return (
     <HashRouter>
-      <AppContent />
+      <LanguageProvider>
+        <AppContent />
+      </LanguageProvider>
     </HashRouter>
   );
 }
