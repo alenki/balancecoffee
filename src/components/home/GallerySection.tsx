@@ -41,6 +41,26 @@ export function GallerySection() {
 
         {/* Editorial Grid Layout */}
         <div className={styles.editorialGrid}>
+          {/* Mobile Daily Mosaic — replaces side columns on small screens */}
+          <motion.div
+            className={styles.dailyMosaic}
+            initial={{ opacity: 0 }}
+            animate={isVisible ? { opacity: 1 } : {}}
+            transition={{ duration: 0.7, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <div className={styles.mosaicGrid}>
+              <div className={`${styles.mosaicCell} ${styles.mosaicA}`}>
+                <img src="/cafe photos/image_8.png" alt="" className={styles.mosaicImg} />
+              </div>
+              <div className={`${styles.mosaicCell} ${styles.mosaicB}`}>
+                <img src="/cafe photos/image_9.png" alt="" className={styles.mosaicImg} />
+              </div>
+              <div className={`${styles.mosaicCell} ${styles.mosaicC}`}>
+                <img src="/cafe photos/image_10.png" alt="" className={styles.mosaicImg} />
+              </div>
+            </div>
+          </motion.div>
+
           {/* Left Column */}
           <div className={styles.columnLeft}>
             <motion.div
