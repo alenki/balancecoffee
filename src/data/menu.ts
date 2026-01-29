@@ -14,7 +14,7 @@ export const menuData: MenuCategory[] = [
         name: 'Эспрессо',
         description: 'Плотный, насыщенный, с бархатной крема',
         price: 120,
-        image: placeholder,
+        image: '/menu/espresso.png',
         isPopular: true,
       },
       {
@@ -34,7 +34,7 @@ export const menuData: MenuCategory[] = [
           { size: '250 мл', price: 180 },
           { size: '350 мл', price: 220 },
         ],
-        image: placeholder,
+        image: '/menu/cappuccino.png',
         isPopular: true,
       },
       {
@@ -60,7 +60,7 @@ export const menuData: MenuCategory[] = [
           { size: '300 мл', price: 250 },
           { size: '400 мл', price: 300 },
         ],
-        image: placeholder,
+        image: '/menu/raf.png',
         isPopular: true,
       },
       {
@@ -159,7 +159,6 @@ export const menuData: MenuCategory[] = [
         description: 'Пашот, голландский соус, бекон, английский маффин',
         price: 380,
         image: placeholder,
-        isPopular: true,
       },
       {
         id: 'scrambled-eggs',
@@ -174,7 +173,6 @@ export const menuData: MenuCategory[] = [
         description: 'Авокадо, яйцо пашот, микрозелень, зерновой хлеб',
         price: 350,
         image: placeholder,
-        isPopular: true,
       },
       {
         id: 'cheese-pancakes',
@@ -217,7 +215,7 @@ export const menuData: MenuCategory[] = [
         name: 'Боул с курицей',
         description: 'Киноа, курица гриль, авокадо, овощи',
         price: 420,
-        image: placeholder,
+        image: '/menu/chicken-bowl.png',
         isPopular: true,
       },
       {
@@ -263,7 +261,6 @@ export const menuData: MenuCategory[] = [
         description: 'Романо, курица-гриль, пармезан, гренки',
         price: 380,
         image: placeholder,
-        isPopular: true,
       },
       {
         id: 'greek',
@@ -300,7 +297,6 @@ export const menuData: MenuCategory[] = [
         description: 'Курица, бекон, томат, салат, яйцо',
         price: 380,
         image: placeholder,
-        isPopular: true,
       },
       {
         id: 'salmon-sandwich',
@@ -336,7 +332,7 @@ export const menuData: MenuCategory[] = [
         name: 'Чизкейк',
         description: 'Классический нью-йоркский',
         price: 280,
-        image: placeholder,
+        image: '/menu/cheesecake.png',
         isPopular: true,
       },
       {
@@ -387,7 +383,8 @@ export const menuData: MenuCategory[] = [
         name: 'Макарон',
         description: 'Ассорти вкусов (3 шт)',
         price: 250,
-        image: placeholder,
+        image: '/menu/macarons.png',
+        isPopular: true,
       },
     ],
   },
@@ -500,7 +497,6 @@ export const menuData: MenuCategory[] = [
         description: 'Авторская смесь, 250 г',
         price: 900,
         image: placeholder,
-        isPopular: true,
       },
     ],
   },
