@@ -4,18 +4,14 @@ import type { MenuCategory as MenuCategoryType } from '../../types';
 import { MenuItem } from './MenuItem';
 import styles from './MenuCategory.module.css';
 
+const EASE = [0.16, 1, 0.3, 1] as const;
+
 interface MenuCategoryProps {
   category: MenuCategoryType;
-  onVisible?: () => void;
 }
 
-export function MenuCategory({ category, onVisible }: MenuCategoryProps) {
+export function MenuCategory({ category }: MenuCategoryProps) {
   const { ref, isVisible } = useScrollAnimation({ threshold: 0.1 });
-
-  // Notify parent when this category becomes visible
-  if (isVisible && onVisible) {
-    onVisible();
-  }
 
   return (
     <section
@@ -25,9 +21,9 @@ export function MenuCategory({ category, onVisible }: MenuCategoryProps) {
     >
       <motion.div
         className={styles.header}
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 15 }}
         animate={isVisible ? { opacity: 1, y: 0 } : {}}
-        transition={{ duration: 0.5 }}
+        transition={{ duration: 0.6, ease: EASE }}
       >
         <h2 className={styles.title}>{category.name}</h2>
         {category.description && (

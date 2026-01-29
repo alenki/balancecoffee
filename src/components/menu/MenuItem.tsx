@@ -2,6 +2,8 @@ import { motion } from 'motion/react';
 import type { MenuItem as MenuItemType } from '../../types';
 import styles from './MenuItem.module.css';
 
+const EASE = [0.16, 1, 0.3, 1] as const;
+
 interface MenuItemProps {
   item: MenuItemType;
   index: number;
@@ -14,9 +16,9 @@ export function MenuItem({ item, index, isVisible }: MenuItemProps) {
   return (
     <motion.article
       className={styles.card}
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 40 }}
       animate={isVisible ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.4, delay: Math.min(index * 0.05, 0.3) }}
+      transition={{ duration: 0.6, delay: 0.1 + Math.min(index * 0.08, 0.4), ease: EASE }}
     >
       <div className={styles.imageWrapper}>
         <img
@@ -25,33 +27,35 @@ export function MenuItem({ item, index, isVisible }: MenuItemProps) {
           className={styles.image}
           loading="lazy"
         />
-        {item.isNew && <span className={styles.badgeNew}>Новинка</span>}
+        {item.isNew && (
+          <span className={`${styles.badge} ${styles.badgeNew}`}>Новинка</span>
+        )}
         {item.isPopular && !item.isNew && (
-          <span className={styles.badgePopular}>Хит</span>
+          <span className={styles.badge}>Хит</span>
         )}
       </div>
 
-      <div className={styles.content}>
-        <h3 className={styles.name}>{item.name}</h3>
-
-        {item.description && (
-          <p className={styles.description}>{item.description}</p>
-        )}
-
-        <div className={styles.priceSection}>
-          {hasVariants ? (
-            <div className={styles.variants}>
-              {item.priceVariants!.map((variant, i) => (
-                <div key={i} className={styles.variant}>
-                  <span className={styles.variantSize}>{variant.size}</span>
-                  <span className={styles.variantPrice}>{variant.price} ₽</span>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <span className={styles.price}>{item.price} ₽</span>
+      <div className={styles.info}>
+        <div className={styles.textCol}>
+          <h3 className={styles.name}>{item.name}</h3>
+          {item.description && (
+            <p className={styles.description}>{item.description}</p>
           )}
         </div>
+
+        {hasVariants ? (
+          <div className={styles.variants}>
+            {item.priceVariants!.map((variant, i) => (
+              <span key={i} className={styles.variantItem}>
+                {i > 0 && <span className={styles.variantDot} />}
+                <span className={styles.variantSize}>{variant.size}</span>
+                <span className={styles.variantPrice}>{variant.price} &#8381;</span>
+              </span>
+            ))}
+          </div>
+        ) : (
+          <span className={styles.price}>{item.price} &#8381;</span>
+        )}
       </div>
     </motion.article>
   );

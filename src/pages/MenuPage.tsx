@@ -4,13 +4,15 @@ import { CategoryNav } from '../components/menu/CategoryNav';
 import { MenuCategory } from '../components/menu/MenuCategory';
 import { menuData } from '../data/menu';
 import { contactInfo } from '../data/locations';
-import { Button } from '../components/common/Button';
 import styles from './MenuPage.module.css';
+
+const EASE = [0.16, 1, 0.3, 1] as const;
 
 export function MenuPage() {
   const [activeCategory, setActiveCategory] = useState(menuData[0].id);
 
-  // Update active category based on scroll position
+  const totalItems = menuData.reduce((sum, cat) => sum + cat.items.length, 0);
+
   useEffect(() => {
     const handleScroll = () => {
       const scrollPosition = window.scrollY + 200;
@@ -35,44 +37,51 @@ export function MenuPage() {
     setActiveCategory(categoryId);
   }, []);
 
-  const totalItems = menuData.reduce((sum, cat) => sum + cat.items.length, 0);
-
   return (
     <main className={styles.page}>
-      {/* Hero Section */}
+      {/* Hero Section — Editorial */}
       <section className={styles.hero}>
+        {/* Corner accents */}
+        <motion.div
+          className={`${styles.cornerAccent} ${styles.cornerTR}`}
+          initial={{ opacity: 0, x: 15 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.6, delay: 0.3, ease: EASE }}
+        >
+          {totalItems} позиций
+        </motion.div>
+
         <div className={styles.heroContainer}>
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            className={styles.headerBlock}
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
+            transition={{ duration: 0.7, ease: EASE }}
           >
-            <h1 className={styles.heroTitle}>Меню</h1>
-            <p className={styles.heroSubtitle}>
-              {menuData.length} категорий, {totalItems} позиций
-            </p>
+            <h1 className={styles.headerBold}>Меню</h1>
           </motion.div>
 
           <motion.div
-            className={styles.deliveryBanner}
-            initial={{ opacity: 0, y: 20 }}
+            className={styles.deliveryRow}
+            initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.15 }}
+            transition={{ duration: 0.5, delay: 0.35, ease: EASE }}
           >
             <div className={styles.deliveryInfo}>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <circle cx="12" cy="12" r="9"/>
                 <path d="M12 6v6l4 2"/>
               </svg>
-              <span>Доставка с {contactInfo.deliveryHours.start} до {contactInfo.deliveryHours.end}</span>
+              <span>Доставка {contactInfo.deliveryHours.start}–{contactInfo.deliveryHours.end}</span>
             </div>
+            <span className={styles.deliveryDot} />
             <div className={styles.deliveryActions}>
-              <Button href={contactInfo.phoneHref} external size="sm">
+              <a href={contactInfo.phoneHref} className={styles.deliveryLink} target="_blank" rel="noopener noreferrer">
                 Позвонить
-              </Button>
-              <Button href={contactInfo.telegram} external variant="secondary" size="sm">
+              </a>
+              <a href={contactInfo.telegram} className={styles.deliveryLink} target="_blank" rel="noopener noreferrer">
                 Telegram
-              </Button>
+              </a>
             </div>
           </motion.div>
         </div>
@@ -96,28 +105,60 @@ export function MenuPage() {
         </div>
       </div>
 
-      {/* Bottom CTA */}
+      {/* Bottom CTA — Editorial */}
       <section className={styles.bottomCta}>
         <div className={styles.container}>
+          <motion.div
+            className={styles.ctaDivider}
+            initial={{ scaleX: 0 }}
+            whileInView={{ scaleX: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, ease: EASE }}
+          />
           <div className={styles.ctaContent}>
-            <h2 className={styles.ctaTitle}>Готовы сделать заказ?</h2>
-            <p className={styles.ctaText}>
-              Свяжитесь с нами любым удобным способом
-            </p>
-            <div className={styles.ctaActions}>
-              <Button href={contactInfo.phoneHref} external size="lg">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <motion.span
+              className={styles.ctaItalic}
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.2, ease: EASE }}
+            >
+              Свяжитесь любым удобным способом —
+            </motion.span>
+            <motion.h2
+              className={styles.ctaTitle}
+              initial={{ opacity: 0, y: 15 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.3, ease: EASE }}
+            >
+              Готовы сделать заказ?
+            </motion.h2>
+            <motion.div
+              className={styles.ctaActions}
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.45, ease: EASE }}
+            >
+              <a href={contactInfo.phoneHref} className={styles.ctaButton} target="_blank" rel="noopener noreferrer">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/>
                 </svg>
                 {contactInfo.phone}
-              </Button>
-              <Button href={contactInfo.telegram} external variant="outline" size="lg">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              </a>
+              <a
+                href={contactInfo.telegram}
+                className={`${styles.ctaButton} ${styles.ctaButtonSecondary}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M21 5L10 14M21 5L14 21L10 14L3 10L21 5Z"/>
                 </svg>
-                Написать в Telegram
-              </Button>
-            </div>
+                Telegram
+              </a>
+            </motion.div>
           </div>
         </div>
       </section>

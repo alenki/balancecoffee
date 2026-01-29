@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, Fragment } from 'react';
 import { menuData } from '../../data/menu';
 import styles from './CategoryNav.module.css';
 
@@ -28,7 +28,6 @@ export function CategoryNav({ activeCategory, onCategoryChange }: CategoryNavPro
   }, []);
 
   useEffect(() => {
-    // Scroll active button into view
     if (activeButtonRef.current) {
       activeButtonRef.current.scrollIntoView({
         behavior: 'smooth',
@@ -42,7 +41,7 @@ export function CategoryNav({ activeCategory, onCategoryChange }: CategoryNavPro
     onCategoryChange(categoryId);
     const element = document.getElementById(`category-${categoryId}`);
     if (element) {
-      const offset = 140; // Header + nav height
+      const offset = 140;
       const elementPosition = element.getBoundingClientRect().top + window.scrollY;
       window.scrollTo({
         top: elementPosition - offset,
@@ -57,16 +56,17 @@ export function CategoryNav({ activeCategory, onCategoryChange }: CategoryNavPro
       <nav className={`${styles.nav} ${isSticky ? styles.sticky : ''}`}>
         <div className={styles.container}>
           <div className={styles.scrollContainer}>
-            {menuData.map((category) => (
-              <button
-                key={category.id}
-                ref={activeCategory === category.id ? activeButtonRef : null}
-                className={`${styles.tab} ${activeCategory === category.id ? styles.active : ''}`}
-                onClick={() => handleClick(category.id)}
-              >
-                {category.name}
-                <span className={styles.count}>{category.items.length}</span>
-              </button>
+            {menuData.map((category, index) => (
+              <Fragment key={category.id}>
+                {index > 0 && <span className={styles.divider} />}
+                <button
+                  ref={activeCategory === category.id ? activeButtonRef : null}
+                  className={`${styles.tab} ${activeCategory === category.id ? styles.active : ''}`}
+                  onClick={() => handleClick(category.id)}
+                >
+                  {category.name}
+                </button>
+              </Fragment>
             ))}
           </div>
         </div>
