@@ -132,7 +132,7 @@
 }
 
 .description {
-  font-family: 'Playfair Display', 'Georgia', serif;
+  font-family: var(--font-serif);
   font-size: clamp(0.78rem, 1vw, 0.9rem);
   font-weight: var(--font-normal);
   font-style: italic;

@@ -82,7 +82,7 @@
 
 .heroEyebrow {
   display: block;
-  font-family: 'Playfair Display', 'Georgia', serif;
+  font-family: var(--font-serif);
   font-size: clamp(1rem, 2.2vw, 1.35rem);
   font-weight: 400;
   font-style: italic;
@@ -103,7 +103,7 @@
 }
 
 .heroTitleItalic {
-  font-family: 'Playfair Display', 'Georgia', serif;
+  font-family: var(--font-serif);
   font-weight: 400;
   font-style: italic;
   text-transform: none;
@@ -149,7 +149,7 @@
 }
 
 .formHeaderLabel {
-  font-family: 'Playfair Display', 'Georgia', serif;
+  font-family: var(--font-serif);
   font-size: clamp(1.5rem, 3vw, 2rem);
   font-weight: 400;
   font-style: italic;
@@ -549,7 +549,7 @@
 }
 
 .successTitle em {
-  font-family: 'Playfair Display', 'Georgia', serif;
+  font-family: var(--font-serif);
   font-weight: 400;
   font-style: italic;
   text-transform: none;

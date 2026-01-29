@@ -41,7 +41,7 @@
 }
 
 .description {
-  font-family: 'Playfair Display', 'Georgia', serif;
+  font-family: var(--font-serif);
   font-size: clamp(0.95rem, 1.5vw, 1.15rem);
   font-weight: 400;
   font-style: italic;

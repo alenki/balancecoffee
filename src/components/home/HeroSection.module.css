@@ -253,7 +253,7 @@
 /* Serif italic line (line 3) — typographic contrast */
 .headlineSerif {
   display: block;
-  font-family: 'Playfair Display', 'Georgia', serif;
+  font-family: var(--font-serif);
   font-size: clamp(1.8rem, 7.5vw, 5.5rem);
   font-weight: 400;
   font-style: italic;

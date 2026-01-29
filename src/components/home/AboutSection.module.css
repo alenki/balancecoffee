@@ -101,7 +101,7 @@
 }
 
 .manifestoLine {
-  font-family: 'Cormorant Garamond', 'Georgia', serif;
+  font-family: var(--font-serif);
   font-size: clamp(1.5rem, 4vw, 2.75rem);
   font-weight: 400;
   font-style: normal;
@@ -112,7 +112,7 @@
 }
 
 .manifestoEmphasis {
-  font-family: 'Cormorant Garamond', 'Georgia', serif;
+  font-family: var(--font-serif);
   font-style: italic;
   color: var(--color-primary);
 }
@@ -131,7 +131,7 @@
 }
 
 .statNumber {
-  font-family: 'Playfair Display', 'Georgia', serif;
+  font-family: var(--font-serif);
   font-size: clamp(2.5rem, 6vw, 4rem);
   font-weight: 300;
   font-style: italic;
@@ -255,7 +255,7 @@
 
 /* ── Story Heading ── */
 .storyHeading {
-  font-family: 'Playfair Display', 'Georgia', serif;
+  font-family: var(--font-serif);
   font-size: clamp(2rem, 4.5vw, 3.25rem);
   font-weight: 400;
   font-style: italic;
@@ -331,7 +331,7 @@
 }
 
 .founderQuote {
-  font-family: 'Playfair Display', 'Georgia', serif;
+  font-family: var(--font-serif);
   font-size: var(--text-sm);
   font-weight: 400;
   font-style: italic;

@@ -357,7 +357,7 @@
 }
 
 .mobileNavLabel {
-  font-family: 'Playfair Display', 'Georgia', serif;
+  font-family: var(--font-serif);
   font-size: clamp(2rem, 8vw, 3rem);
   font-weight: 400;
   font-style: italic;

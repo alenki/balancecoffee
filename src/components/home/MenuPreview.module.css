@@ -88,7 +88,7 @@
 
 .headerItalic {
   display: block;
-  font-family: 'Playfair Display', 'Georgia', serif;
+  font-family: var(--font-serif);
   font-size: clamp(1.1rem, 2.5vw, 1.5rem);
   font-weight: 400;
   font-style: italic;
