@@ -154,6 +154,7 @@ html {
   font-size: 16px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: var(--color-bg-dark);
 }
 
 body {
@@ -163,13 +164,13 @@ body {
   line-height: 1.6;
   color: var(--color-text-body);
   background-color: var(--color-bg-white);
-  overflow-x: hidden;
 }
 
 #root {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  overflow-x: hidden;
 }
 
 /* ============================================
