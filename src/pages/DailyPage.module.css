@@ -60,6 +60,7 @@
 @media (max-width: 1024px) {
   .gridSection {
     padding: 0 var(--space-12);
+    padding-bottom: 10rem;
   }
 
   .masonry {
@@ -71,6 +72,7 @@
 @media (max-width: 640px) {
   .gridSection {
     padding: 0 var(--space-4);
+    padding-bottom: 8rem;
   }
 
   .masonry {
