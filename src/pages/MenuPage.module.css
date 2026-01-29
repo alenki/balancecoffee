@@ -179,7 +179,13 @@
 
 .container {
   width: 100%;
-  padding: 0 var(--space-6);
+  padding: 0 var(--space-4);
+}
+
+@media (min-width: 640px) {
+  .container {
+    padding: 0 var(--space-6);
+  }
 }
 
 @media (min-width: 768px) {

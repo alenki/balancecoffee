@@ -14,8 +14,15 @@
   aspect-ratio: 4 / 5;
   overflow: hidden;
   background: #c8bfb8;
-  margin-bottom: var(--space-5);
+  margin-bottom: var(--space-3);
   border-radius: 2px;
+}
+
+@media (max-width: 639px) {
+  .imageWrapper {
+    aspect-ratio: 3 / 4;
+    margin-bottom: var(--space-2);
+  }
 }
 
 /* Warm neutral tone tint overlays — each card gets a distinct warm tone */
@@ -72,6 +79,15 @@
   border-radius: 1px;
 }
 
+@media (max-width: 639px) {
+  .badge {
+    top: var(--space-2);
+    left: var(--space-2);
+    padding: 2px var(--space-2);
+    font-size: 0.55rem;
+  }
+}
+
 .badgeNew {
   background: var(--color-primary);
 }
@@ -82,6 +98,13 @@
   justify-content: space-between;
   align-items: flex-start;
   gap: var(--space-4);
+}
+
+@media (max-width: 639px) {
+  .info {
+    flex-direction: column;
+    gap: var(--space-1);
+  }
 }
 
 .textCol {
@@ -100,6 +123,14 @@
   margin-bottom: var(--space-1);
 }
 
+@media (max-width: 639px) {
+  .name {
+    font-size: 0.72rem;
+    letter-spacing: 0.02em;
+    margin-bottom: 0;
+  }
+}
+
 .description {
   font-family: 'Playfair Display', 'Georgia', serif;
   font-size: clamp(0.78rem, 1vw, 0.9rem);
@@ -112,6 +143,14 @@
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+}
+
+@media (max-width: 639px) {
+  .description {
+    font-size: 0.7rem;
+    -webkit-line-clamp: 2;
+    line-height: 1.35;
+  }
 }
 
 /* ── Single Price ── */
@@ -175,5 +214,29 @@
   margin: 0 var(--space-2);
   align-self: center;
   flex-shrink: 0;
+}
+
+@media (max-width: 639px) {
+  .price {
+    font-size: 0.72rem;
+  }
+
+  .variantSize {
+    font-size: 0.62rem;
+  }
+
+  .variantPrice {
+    font-size: 0.7rem;
+  }
+
+  .variantDot {
+    width: 2px;
+    height: 2px;
+    margin: 0 var(--space-1);
+  }
+
+  .variants {
+    flex-wrap: wrap;
+  }
 }
 
