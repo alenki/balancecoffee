@@ -43,11 +43,6 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.card:hover .image {
-  transform: scale(1.04);
 }
 
 /* Subtle inner shadow for depth */
@@ -182,11 +177,3 @@
   flex-shrink: 0;
 }
 
-/* ============================================
-   REDUCED MOTION
-   ============================================ */
-@media (prefers-reduced-motion: reduce) {
-  .image {
-    transition: none;
-  }
-}
