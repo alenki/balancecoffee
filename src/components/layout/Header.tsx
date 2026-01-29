@@ -158,7 +158,7 @@ export function Header() {
 
           {/* Zone 3: Actions (right) */}
           <div className={styles.actions}>
-            <div className={styles.langSwitch} role="radiogroup" aria-label="Language">
+            <div className={`${styles.langSwitch} ${styles.desktopOnly}`} role="radiogroup" aria-label="Language">
               <button
                 className={`${styles.langOption} ${lang === 'RU' ? styles.langActive : ''}`}
                 onClick={() => setLang('RU')}
