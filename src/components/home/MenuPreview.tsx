@@ -117,6 +117,9 @@ function ProductCard({ item, index, isVisible, t }: ProductCardProps) {
             alt={item.name}
             className={styles.image}
             loading="lazy"
+            decoding="async"
+            width={400}
+            height={500}
           />
           {item.isNew && (
             <span className={`${styles.badge} ${styles.badgeNew}`}>

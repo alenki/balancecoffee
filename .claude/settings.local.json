@@ -30,7 +30,9 @@
       "Bash(npx vite --host)",
       "Bash(start /b npx vite:*)",
       "Bash(powershell -Command \"Get-ChildItem -Path src -Recurse -Include ''*.css'',''*.module.css'' | ForEach-Object { \\(Get-Content $_FullName -Raw\\) -replace \"\"font-family: ''Playfair Display'', ''Georgia'', serif;\"\", ''font-family: var\\(--font-serif\\);'' -replace \"\"font-family: ''Cormorant Garamond'', ''Georgia'', serif;\"\", ''font-family: var\\(--font-serif\\);'' | Set-Content $_FullName -NoNewline }\")",
-      "Bash(node:*)"
+      "Bash(node:*)",
+      "Bash(find:*)",
+      "Bash(del \"C:\\\\Users\\\\omarh\\\\OneDrive\\\\Рабочий стол\\\\PC\\\\WORK\\\\Web Development\\\\balancecoffee\\\\optimize-images.mjs\")"
     ]
   }
 }

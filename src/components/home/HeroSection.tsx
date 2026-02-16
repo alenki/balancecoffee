@@ -17,7 +17,7 @@ export function HeroSection() {
             muted
             loop
             playsInline
-            poster="/cafe photos/image.png"
+            poster="/cafe photos/image.webp"
           >
             <source src="/cafe photos/video.mp4" type="video/mp4" />
           </video>

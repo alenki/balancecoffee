@@ -22,32 +22,32 @@ const dailyItems: DailyItem[] = [
   {
     id: '1',
     type: 'image',
-    image: '/cafe photos/image_16.png',
+    image: '/cafe photos/image_16.webp',
   },
   {
     id: '3',
     type: 'image',
-    image: '/cafe photos/image_3.png',
+    image: '/cafe photos/image_3.webp',
   },
   {
     id: '4',
     type: 'image',
-    image: '/cafe photos/image_4.png',
+    image: '/cafe photos/image_4.webp',
   },
   {
     id: '5',
     type: 'image',
-    image: '/cafe photos/image_5.png',
+    image: '/cafe photos/image_5.webp',
   },
   {
     id: '6',
     type: 'image',
-    image: '/cafe photos/image_6.png',
+    image: '/cafe photos/image_6.webp',
   },
   {
     id: '7',
     type: 'image',
-    image: '/cafe photos/image_7.png',
+    image: '/cafe photos/image_7.webp',
   },
   // MIDDLE COLUMN (items 8-14) - images + 2 quote cards spread out
   {
@@ -58,12 +58,12 @@ const dailyItems: DailyItem[] = [
   {
     id: '9',
     type: 'image',
-    image: '/cafe photos/image_9.png',
+    image: '/cafe photos/image_9.webp',
   },
   {
     id: '10',
     type: 'image',
-    image: '/cafe photos/image_8.png',
+    image: '/cafe photos/image_8.webp',
   },
   {
     id: '11',
@@ -73,33 +73,33 @@ const dailyItems: DailyItem[] = [
   {
     id: '12',
     type: 'image',
-    image: '/cafe photos/image_11.png',
+    image: '/cafe photos/image_11.webp',
   },
   {
     id: '13',
     type: 'image',
-    image: '/cafe photos/image_10.png',
+    image: '/cafe photos/image_10.webp',
   },
   {
     id: '14',
     type: 'image',
-    image: '/cafe photos/image_12.png',
+    image: '/cafe photos/image_12.webp',
   },
   // RIGHT COLUMN (items 15-21) - images only
   {
     id: '15',
     type: 'image',
-    image: '/cafe photos/image_13.png',
+    image: '/cafe photos/image_13.webp',
   },
   {
     id: '16',
     type: 'image',
-    image: '/cafe photos/image_14.png',
+    image: '/cafe photos/image_14.webp',
   },
   {
     id: '17',
     type: 'image',
-    image: '/cafe photos/image_15.png',
+    image: '/cafe photos/image_15.webp',
   },
 ];
 
@@ -129,6 +129,7 @@ function ParallaxImage({ src, index }: { src: string; index: number }) {
         alt=""
         className={styles.cardImage}
         loading="lazy"
+        decoding="async"
         style={{ y }}
       />
     </motion.div>

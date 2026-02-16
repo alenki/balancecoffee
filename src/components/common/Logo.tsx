@@ -21,7 +21,7 @@ export function Logo({ variant = 'default', size = 'md' }: LogoProps) {
       className={`${styles.logo} ${styles[variant]} ${styles[size]}`}
     >
       <img
-        src="/logos/balance_5.png"
+        src="/logos/balance_5.webp"
         alt="Balance Coffee"
         className={styles.logoImage}
       />
