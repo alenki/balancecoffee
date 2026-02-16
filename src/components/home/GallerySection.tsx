@@ -52,13 +52,13 @@ export function GallerySection() {
           >
             <div className={styles.mosaicGrid}>
               <div className={`${styles.mosaicCell} ${styles.mosaicA}`}>
-                <img src="/cafe photos/image_8.png" alt="" className={styles.mosaicImg} />
+                <img src="/cafe photos/image_8.webp" alt="" className={styles.mosaicImg} loading="lazy" decoding="async" />
               </div>
               <div className={`${styles.mosaicCell} ${styles.mosaicB}`}>
-                <img src="/cafe photos/image_9.png" alt="" className={styles.mosaicImg} />
+                <img src="/cafe photos/image_9.webp" alt="" className={styles.mosaicImg} loading="lazy" decoding="async" />
               </div>
               <div className={`${styles.mosaicCell} ${styles.mosaicC}`}>
-                <img src="/cafe photos/image_10.png" alt="" className={styles.mosaicImg} />
+                <img src="/cafe photos/image_10.webp" alt="" className={styles.mosaicImg} loading="lazy" decoding="async" />
               </div>
             </div>
           </motion.div>
@@ -73,9 +73,11 @@ export function GallerySection() {
               transition={{ duration: 0.7, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
             >
               <motion.img
-                src="/cafe photos/image_3.png"
+                src="/cafe photos/image_3.webp"
                 alt="Balance Coffee atmosphere"
                 className={styles.gridImg}
+                loading="lazy"
+                decoding="async"
                 style={{ y: imgY1 }}
               />
             </motion.div>
@@ -88,9 +90,11 @@ export function GallerySection() {
               transition={{ duration: 0.7, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
             >
               <motion.img
-                src="/cafe photos/image_6.png"
+                src="/cafe photos/image_6.webp"
                 alt="Balance Coffee counter"
                 className={styles.gridImg}
+                loading="lazy"
+                decoding="async"
                 style={{ y: imgY2 }}
               />
             </motion.div>
@@ -106,9 +110,11 @@ export function GallerySection() {
               transition={{ duration: 0.7, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
             >
               <motion.img
-                src="/cafe photos/image_4.png"
+                src="/cafe photos/image_4.webp"
                 alt="Balance Coffee interior"
                 className={styles.gridImg}
+                loading="lazy"
+                decoding="async"
                 style={{ y: imgY3 }}
               />
             </motion.div>
@@ -158,9 +164,11 @@ export function GallerySection() {
               transition={{ duration: 0.7, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
             >
               <motion.img
-                src="/cafe photos/image_7.png"
+                src="/cafe photos/image_7.webp"
                 alt="Balance Coffee exterior"
                 className={styles.gridImg}
+                loading="lazy"
+                decoding="async"
                 style={{ y: imgY4 }}
               />
             </motion.div>
@@ -173,9 +181,11 @@ export function GallerySection() {
               transition={{ duration: 0.7, delay: 0.25, ease: [0.16, 1, 0.3, 1] }}
             >
               <motion.img
-                src="/cafe photos/image_5.png"
+                src="/cafe photos/image_5.webp"
                 alt="Balance Coffee community"
                 className={styles.gridImg}
+                loading="lazy"
+                decoding="async"
                 style={{ y: imgY5 }}
               />
             </motion.div>

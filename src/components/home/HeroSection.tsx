@@ -17,7 +17,7 @@ export function HeroSection() {
             muted
             loop
             playsInline
-            poster="/cafe photos/image.png"
+            poster="/cafe photos/image.webp"
           >
             <source src="/cafe photos/video.mp4" type="video/mp4" />
           </video>
@@ -77,6 +77,8 @@ export function HeroSection() {
           src="/logos/balance_4.avif"
           alt="Balance Coffee"
           className={styles.bottomRightLogo}
+          fetchPriority="high"
+          decoding="async"
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 1.0, ease }}
