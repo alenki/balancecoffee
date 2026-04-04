@@ -150,7 +150,7 @@ export function Footer() {
         {/* ── Colophon ── */}
         <AnimatedSection className={styles.colophon} delay={0.35}>
           <a
-            href="https://okaraf.ru"
+            href="https://karafco.ru"
             className={styles.karafBadge}
             target="_blank"
             rel="noopener noreferrer"
