@@ -73,16 +73,16 @@ export function HeroSection() {
         </div>
 
         {/* ── Bottom Right: Brand Logo ── */}
-        <motion.img
-          src="/logos/balance_4.avif"
-          alt="Balance Coffee"
+        <motion.div
           className={styles.bottomRightLogo}
-          fetchPriority="high"
-          decoding="async"
+          aria-hidden="true"
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 1.0, ease }}
-        />
+        >
+          <span className={styles.brandName}>harmony</span>
+          <span className={styles.brandSub}>Coffee</span>
+        </motion.div>
 
       </div>
     </section>

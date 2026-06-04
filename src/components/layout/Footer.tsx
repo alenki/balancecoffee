@@ -46,7 +46,7 @@ export function Footer() {
           transition={{ duration: 1, ease }}
         >
           <span className={styles.brandLabel}>Specialty Coffee</span>
-          <h2 className={styles.brandText}>BALANCE COFFEE</h2>
+          <h2 className={styles.brandText}>HARMONY COFFEE</h2>
           <p className={styles.brandTagline}>{t('footer.tagline')}</p>
         </motion.div>
       </div>
@@ -105,7 +105,7 @@ export function Footer() {
             <h3 className={styles.panelHeading}>{t('footer.contactUs').split('\n').map((line, i) => <span key={i}>{line}{i === 0 && <br />}</span>)}</h3>
             <div className={styles.panelContent}>
               <a
-                href="https://www.instagram.com/balancecoffee.ru/"
+                href="https://www.instagram.com/harmonycoffee.ru/"
                 className={styles.contactLink}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -159,7 +159,7 @@ export function Footer() {
             <span className={styles.karafLine} aria-hidden="true" />
           </a>
           <p className={styles.copyright}>
-            &copy; {currentYear} Balance Coffee
+            &copy; {currentYear} Harmony Coffee
           </p>
         </AnimatedSection>
       </div>

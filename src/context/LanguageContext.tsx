@@ -56,7 +56,7 @@ const translations: Record<Lang, Record<string, string>> = {
 
     // About
     'about.label': 'О нас',
-    'about.manifesto1': '5 лет назад мы открыли Balance Coffee с одной простой идеей — создать пространство,',
+    'about.manifesto1': '5 лет назад мы открыли Harmony Coffee с одной простой идеей — создать пространство,',
     'about.manifesto1em': 'где современные, прогрессивные и деятельные люди',
     'about.manifesto1end': 'могли бы собираться вместе, обмениваться идеями и вдохновляться друг другом.',
     'about.manifesto2': 'Сегодня наши кофейни посещает более 6000 таких удивительных людей каждый день. Мы мечтаем объединить таких людей по всей территории',
@@ -120,7 +120,7 @@ const translations: Record<Lang, Record<string, string>> = {
     'menuPage.ctaTitle': 'Готовы сделать заказ?',
 
     // Daily Page
-    'daily.subtitle': 'Добро пожаловать в журнал Balance Coffee.\nЗдесь мы делимся вдохновением, моментами и атмосферой,\nкоторые делают каждый день особенным.',
+    'daily.subtitle': 'Добро пожаловать в журнал Harmony Coffee.\nЗдесь мы делимся вдохновением, моментами и атмосферой,\nкоторые делают каждый день особенным.',
     'daily.quote1': 'Каждая чашка кофе — маленькое путешествие. От Эфиопии до Бразилии, от зерна до аромата.',
     'daily.quote2': 'Кофе — это не просто напиток. Это момент паузы в бесконечном ритме жизни.',
 
@@ -162,7 +162,7 @@ const translations: Record<Lang, Record<string, string>> = {
 
     // About
     'about.label': 'About us',
-    'about.manifesto1': '5 years ago we opened Balance Coffee with one simple idea — to create a space',
+    'about.manifesto1': '5 years ago we opened Harmony Coffee with one simple idea — to create a space',
     'about.manifesto1em': 'where modern, progressive and driven people',
     'about.manifesto1end': 'could come together, exchange ideas and inspire each other.',
     'about.manifesto2': 'Today our cafés welcome over 6,000 such amazing people every day. We dream of uniting these people across',
@@ -226,7 +226,7 @@ const translations: Record<Lang, Record<string, string>> = {
     'menuPage.ctaTitle': 'Ready to order?',
 
     // Daily Page
-    'daily.subtitle': 'Welcome to the Balance Coffee journal.\nHere we share inspiration, moments and the atmosphere\nthat make every day special.',
+    'daily.subtitle': 'Welcome to the Harmony Coffee journal.\nHere we share inspiration, moments and the atmosphere\nthat make every day special.',
     'daily.quote1': 'Every cup of coffee is a small journey. From Ethiopia to Brazil, from bean to aroma.',
     'daily.quote2': 'Coffee is not just a drink. It is a moment of pause in the endless rhythm of life.',
 

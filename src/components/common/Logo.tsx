@@ -19,13 +19,12 @@ export function Logo({ variant = 'default', size = 'md' }: LogoProps) {
       to="/"
       onClick={handleClick}
       className={`${styles.logo} ${styles[variant]} ${styles[size]}`}
+      aria-label="Harmony Coffee — home"
     >
-      <img
-        src="/logos/balance_5.webp"
-        alt="Balance Coffee"
-        className={styles.logoImage}
-        decoding="async"
-      />
+      <span className={styles.wordmark} aria-hidden="true">
+        <span className={styles.name}>harmony</span>
+        <span className={styles.sub}>Coffee</span>
+      </span>
     </Link>
   );
 }

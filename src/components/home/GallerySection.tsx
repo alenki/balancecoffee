@@ -74,7 +74,7 @@ export function GallerySection() {
             >
               <motion.img
                 src="/cafe photos/image_3.webp"
-                alt="Balance Coffee atmosphere"
+                alt="Harmony Coffee atmosphere"
                 className={styles.gridImg}
                 loading="lazy"
                 decoding="async"
@@ -91,7 +91,7 @@ export function GallerySection() {
             >
               <motion.img
                 src="/cafe photos/image_6.webp"
-                alt="Balance Coffee counter"
+                alt="Harmony Coffee counter"
                 className={styles.gridImg}
                 loading="lazy"
                 decoding="async"
@@ -111,7 +111,7 @@ export function GallerySection() {
             >
               <motion.img
                 src="/cafe photos/image_4.webp"
-                alt="Balance Coffee interior"
+                alt="Harmony Coffee interior"
                 className={styles.gridImg}
                 loading="lazy"
                 decoding="async"
@@ -165,7 +165,7 @@ export function GallerySection() {
             >
               <motion.img
                 src="/cafe photos/image_7.webp"
-                alt="Balance Coffee exterior"
+                alt="Harmony Coffee exterior"
                 className={styles.gridImg}
                 loading="lazy"
                 decoding="async"
@@ -182,7 +182,7 @@ export function GallerySection() {
             >
               <motion.img
                 src="/cafe photos/image_5.webp"
-                alt="Balance Coffee community"
+                alt="Harmony Coffee community"
                 className={styles.gridImg}
                 loading="lazy"
                 decoding="async"

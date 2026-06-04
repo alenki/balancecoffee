@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Balance Coffee is a React 19 + TypeScript + Vite single-page application for a coffee shop chain with multiple city locations.
+Harmony Coffee is a React 19 + TypeScript + Vite single-page application for a coffee shop chain with multiple city locations.
 
 ## Commands
 

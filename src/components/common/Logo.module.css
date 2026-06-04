@@ -1,5 +1,5 @@
 .logo {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   text-decoration: none;
   transition: opacity var(--transition-base);
@@ -9,32 +9,65 @@
   opacity: 0.85;
 }
 
-.logoImage {
-  display: block;
-  height: auto;
-  width: auto;
-  object-fit: contain;
-  transition: filter 0.3s ease;
+/* Two-line wordmark: bold lowercase name over thin, wide-tracked "COFFEE" */
+.wordmark {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1;
+}
+
+.name {
+  font-family: var(--font-logo);
+  font-weight: 800;
+  text-transform: lowercase;
+  letter-spacing: -0.01em;
+  line-height: 0.92;
+  color: var(--color-text-dark);
+  transition: color 0.3s ease;
+}
+
+.sub {
+  font-family: var(--font-logo);
+  font-weight: 300;
+  text-transform: uppercase;
+  letter-spacing: 0.34em;
+  /* Compensate trailing letter-spacing so "COFFEE" stays optically centered */
+  text-indent: 0.34em;
+  margin-top: 0.14em;
+  color: var(--color-text-dark);
+  transition: color 0.3s ease;
 }
 
 /* Variants */
-.default .logoImage {
-  filter: none;
+.default .name,
+.default .sub {
+  color: var(--color-text-dark);
 }
 
-.light .logoImage {
-  filter: brightness(0) invert(1);
+.light .name,
+.light .sub {
+  color: var(--color-white);
 }
 
-/* Sizes */
-.sm .logoImage {
-  height: 28px;
+/* Sizes — scale the wordmark to match the original logo heights (sm 28 / md 36 / lg 56) */
+.sm .name {
+  font-size: 17px;
+}
+.sm .sub {
+  font-size: 7.5px;
 }
 
-.md .logoImage {
-  height: 36px;
+.md .name {
+  font-size: 23px;
+}
+.md .sub {
+  font-size: 9.5px;
 }
 
-.lg .logoImage {
-  height: 56px;
+.lg .name {
+  font-size: 36px;
+}
+.lg .sub {
+  font-size: 14px;
 }

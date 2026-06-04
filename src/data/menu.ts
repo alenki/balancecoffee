@@ -461,11 +461,11 @@ export const menuData: MenuCategory[] = [
     id: 'merch',
     name: 'Мерч',
     slug: 'merch',
-    description: 'Стиль Balance',
+    description: 'Стиль Harmony',
     items: [
       {
         id: 'tshirt',
-        name: 'Футболка Balance',
+        name: 'Футболка Harmony',
         description: 'Хлопок, унисекс',
         price: 1500,
         image: '/menu/desserts/image%20copy.webp',
@@ -479,7 +479,7 @@ export const menuData: MenuCategory[] = [
       },
       {
         id: 'cup',
-        name: 'Кружка Balance',
+        name: 'Кружка Harmony',
         description: 'Керамика, 350 мл',
         price: 800,
         image: '/menu/desserts/image%20copy%203.webp',

@@ -176,16 +176,37 @@
   z-index: 3;
   top: var(--space-6);
   right: var(--space-6);
-  height: clamp(24px, 4vw, 36px);
-  width: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  line-height: 1;
+  color: #ffffff;
   opacity: 0.7;
+}
+
+.brandName {
+  font-family: var(--font-logo);
+  font-weight: 800;
+  text-transform: lowercase;
+  letter-spacing: -0.01em;
+  line-height: 0.92;
+  font-size: clamp(15px, 3.2vw, 34px);
+}
+
+.brandSub {
+  font-family: var(--font-logo);
+  font-weight: 300;
+  text-transform: uppercase;
+  letter-spacing: 0.3em;
+  text-indent: 0.3em;
+  margin-top: 0.12em;
+  font-size: clamp(6.5px, 1.3vw, 13px);
 }
 
 @media (min-width: 768px) {
   .bottomRightLogo {
     top: var(--space-10);
     right: var(--space-10);
-    height: clamp(28px, 3.5vw, 44px);
   }
 }
 
@@ -194,7 +215,6 @@
     top: auto;
     bottom: var(--space-20);
     right: var(--space-12);
-    height: clamp(36px, 3.5vw, 56px);
   }
 }
 

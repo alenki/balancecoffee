@@ -1,5 +1,5 @@
 /* ============================================
-   BALANCE COFFEE - Global Styles
+   HARMONY COFFEE - Global Styles
    Clean Minimalist Premium (Franchise Style)
    ============================================ */
 
@@ -56,6 +56,7 @@
   --font-primary: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
   --font-display: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
   --font-serif: 'Playfair Display', 'Georgia', serif;
+  --font-logo: 'Nunito', 'Trebuchet MS', var(--font-primary);
 
   /* Font Sizes */
   --text-xs: 0.75rem;

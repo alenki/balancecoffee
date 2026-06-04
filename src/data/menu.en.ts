@@ -459,11 +459,11 @@ export const menuDataEn: MenuCategory[] = [
     id: 'merch',
     name: 'Merch',
     slug: 'merch',
-    description: 'Balance style',
+    description: 'Harmony style',
     items: [
       {
         id: 'tshirt',
-        name: 'Balance T-Shirt',
+        name: 'Harmony T-Shirt',
         description: 'Cotton, unisex',
         price: 1500,
         image: '/menu/desserts/image%20copy.webp',
@@ -477,7 +477,7 @@ export const menuDataEn: MenuCategory[] = [
       },
       {
         id: 'cup',
-        name: 'Balance Mug',
+        name: 'Harmony Mug',
         description: 'Ceramic, 350 ml',
         price: 800,
         image: '/menu/desserts/image%20copy%203.webp',
