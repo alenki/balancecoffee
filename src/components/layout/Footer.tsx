@@ -149,18 +149,20 @@ export function Footer() {
 
         {/* ── Colophon ── */}
         <AnimatedSection className={styles.colophon} delay={0.35}>
-          <a
-            href="https://karafco.ru"
-            className={styles.karafBadge}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <span className={styles.karafText}>Made by Karaf</span>
-            <span className={styles.karafLine} aria-hidden="true" />
-          </a>
           <p className={styles.copyright}>
             &copy; {currentYear} Balance Coffee
           </p>
+          <a
+            href="https://lumako.ru"
+            className={styles.credit}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={t('footer.creditAria')}
+          >
+            <span className={styles.creditMark}>
+              Lumako<span className={styles.creditDot}>.</span>
+            </span>
+          </a>
         </AnimatedSection>
       </div>
     </footer>

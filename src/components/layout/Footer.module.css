@@ -337,44 +337,103 @@ nav.panelContent {
   }
 }
 
-/* ── KARAF Developer Credit ── */
-.karafBadge {
-  display: inline-flex;
-  flex-direction: column;
-  gap: 6px;
-  text-decoration: none;
-}
-
-.karafText {
-  font-family: var(--font-primary);
-  font-size: 0.6875rem;
-  font-weight: var(--font-normal);
-  text-transform: uppercase;
-  letter-spacing: 0.18em;
-  color: rgba(255, 255, 255, 0.32);
-  line-height: 1;
-  transition: color 0.5s ease;
-}
-
-.karafBadge:hover .karafText {
-  color: rgba(255, 255, 255, 0.55);
-}
-
-.karafLine {
-  display: block;
-  height: 1px;
-  width: 0;
-  background: rgba(255, 255, 255, 0.35);
-  transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.karafBadge:hover .karafLine {
-  width: 100%;
-}
-
 .copyright {
   font-family: var(--font-primary);
   font-size: var(--text-xs);
   color: rgba(255, 255, 255, 0.3);
   letter-spacing: 0.02em;
+}
+
+/* ============================================
+   LUMAKO — Developer credit
+   The wordmark alone, sitting at the copyright's own value so the
+   two read as one matched pair of meta type — then resolving to
+   full brand colour on intent.
+
+   Per the Lumako brandbook v1.1:
+   §02 the mark is a typeface, not a file — "Lumako." is live text
+       in Inter Semibold with tight tracking, its final period the
+       brand's single ornament, in lume gold. Never boxed, never
+       shadowed. Only colour changes between states, so the mark's
+       metrics are identical at rest and on hover — nothing reflows.
+   §03 one accent, minimal — gold appears nowhere but that period.
+   §06 focus ring = lume-deep, 2px outline, 2px offset.
+   ============================================ */
+.credit {
+  --lumako-lume: #d49a2e;
+  --lumako-lume-deep: #9c6e1b;
+  --lumako-ink-fg: #fafafa;
+  --lumako-ease: cubic-bezier(0.16, 1, 0.3, 1);
+
+  display: inline-flex;
+  width: fit-content;
+  align-self: flex-start;
+  /* Holds the focus ring clear of the mark without shifting a single
+     glyph: the padding grows the ring and hit area, the negative
+     margin hands the space back to the row. */
+  padding: 0.5rem 0.75rem;
+  margin: -0.5rem -0.75rem;
+  text-decoration: none;
+  font-synthesis: none;
+}
+
+.credit:focus-visible {
+  outline: 2px solid var(--lumako-lume-deep);
+  outline-offset: 2px;
+}
+
+.creditMark {
+  font-family: 'Inter', system-ui, sans-serif;
+  /* A step above .copyright — the credit still shares its value, so the
+     two read as a pair, but the mark carries a little more presence.
+     Face and tracking stay the brandbook's, since neither can change on
+     hover without reflow. */
+  font-size: var(--text-sm);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+  color: rgba(255, 255, 255, 0.3);
+  transition: color 0.4s var(--lumako-ease);
+}
+
+/* At rest the dot is as quiet as the rest of the mark — the credit
+   defers to the host. On intent the whole mark comes to colour and
+   the one gold ornament arrives with it. */
+.creditDot {
+  color: inherit;
+  transition: color 0.4s var(--lumako-ease);
+}
+
+.credit:focus-visible .creditMark,
+.credit:active .creditMark {
+  color: var(--lumako-ink-fg);
+}
+
+.credit:focus-visible .creditDot,
+.credit:active .creditDot {
+  color: var(--lumako-lume);
+}
+
+/* Hover is gated to real pointers — on touch, :hover sticks after a tap
+   and would leave the credit lit, which is the one state it shouldn't
+   rest in. Touch gets :active instead. */
+@media (hover: hover) {
+  .credit:hover .creditMark {
+    color: var(--lumako-ink-fg);
+  }
+
+  .credit:hover .creditDot {
+    color: var(--lumako-lume);
+  }
+}
+
+/* ============================================
+   REDUCED MOTION
+   ============================================ */
+@media (prefers-reduced-motion: reduce) {
+  .creditMark,
+  .creditDot {
+    transition: none;
+  }
 }

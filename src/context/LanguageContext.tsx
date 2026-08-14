@@ -110,6 +110,7 @@ const translations: Record<Lang, Record<string, string>> = {
     'footer.daily': 'Daily',
     'footer.reviews': 'Отзывы',
     'footer.descriptor': 'Кофе, выпечка, свежевыжатые соки',
+    'footer.creditAria': 'Сайт сделали Lumako — откроется в новой вкладке',
 
     // Menu Page
     'menuPage.title': 'Меню',
@@ -216,6 +217,7 @@ const translations: Record<Lang, Record<string, string>> = {
     'footer.daily': 'Daily',
     'footer.reviews': 'Reviews',
     'footer.descriptor': 'Coffee, pastry, fresh juices',
+    'footer.creditAria': 'Site by Lumako — opens in a new tab',
 
     // Menu Page
     'menuPage.title': 'Menu',
