@@ -2,66 +2,65 @@ import type { City, ContactInfo } from '../types';
 
 export const cities: City[] = [
   {
-    id: 'nalchik',
-    name: 'Нальчик',
+    id: 'moscow',
+    name: 'Москва',
     locations: [
-      { address: 'Кирова, 222', coordinates: [43.4846, 43.6072] },
-      { address: 'Кирова, 1Д', coordinates: [43.4831, 43.6058] },
-      { address: 'Кулиева, 2В / левое крыло здания', coordinates: [43.4915, 43.5982] },
-      { address: 'Кулиева, 2В / правое крыло здания', coordinates: [43.4915, 43.5985] },
-      { address: 'Ленина, 30', coordinates: [43.4858, 43.6045] },
-      { address: 'Проспект Шогенцукова, 4', coordinates: [43.4872, 43.6012] },
+      { address: 'Ореховая, 15', coordinates: [55.7602, 37.6215] },
+      { address: 'Лесной переулок, 3', coordinates: [55.7514, 37.6098] },
+      { address: 'Набережная, 42', coordinates: [55.7448, 37.6304] },
     ],
   },
   {
-    id: 'rostov',
-    name: 'Ростов-на-Дону',
+    id: 'spb',
+    name: 'Санкт-Петербург',
     locations: [
-      { address: 'Большая Садовая, 111', coordinates: [47.2274, 39.7446] },
-      { address: 'Большая Садовая, 81/31', coordinates: [47.2271, 39.7389] },
-      { address: 'Большая Садовая, 84', coordinates: [47.2273, 39.7395] },
+      { address: 'Речная, 8', coordinates: [59.9386, 30.3141] },
+      { address: 'Солнечный бульвар, 21', coordinates: [59.9271, 30.3382] },
+      { address: 'Янтарная, 5А', coordinates: [59.9425, 30.3529] },
     ],
   },
   {
-    id: 'sochi',
-    name: 'Сочи',
+    id: 'kazan',
+    name: 'Казань',
     locations: [
-      { address: 'Навагинская, 9', coordinates: [43.5855, 39.7231] },
-      { address: 'Парковая, 11/10А', coordinates: [43.5842, 39.7198], isComingSoon: true },
+      { address: 'Центральная, 12', coordinates: [55.7942, 49.112] },
+      { address: 'Цветочная, 7', coordinates: [55.7889, 49.1225] },
     ],
   },
   {
-    id: 'vladikavkaz',
-    name: 'Владикавказ',
+    id: 'ekaterinburg',
+    name: 'Екатеринбург',
     locations: [
-      { address: 'Куйбышева, 15', coordinates: [43.0248, 44.6819] },
-      { address: 'Проспект Мира, 10', coordinates: [43.0233, 44.6802] },
-      { address: 'Гаппо Баева, 22', coordinates: [43.0259, 44.6725] },
+      { address: 'Весенняя, 30', coordinates: [56.8354, 60.6101] },
+      { address: 'Проспект Мечты, 4', coordinates: [56.8412, 60.5978] },
+      { address: 'Озёрная, 18', coordinates: [56.8301, 60.6203], isComingSoon: true },
     ],
   },
   {
-    id: 'stavropol',
-    name: 'Ставрополь',
+    id: 'nizhny-novgorod',
+    name: 'Нижний Новгород',
     locations: [
-      { address: '50 лет ВЛКСМ, 11', coordinates: [45.0428, 41.9734] },
+      { address: 'Ясная, 25', coordinates: [56.324, 43.9946] },
+      { address: 'Кленовый бульвар, 9', coordinates: [56.3186, 44.0125] },
     ],
   },
   {
-    id: 'samara',
-    name: 'Самара',
+    id: 'krasnodar',
+    name: 'Краснодар',
     locations: [
-      { address: 'Куйбышева, 70', coordinates: [53.1893, 50.0972] },
+      { address: 'Южная, 60', coordinates: [45.0393, 38.977] },
+      { address: 'Виноградная, 14', coordinates: [45.0311, 38.9668] },
+      { address: 'Тихая, 2Б', coordinates: [45.026, 38.9855] },
     ],
   },
 ];
 
 export const contactInfo: ContactInfo = {
-  phone: '+7 928 081 8632',
-  phoneHref: 'tel:+79280818632',
-  telegram: 'https://t.me/+79280818632',
+  phone: '+7 928 999 66 40',
+  phoneHref: 'tel:+79289996640',
+  telegram: 'https://t.me/lumakostudio',
   deliveryHours: {
     start: '8:00',
     end: '23:00',
   },
 };
-

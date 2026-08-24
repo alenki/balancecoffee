@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { Logo } from '../common/Logo';
 import { useLanguage } from '../../context/LanguageContext';
+import { contactInfo } from '../../data/locations';
 import styles from './Header.module.css';
 
 /** Minimum scroll distance before triggering hide (prevents jitter) */
@@ -133,7 +134,7 @@ export function Header() {
               </NavLink>
             ))}
             <a
-              href="https://docs.google.com/forms/d/e/1FAIpQLSc_POaT-B6XXcHm679E6L1214FlDxsUCgNGQMMXF1Ebg1RK4g/viewform"
+              href={contactInfo.telegram}
               className={styles.navLink}
               target="_blank"
               rel="noopener noreferrer"
@@ -233,7 +234,7 @@ export function Header() {
               </NavLink>
             ))}
             <a
-              href="https://docs.google.com/forms/d/e/1FAIpQLSc_POaT-B6XXcHm679E6L1214FlDxsUCgNGQMMXF1Ebg1RK4g/viewform"
+              href={contactInfo.telegram}
               className={styles.mobileNavLink}
               target="_blank"
               rel="noopener noreferrer"

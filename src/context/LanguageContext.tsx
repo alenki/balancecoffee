@@ -56,11 +56,11 @@ const translations: Record<Lang, Record<string, string>> = {
 
     // About
     'about.label': 'О нас',
-    'about.manifesto1': '5 лет назад мы открыли Harmony Coffee с одной простой идеей — создать пространство,',
-    'about.manifesto1em': 'где современные, прогрессивные и деятельные люди',
-    'about.manifesto1end': 'могли бы собираться вместе, обмениваться идеями и вдохновляться друг другом.',
-    'about.manifesto2': 'Сегодня наши кофейни посещает более 6000 таких удивительных людей каждый день. Мы мечтаем объединить таких людей по всей территории',
-    'about.manifesto2em': 'России и за её пределами.',
+    'about.manifesto1': 'В 2021 году мы придумали Harmony Coffee как место,',
+    'about.manifesto1em': 'где за чашкой кофе рождаются идеи',
+    'about.manifesto1end': 'и завязываются настоящие дружбы.',
+    'about.manifesto2': 'Сегодня наши кофейни — часть утреннего ритуала тысяч гостей. И это только начало:',
+    'about.manifesto2em': 'впереди новые города и новые истории.',
     'about.statCities': 'городов',
     'about.statCafes': 'кофеен',
     'about.statItems': 'позиций',
@@ -162,11 +162,11 @@ const translations: Record<Lang, Record<string, string>> = {
 
     // About
     'about.label': 'About us',
-    'about.manifesto1': '5 years ago we opened Harmony Coffee with one simple idea — to create a space',
-    'about.manifesto1em': 'where modern, progressive and driven people',
-    'about.manifesto1end': 'could come together, exchange ideas and inspire each other.',
-    'about.manifesto2': 'Today our cafés welcome over 6,000 such amazing people every day. We dream of uniting these people across',
-    'about.manifesto2em': 'Russia and beyond.',
+    'about.manifesto1': 'In 2021 we imagined Harmony Coffee as a place',
+    'about.manifesto1em': 'where ideas are born over a cup of coffee',
+    'about.manifesto1end': 'and real friendships begin.',
+    'about.manifesto2': 'Today our cafés are part of the morning ritual for thousands of guests. And this is only the beginning:',
+    'about.manifesto2em': 'new cities and new stories ahead.',
     'about.statCities': 'cities',
     'about.statCafes': 'cafés',
     'about.statItems': 'items',

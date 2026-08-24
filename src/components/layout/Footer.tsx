@@ -105,7 +105,7 @@ export function Footer() {
             <h3 className={styles.panelHeading}>{t('footer.contactUs').split('\n').map((line, i) => <span key={i}>{line}{i === 0 && <br />}</span>)}</h3>
             <div className={styles.panelContent}>
               <a
-                href="https://www.instagram.com/harmonycoffee.ru/"
+                href="https://www.instagram.com/lumako.ru/"
                 className={styles.contactLink}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -150,13 +150,13 @@ export function Footer() {
         {/* ── Colophon ── */}
         <AnimatedSection className={styles.colophon} delay={0.35}>
           <a
-            href="https://karafco.ru"
-            className={styles.karafBadge}
+            href="https://lumako.ru"
+            className={styles.lumakoBadge}
             target="_blank"
             rel="noopener noreferrer"
           >
-            <span className={styles.karafText}>Made by Karaf</span>
-            <span className={styles.karafLine} aria-hidden="true" />
+            <span className={styles.lumakoText}>Made by Lumako</span>
+            <span className={styles.lumakoLine} aria-hidden="true" />
           </a>
           <p className={styles.copyright}>
             &copy; {currentYear} Harmony Coffee

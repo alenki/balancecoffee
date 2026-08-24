@@ -46,7 +46,7 @@ export function AboutSection() {
           animate={manifestoInView ? { opacity: 1 } : {}}
           transition={{ duration: 1, delay: 0.7, ease }}
         >
-          Est. 2019
+          Est. 2021
         </motion.span>
 
         <motion.div

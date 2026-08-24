@@ -257,7 +257,7 @@ export function CafesSection() {
             animate={footerInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.5, delay: 0.25, ease }}
           >
-            <a href={contactInfo.telegram} target="_blank" rel="noopener noreferrer" className={styles.ctaButton}>
+            <a href="https://www.instagram.com/lumako.ru/" target="_blank" rel="noopener noreferrer" className={styles.ctaButton}>
               {t('cafes.cta')}
             </a>
           </motion.div>

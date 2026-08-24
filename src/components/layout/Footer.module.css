@@ -337,15 +337,15 @@ nav.panelContent {
   }
 }
 
-/* ── KARAF Developer Credit ── */
-.karafBadge {
+/* ── LUMAKO Developer Credit ── */
+.lumakoBadge {
   display: inline-flex;
   flex-direction: column;
   gap: 6px;
   text-decoration: none;
 }
 
-.karafText {
+.lumakoText {
   font-family: var(--font-primary);
   font-size: 0.6875rem;
   font-weight: var(--font-normal);
@@ -356,11 +356,11 @@ nav.panelContent {
   transition: color 0.5s ease;
 }
 
-.karafBadge:hover .karafText {
+.lumakoBadge:hover .lumakoText {
   color: rgba(255, 255, 255, 0.55);
 }
 
-.karafLine {
+.lumakoLine {
   display: block;
   height: 1px;
   width: 0;
@@ -368,7 +368,7 @@ nav.panelContent {
   transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.karafBadge:hover .karafLine {
+.lumakoBadge:hover .lumakoLine {
   width: 100%;
 }
 
