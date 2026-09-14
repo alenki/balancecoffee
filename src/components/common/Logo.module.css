@@ -50,7 +50,7 @@
   color: var(--color-white);
 }
 
-/* Sizes — scale the wordmark to match the original logo heights (sm 28 / md 36 / lg 56) */
+/* Sizes: scale the wordmark to match the original logo heights (sm 28 / md 36 / lg 56) */
 .sm .name {
   font-size: 17px;
 }

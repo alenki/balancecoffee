@@ -500,7 +500,7 @@
 }
 
 /* ============================================
-   PROPORTIONAL SCALING (1000px – 1399px)
+   PROPORTIONAL SCALING (1000px to 1399px)
    All spacing uses vw so the layout scales
    identically to the 1400px version, just smaller.
    Placed last to override the 1200px rules.
@@ -586,7 +586,7 @@
     padding: 2.857vw 1.714vw 2.5vw;
   }
 
-  /* Manifesto — scale text proportionally */
+  /* Manifesto: scale text proportionally */
   .manifestoTitle {
     font-size: clamp(2rem, 4.25vw, 3.8rem);
     margin-bottom: 1.714vw;

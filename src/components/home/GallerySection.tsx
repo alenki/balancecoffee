@@ -3,6 +3,12 @@ import { Link } from 'react-router-dom';
 import { motion, useScroll, useTransform } from 'motion/react';
 import { useScrollAnimation } from '../../hooks/useScrollAnimation';
 import { useLanguage } from '../../context/LanguageContext';
+import { Image } from '../common/Image';
+import {
+  GALLERY_CENTER_SIZES,
+  GALLERY_MOSAIC_SIZES,
+  GALLERY_SIDE_SIZES,
+} from '../common/imageSizes';
 import styles from './GallerySection.module.css';
 
 export function GallerySection() {
@@ -43,7 +49,7 @@ export function GallerySection() {
 
         {/* Editorial Grid Layout */}
         <div className={styles.editorialGrid}>
-          {/* Mobile Daily Mosaic — replaces side columns on small screens */}
+          {/* Mobile Daily Mosaic: replaces side columns on small screens */}
           <motion.div
             className={styles.dailyMosaic}
             initial={{ opacity: 0 }}
@@ -52,13 +58,13 @@ export function GallerySection() {
           >
             <div className={styles.mosaicGrid}>
               <div className={`${styles.mosaicCell} ${styles.mosaicA}`}>
-                <img src="/cafe photos/image_8.webp" alt="" className={styles.mosaicImg} loading="lazy" decoding="async" />
+                <Image name="cafe/image_8" alt={t('gallery.altCafe')} className={styles.mosaicImg} sizes={GALLERY_MOSAIC_SIZES} />
               </div>
               <div className={`${styles.mosaicCell} ${styles.mosaicB}`}>
-                <img src="/cafe photos/image_9.webp" alt="" className={styles.mosaicImg} loading="lazy" decoding="async" />
+                <Image name="cafe/image_9" alt={t('gallery.altGuests')} className={styles.mosaicImg} sizes={GALLERY_MOSAIC_SIZES} />
               </div>
               <div className={`${styles.mosaicCell} ${styles.mosaicC}`}>
-                <img src="/cafe photos/image_10.webp" alt="" className={styles.mosaicImg} loading="lazy" decoding="async" />
+                <Image name="cafe/image_10" alt={t('gallery.altStreet')} className={styles.mosaicImg} sizes={GALLERY_MOSAIC_SIZES} />
               </div>
             </div>
           </motion.div>
@@ -72,13 +78,12 @@ export function GallerySection() {
               animate={isVisible ? { opacity: 1 } : {}}
               transition={{ duration: 0.7, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
             >
-              <motion.img
-                src="/cafe photos/image_3.webp"
+              <Image
+                name="cafe/image_3"
                 alt="Harmony Coffee atmosphere"
                 className={styles.gridImg}
-                loading="lazy"
-                decoding="async"
-                style={{ y: imgY1 }}
+                sizes={GALLERY_SIDE_SIZES}
+                motionStyle={{ y: imgY1 }}
               />
             </motion.div>
 
@@ -89,13 +94,12 @@ export function GallerySection() {
               animate={isVisible ? { opacity: 1 } : {}}
               transition={{ duration: 0.7, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
             >
-              <motion.img
-                src="/cafe photos/image_6.webp"
+              <Image
+                name="cafe/image_6"
                 alt="Harmony Coffee counter"
                 className={styles.gridImg}
-                loading="lazy"
-                decoding="async"
-                style={{ y: imgY2 }}
+                sizes={GALLERY_SIDE_SIZES}
+                motionStyle={{ y: imgY2 }}
               />
             </motion.div>
           </div>
@@ -109,13 +113,12 @@ export function GallerySection() {
               animate={isVisible ? { opacity: 1 } : {}}
               transition={{ duration: 0.7, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
             >
-              <motion.img
-                src="/cafe photos/image_4.webp"
+              <Image
+                name="cafe/image_4"
                 alt="Harmony Coffee interior"
                 className={styles.gridImg}
-                loading="lazy"
-                decoding="async"
-                style={{ y: imgY3 }}
+                sizes={GALLERY_CENTER_SIZES}
+                motionStyle={{ y: imgY3 }}
               />
             </motion.div>
 
@@ -148,7 +151,7 @@ export function GallerySection() {
                 transition={{ duration: 0.5, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
               >
                 <Link to="/daily" className={styles.manifestoCta}>
-                  Lifestyle
+                  {t('gallery.cta')}
                 </Link>
               </motion.div>
             </div>
@@ -163,13 +166,12 @@ export function GallerySection() {
               animate={isVisible ? { opacity: 1 } : {}}
               transition={{ duration: 0.7, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
             >
-              <motion.img
-                src="/cafe photos/image_7.webp"
+              <Image
+                name="cafe/image_7"
                 alt="Harmony Coffee exterior"
                 className={styles.gridImg}
-                loading="lazy"
-                decoding="async"
-                style={{ y: imgY4 }}
+                sizes={GALLERY_SIDE_SIZES}
+                motionStyle={{ y: imgY4 }}
               />
             </motion.div>
 
@@ -180,13 +182,12 @@ export function GallerySection() {
               animate={isVisible ? { opacity: 1 } : {}}
               transition={{ duration: 0.7, delay: 0.25, ease: [0.16, 1, 0.3, 1] }}
             >
-              <motion.img
-                src="/cafe photos/image_5.webp"
+              <Image
+                name="cafe/image_5"
                 alt="Harmony Coffee community"
                 className={styles.gridImg}
-                loading="lazy"
-                decoding="async"
-                style={{ y: imgY5 }}
+                sizes={GALLERY_SIDE_SIZES}
+                motionStyle={{ y: imgY5 }}
               />
             </motion.div>
           </div>

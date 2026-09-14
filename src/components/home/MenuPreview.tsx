@@ -4,6 +4,8 @@ import { useScrollAnimation } from '../../hooks/useScrollAnimation';
 import { getPopularItems } from '../../data/menu';
 import { useLanguage } from '../../context/LanguageContext';
 import type { MenuItem } from '../../types';
+import { Image } from '../common/Image';
+import { MENU_CARD_SIZES } from '../common/imageSizes';
 import styles from './MenuPreview.module.css';
 
 const EASE = [0.16, 1, 0.3, 1] as const;
@@ -112,12 +114,11 @@ function ProductCard({ item, index, isVisible, t }: ProductCardProps) {
     >
       <Link to="/menu" className={styles.cardLink}>
         <div className={styles.imageWrapper}>
-          <img
-            src={item.image}
+          <Image
+            name={item.image}
             alt={item.name}
             className={styles.image}
-            loading="lazy"
-            decoding="async"
+            sizes={MENU_CARD_SIZES}
           />
           {item.isNew && (
             <span className={`${styles.badge} ${styles.badgeNew}`}>

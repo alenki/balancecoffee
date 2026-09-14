@@ -38,7 +38,7 @@ export function Header() {
       const currentY = window.scrollY;
       const delta = currentY - lastScrollY.current;
 
-      // Near top of page — always show
+      // Near top of page: always show
       if (currentY < 80) {
         setIsHiddenByScroll(false);
         scrollingDown.current = false;
@@ -54,7 +54,7 @@ export function Header() {
         // Scrolling down
         if (!scrollingDown.current) {
           scrollingDown.current = true;
-          // Start a timer — hide only if user keeps scrolling down
+          // Start a timer: hide only if user keeps scrolling down
           if (hideTimer.current) clearTimeout(hideTimer.current);
           hideTimer.current = setTimeout(() => {
             if (scrollingDown.current) {
@@ -63,7 +63,7 @@ export function Header() {
           }, HIDE_DELAY);
         }
       } else if (delta < -SCROLL_THRESHOLD) {
-        // Scrolling up — show immediately
+        // Scrolling up: show immediately
         scrollingDown.current = false;
         if (hideTimer.current) {
           clearTimeout(hideTimer.current);

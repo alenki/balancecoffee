@@ -1,5 +1,5 @@
 /* ============================================
-   CATEGORY NAV — Editorial Horizontal Text Nav
+   CATEGORY NAV: Editorial Horizontal Text Nav
    Clean text links with underline active state
    ============================================ */
 
@@ -62,12 +62,12 @@
   display: none;
 }
 
-/* ── Scroll wrapper ── */
+/* Scroll wrapper */
 .scrollWrapper {
   position: relative;
 }
 
-/* ── Tab — Text link with underline ── */
+/* Tab: Text link with underline */
 .tab {
   position: relative;
   display: inline-flex;
@@ -112,7 +112,7 @@
   transform: scaleX(1);
 }
 
-/* ── Divider between tabs ── */
+/* Divider between tabs */
 .divider {
   width: 1px;
   height: 12px;

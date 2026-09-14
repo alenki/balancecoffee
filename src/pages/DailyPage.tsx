@@ -1,12 +1,15 @@
 import { useRef } from 'react';
 import { motion, useScroll, useTransform } from 'motion/react';
 import { useLanguage } from '../context/LanguageContext';
+import { Image } from '../components/common/Image';
+import { DAILY_MASONRY_SIZES } from '../components/common/imageSizes';
+import type { ImageName } from '../generated/image-manifest';
 import styles from './DailyPage.module.css';
 
 interface DailyItem {
   id: string;
   type: 'image' | 'quote' | 'music';
-  image?: string;
+  image?: ImageName;
   title?: string;
   artist?: string;
   quote?: string;
@@ -22,32 +25,32 @@ const dailyItems: DailyItem[] = [
   {
     id: '1',
     type: 'image',
-    image: '/cafe photos/image_16.webp',
+    image: 'cafe/image_16',
   },
   {
     id: '3',
     type: 'image',
-    image: '/cafe photos/image_3.webp',
+    image: 'cafe/image_3',
   },
   {
     id: '4',
     type: 'image',
-    image: '/cafe photos/image_4.webp',
+    image: 'cafe/image_4',
   },
   {
     id: '5',
     type: 'image',
-    image: '/cafe photos/image_5.webp',
+    image: 'cafe/image_5',
   },
   {
     id: '6',
     type: 'image',
-    image: '/cafe photos/image_6.webp',
+    image: 'cafe/image_6',
   },
   {
     id: '7',
     type: 'image',
-    image: '/cafe photos/image_7.webp',
+    image: 'cafe/image_7',
   },
   // MIDDLE COLUMN (items 8-14) - images + 2 quote cards spread out
   {
@@ -58,12 +61,12 @@ const dailyItems: DailyItem[] = [
   {
     id: '9',
     type: 'image',
-    image: '/cafe photos/image_9.webp',
+    image: 'cafe/image_9',
   },
   {
     id: '10',
     type: 'image',
-    image: '/cafe photos/image_8.webp',
+    image: 'cafe/image_8',
   },
   {
     id: '11',
@@ -73,37 +76,37 @@ const dailyItems: DailyItem[] = [
   {
     id: '12',
     type: 'image',
-    image: '/cafe photos/image_11.webp',
+    image: 'cafe/image_11',
   },
   {
     id: '13',
     type: 'image',
-    image: '/cafe photos/image_10.webp',
+    image: 'cafe/image_10',
   },
   {
     id: '14',
     type: 'image',
-    image: '/cafe photos/image_12.webp',
+    image: 'cafe/image_12',
   },
   // RIGHT COLUMN (items 15-21) - images only
   {
     id: '15',
     type: 'image',
-    image: '/cafe photos/image_13.webp',
+    image: 'cafe/image_13',
   },
   {
     id: '16',
     type: 'image',
-    image: '/cafe photos/image_14.webp',
+    image: 'cafe/image_14',
   },
   {
     id: '17',
     type: 'image',
-    image: '/cafe photos/image_15.webp',
+    image: 'cafe/image_15',
   },
 ];
 
-function ParallaxImage({ src, index }: { src: string; index: number }) {
+function ParallaxImage({ src, index }: { src: ImageName; index: number }) {
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -124,13 +127,13 @@ function ParallaxImage({ src, index }: { src: string; index: number }) {
         ease: [0.25, 0.1, 0.25, 1],
       }}
     >
-      <motion.img
-        src={src}
+      <Image
+        name={src}
         alt=""
+        fit="intrinsic"
         className={styles.cardImage}
-        loading="lazy"
-        decoding="async"
-        style={{ y }}
+        sizes={DAILY_MASONRY_SIZES}
+        motionStyle={{ y }}
       />
     </motion.div>
   );
@@ -202,7 +205,7 @@ export function DailyPage() {
   const { t } = useLanguage();
 
   return (
-    <main className={styles.page}>
+    <main className={styles.page} id="main">
       {/* Hero */}
       <section className={styles.hero}>
         <motion.h1

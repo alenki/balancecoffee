@@ -1,5 +1,5 @@
 /* ============================================
-   MENU PREVIEW — Editorial Product Showcase
+   MENU PREVIEW: Editorial Product Showcase
    Inspired by White Coffee's "Carefully Selected"
    Light editorial block with product grid
    ============================================ */
@@ -10,7 +10,7 @@
   overflow: hidden;
 }
 
-/* ── Container — Full-width, edge-to-edge ── */
+/* Container: Full-width, edge-to-edge */
 .container {
   position: relative;
   z-index: 1;
@@ -39,7 +39,7 @@
   }
 }
 
-/* ── Corner Accents ── */
+/* Corner Accents */
 .cornerAccent {
   position: absolute;
   z-index: 2;
@@ -79,7 +79,7 @@
 }
 
 /* ============================================
-   EDITORIAL HEADER — Two-line typographic hero
+   EDITORIAL HEADER: Two-line typographic hero
    ============================================ */
 .header {
   text-align: center;
@@ -114,7 +114,7 @@
 }
 
 /* ============================================
-   PRODUCT GRID — 3 Column Editorial Layout
+   PRODUCT GRID: 3 Column Editorial Layout
    ============================================ */
 .grid {
   display: grid;
@@ -138,7 +138,7 @@
 }
 
 /* ============================================
-   PRODUCT CARD — Editorial Minimal
+   PRODUCT CARD: Editorial Minimal
    ============================================ */
 .card {
   cursor: pointer;
@@ -150,7 +150,7 @@
   color: inherit;
 }
 
-/* ── Image Container ── */
+/* Image Container */
 .imageWrapper {
   position: relative;
   aspect-ratio: 4 / 5;
@@ -167,7 +167,7 @@
   }
 }
 
-/* Warm neutral tone tint overlays — each card gets a distinct warm tone */
+/* Warm neutral tone tint overlays: each card gets a distinct warm tone */
 .card:nth-child(1) .imageWrapper::before { background: rgba(139, 120, 106, 0.08); }
 .card:nth-child(2) .imageWrapper::before { background: rgba(168, 148, 130, 0.10); }
 .card:nth-child(3) .imageWrapper::before { background: rgba(180, 160, 140, 0.07); }
@@ -206,7 +206,7 @@
   border-radius: 2px;
 }
 
-/* ── Card Info Row ── */
+/* Card Info Row */
 .cardInfo {
   display: flex;
   justify-content: space-between;
@@ -289,7 +289,7 @@
   background: var(--color-border-strong);
 }
 
-/* ── Badge ── */
+/* Badge */
 .badge {
   position: absolute;
   top: var(--space-4);
@@ -357,7 +357,7 @@
 }
 
 /* ============================================
-   DIVIDER LINE — Subtle horizontal accent
+   DIVIDER LINE: Subtle horizontal accent
    ============================================ */
 .divider {
   width: 100%;

@@ -25,7 +25,7 @@ export function AboutSection() {
   return (
     <section className={styles.section} ref={sectionRef}>
       {/* ══════════════════════════════════════════
-          PART 1 — THE MANIFESTO (Dark)
+          PART 1: THE MANIFESTO (Dark)
           ══════════════════════════════════════════ */}
       <div className={styles.manifesto} ref={manifestoRef}>
         {/* Grain overlay */}
@@ -53,7 +53,7 @@ export function AboutSection() {
           className={styles.manifestoInner}
           style={{ y: manifestoParallax }}
         >
-          {/* Manifesto text — each line staggered */}
+          {/* Manifesto text: each line staggered */}
           <div className={styles.manifestoText}>
             <motion.p
               className={styles.manifestoLine}

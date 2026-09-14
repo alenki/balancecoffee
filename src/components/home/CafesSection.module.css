@@ -1,5 +1,5 @@
 /* ============================================
-   CAFES SECTION — Editorial City Listing
+   CAFES SECTION: Editorial City Listing
    Magazine-inspired accordion of all locations
    Warm cream canvas with editorial typography
    ============================================ */
@@ -10,7 +10,7 @@
   overflow: hidden;
 }
 
-/* ── Container ── */
+/* Container */
 .container {
   position: relative;
   z-index: 1;
@@ -34,7 +34,7 @@
   }
 }
 
-/* ── Corner Accents ── */
+/* Corner Accents */
 .cornerAccent {
   position: absolute;
   z-index: 2;
@@ -109,26 +109,26 @@
 }
 
 /* ============================================
-   CITY LISTING — Accordion Rows
+   CITY LISTING: Accordion Rows
    ============================================ */
 .cityList {
   position: relative;
   margin-bottom: clamp(var(--space-12), 5vw, var(--space-20));
 }
 
-/* ── Row Divider ── */
+/* Row Divider */
 .rowDivider {
   height: 1px;
   background: var(--color-border-strong);
   transform-origin: left center;
 }
 
-/* ── City Row ── */
+/* City Row */
 .cityRow {
   position: relative;
 }
 
-/* ── Row Button (the clickable strip) ── */
+/* Row Button (the clickable strip) */
 .rowButton {
   display: flex;
   align-items: center;
@@ -159,7 +159,7 @@
   }
 }
 
-/* ── Row Left (Index + Name + Meta) ── */
+/* Row Left (Index + Name + Meta) */
 .rowLeft {
   display: flex;
   align-items: baseline;
@@ -223,7 +223,7 @@
   margin-left: var(--space-1);
 }
 
-/* ── Row Right (Preview + Expand Icon) ── */
+/* Row Right (Preview + Expand Icon) */
 .rowRight {
   display: flex;
   align-items: center;
@@ -246,7 +246,7 @@
   }
 }
 
-/* ── Expand/Collapse Icon ── */
+/* Expand/Collapse Icon */
 .expandIcon {
   display: flex;
   align-items: center;
@@ -345,7 +345,7 @@
   margin-left: var(--space-2);
 }
 
-/* ── Contact info inside expanded row ── */
+/* Contact info inside expanded row */
 .expandedContact {
   display: flex;
   align-items: center;
@@ -381,7 +381,7 @@
 }
 
 /* ============================================
-   SECTION FOOTER — Stats + CTA
+   SECTION FOOTER: Stats + CTA
    ============================================ */
 .sectionFooter {
   display: flex;
@@ -390,7 +390,7 @@
   gap: var(--space-8);
 }
 
-/* ── Stats Row ── */
+/* Stats Row */
 .stats {
   display: flex;
   align-items: center;
@@ -434,7 +434,7 @@
   }
 }
 
-/* ── CTA Button ── */
+/* CTA Button */
 .ctaWrap {
   display: flex;
   justify-content: center;

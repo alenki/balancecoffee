@@ -19,7 +19,7 @@ export function Logo({ variant = 'default', size = 'md' }: LogoProps) {
       to="/"
       onClick={handleClick}
       className={`${styles.logo} ${styles[variant]} ${styles[size]}`}
-      aria-label="Harmony Coffee — home"
+      aria-label="Harmony Coffee, home"
     >
       <span className={styles.wordmark} aria-hidden="true">
         <span className={styles.name}>harmony</span>

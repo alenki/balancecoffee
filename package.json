@@ -7,7 +7,10 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "images": "node scripts/build-images.mjs",
+    "predev": "npm run images",
+    "prebuild": "npm run images"
   },
   "dependencies": {
     "leaflet": "^1.9.4",

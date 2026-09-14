@@ -32,7 +32,7 @@ function CityRow({
       animate={isVisible ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.7, delay: 0.2 + index * 0.08, ease }}
     >
-      {/* Divider line — animates width */}
+      {/* Divider line: animates width */}
       <motion.div
         className={styles.rowDivider}
         initial={{ scaleX: 0 }}
@@ -131,7 +131,7 @@ function CityRow({
                 </a>
                 <span className={styles.contactDivider}>·</span>
                 <span className={styles.contactHours}>
-                  {contactInfo.deliveryHours.start} —{' '}
+                  {contactInfo.deliveryHours.start} {t('common.timeRange')}{' '}
                   {contactInfo.deliveryHours.end}
                 </span>
               </div>
@@ -180,7 +180,7 @@ export function CafesSection() {
       </motion.span>
 
       <div className={styles.container}>
-        {/* ── Editorial Header ── */}
+        {/* Editorial Header */}
         <div className={styles.header} ref={headerRef}>
           <motion.span
             className={styles.headerItalic}
@@ -203,7 +203,7 @@ export function CafesSection() {
           </motion.h2>
         </div>
 
-        {/* ── City Listing ── */}
+        {/* City Listing */}
         <div className={styles.cityList} ref={listRef}>
           {cities.map((city, index) => (
             <CityRow
@@ -230,7 +230,7 @@ export function CafesSection() {
           />
         </div>
 
-        {/* ── Footer Area ── */}
+        {/* Footer Area */}
         <div className={styles.sectionFooter} ref={footerRef}>
           {/* Stats */}
           <motion.div

@@ -37,7 +37,7 @@ export function Footer() {
 
   return (
     <footer className={styles.footer}>
-      {/* ── Brand Band ── */}
+      {/* Brand Band */}
       <div className={styles.brandBand} ref={brandRef}>
         <motion.div
           className={styles.brandInner}
@@ -51,7 +51,7 @@ export function Footer() {
         </motion.div>
       </div>
 
-      {/* ── Triptych Panels ── */}
+      {/* Triptych Panels */}
       <div className={styles.container}>
         <div className={styles.triptych}>
           <AnimatedSection className={`${styles.panel} ${styles.panelCompact}`} delay={0}>
@@ -129,12 +129,12 @@ export function Footer() {
                 <circle cx="8" cy="8" r="6.5" stroke="currentColor" strokeWidth="1.5"/>
                 <path d="M8 4.5V8L10.5 10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
               </svg>
-              <span>{contactInfo.deliveryHours.start} — {contactInfo.deliveryHours.end}</span>
+              <span>{contactInfo.deliveryHours.start} {t('common.timeRange')} {contactInfo.deliveryHours.end}</span>
             </div>
           </AnimatedSection>
         </div>
 
-        {/* ── Brand Row ── */}
+        {/* Brand Row */}
         <AnimatedSection className={styles.brandRow} delay={0.3}>
           <div className={styles.brandRowLeft}>
             <span className={styles.brandRowDescriptor}>{t('footer.descriptor')}</span>
@@ -147,20 +147,22 @@ export function Footer() {
           </div>
         </AnimatedSection>
 
-        {/* ── Colophon ── */}
+        {/* Colophon */}
         <AnimatedSection className={styles.colophon} delay={0.35}>
-          <a
-            href="https://lumako.ru"
-            className={styles.lumakoBadge}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <span className={styles.lumakoText}>Made by Lumako</span>
-            <span className={styles.lumakoLine} aria-hidden="true" />
-          </a>
           <p className={styles.copyright}>
             &copy; {currentYear} Harmony Coffee
           </p>
+          <a
+            href="https://lumako.ru"
+            className={styles.credit}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={t('footer.creditAria')}
+          >
+            <span className={styles.creditMark}>
+              Lumako<span className={styles.creditDot}>.</span>
+            </span>
+          </a>
         </AnimatedSection>
       </div>
     </footer>
