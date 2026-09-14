@@ -1,5 +1,5 @@
 /* ============================================
-   HERO SECTION — Bold Editorial Cinema
+   HERO SECTION: Bold Editorial Cinema
    Video card with massive typography,
    asymmetric bottom-anchored layout,
    and cinematic grain overlay
@@ -31,7 +31,7 @@
 /* ============================================
    VIDEO CARD
    ============================================ */
-.videoCard {
+.heroCard {
   position: relative;
   width: 100%;
   height: calc(100vh - var(--space-12) - 64px);
@@ -44,7 +44,7 @@
 }
 
 @media (min-width: 768px) {
-  .videoCard {
+  .heroCard {
     height: calc(100vh - var(--space-24) - 72px);
     height: calc(100svh - var(--space-24) - 72px);
     border-radius: var(--radius-2xl);
@@ -52,7 +52,7 @@
 }
 
 @media (min-width: 1200px) {
-  .videoCard {
+  .heroCard {
     height: calc(100vh - var(--space-32) - 72px);
     height: calc(100svh - var(--space-32) - 72px);
     border-radius: 32px;
@@ -62,13 +62,13 @@
 /* ============================================
    VIDEO BACKGROUND + OVERLAYS
    ============================================ */
-.videoBackground {
+.heroBackground {
   position: absolute;
   inset: 0;
   z-index: 0;
 }
 
-.video {
+.heroImage {
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -76,7 +76,7 @@
 }
 
 @media (min-width: 768px) {
-  .video {
+  .heroImage {
     object-position: center;
   }
 }
@@ -85,7 +85,7 @@
    - Vignette from edges for depth
    - Heavy bottom fade for headline readability
    - Subtle top darken for corner text */
-.videoOverlay {
+.heroOverlay {
   position: absolute;
   inset: 0;
   background:
@@ -109,7 +109,7 @@
   pointer-events: none;
 }
 
-/* Grain texture — matching About section */
+/* Grain texture: matching About section */
 .grain {
   position: absolute;
   inset: 0;
@@ -189,23 +189,28 @@
   }
 }
 
+/* Stays top-right at every width: it balances the "Specialty Coffee"
+   eyebrow opposite it and leaves the bottom band to the headline alone.
+   Dropped to the bottom corner it crowded the serif line and read as a
+   second copy of the header logo. */
 @media (min-width: 1200px) {
   .bottomRightLogo {
-    top: auto;
-    bottom: var(--space-20);
+    top: var(--space-12);
     right: var(--space-12);
-    height: clamp(36px, 3.5vw, 56px);
+    height: clamp(32px, 2.6vw, 42px);
   }
 }
 
 /* ============================================
-   HEADLINE BLOCK — Massive editorial type
+   HEADLINE BLOCK: Massive editorial type
    Bottom-left anchored, stacked lines with
    masked slide-up reveal animation.
 
    Lines 1-2: Bold sans-serif (heavy weight)
    Line 3: Playfair Display italic (contrast)
    ============================================ */
+/* This is the page <h1>; the per-line spans own every type decision,
+   so the global heading styles are neutralised here. */
 .headlineBlock {
   position: absolute;
   z-index: 3;
@@ -213,6 +218,14 @@
   left: var(--space-6);
   right: var(--space-6);
   max-width: 85%;
+  margin: 0;
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+  letter-spacing: normal;
+  text-transform: none;
+  text-wrap: wrap;
+  color: inherit;
 }
 
 @media (min-width: 768px) {
@@ -235,6 +248,7 @@
 /* Each line wrapped in overflow:hidden for
    the masked reveal effect */
 .lineReveal {
+  display: block;
   overflow: hidden;
   /* Slight negative margin to tighten line spacing */
   margin-bottom: -0.05em;
@@ -244,7 +258,7 @@
   margin-bottom: 0;
 }
 
-/* Bold sans-serif lines (lines 1–2) */
+/* Bold sans-serif lines (lines 1 and 2) */
 .headlineBold {
   display: block;
   font-family: var(--font-primary);
@@ -256,7 +270,7 @@
   letter-spacing: -0.03em;
 }
 
-/* Serif italic line (line 3) — typographic contrast */
+/* Serif italic line (line 3): typographic contrast */
 .headlineSerif {
   display: block;
   font-family: var(--font-serif);

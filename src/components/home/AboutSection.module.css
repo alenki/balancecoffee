@@ -1,5 +1,5 @@
 /* ============================================
-   ABOUT SECTION — Editorial Manifesto
+   ABOUT SECTION: Editorial Manifesto
    Two-act structure: Dark manifesto + Light story
    Inspired by White Coffee, editorial magazines
    ============================================ */
@@ -9,7 +9,7 @@
 }
 
 /* ============================================
-   PART 1 — THE MANIFESTO
+   PART 1: THE MANIFESTO
    Dark cinematic block with grain texture
    ============================================ */
 .manifesto {
@@ -35,7 +35,7 @@
   }
 }
 
-/* ── Grain Texture Overlay ── */
+/* Grain Texture Overlay */
 .grain {
   position: absolute;
   inset: 0;
@@ -45,7 +45,7 @@
   background-size: 200px 200px;
 }
 
-/* ── Corner Accents (matching hero corners) ── */
+/* Corner Accents (matching hero corners) */
 .cornerAccent {
   position: absolute;
   z-index: 2;
@@ -84,7 +84,7 @@
   }
 }
 
-/* ── Manifesto Inner Container ── */
+/* Manifesto Inner Container */
 .manifestoInner {
   position: relative;
   z-index: 1;
@@ -92,7 +92,7 @@
   width: 100%;
 }
 
-/* ── Manifesto Text Block ── */
+/* Manifesto Text Block */
 .manifestoText {
   display: flex;
   flex-direction: column;
@@ -117,7 +117,7 @@
   color: var(--color-primary);
 }
 
-/* ── Stats Row — Editorial inline ── */
+/* Stats Row: Editorial inline */
 .statsRow {
   display: flex;
   gap: clamp(var(--space-8), 5vw, var(--space-16));
@@ -162,7 +162,7 @@
 }
 
 /* ============================================
-   PART 2 — THE STORY
+   PART 2: THE STORY
    Light editorial split layout
    ============================================ */
 .story {
@@ -188,7 +188,7 @@
   }
 }
 
-/* ── Story Image Column ── */
+/* Story Image Column */
 .storyImageCol {
   position: relative;
   overflow: hidden;
@@ -214,7 +214,7 @@
   object-position: center;
 }
 
-/* ── Story Content Column ── */
+/* Story Content Column */
 .storyContent {
   display: flex;
   flex-direction: column;
@@ -241,7 +241,7 @@
   }
 }
 
-/* ── Story Label ── */
+/* Story Label */
 .storyLabel {
   display: block;
   font-family: var(--font-primary);
@@ -253,7 +253,7 @@
   margin-bottom: var(--space-6);
 }
 
-/* ── Story Heading ── */
+/* Story Heading */
 .storyHeading {
   font-family: var(--font-serif);
   font-size: clamp(2rem, 4.5vw, 3.25rem);
@@ -270,7 +270,7 @@
   color: var(--color-primary);
 }
 
-/* ── Story Text ── */
+/* Story Text */
 .storyText {
   font-family: var(--font-primary);
   font-size: var(--text-base);
@@ -291,7 +291,7 @@
   margin-bottom: var(--space-10);
 }
 
-/* ── Founder Card ── */
+/* Founder Card */
 .founderCard {
   display: flex;
   gap: var(--space-5);
@@ -367,7 +367,7 @@
   letter-spacing: 0.02em;
 }
 
-/* ── CTA Link ── */
+/* CTA Link */
 .storyCta {
   margin-top: 0;
 }
@@ -405,7 +405,7 @@
   transform: translateX(0);
 }
 
-/* ── Section Divider ── */
+/* Section Divider */
 .sectionDivider {
   height: 1px;
   background: var(--color-border);

@@ -1,0 +1,132 @@
+- generic [ref=e2]:
+  - banner:
+    - generic:
+      - generic:
+        - link "Balance Coffee":
+          - /url: "#/"
+          - img "Balance Coffee"
+      - generic:
+        - button "Открыть меню"
+  - generic [aria-hidden]:
+    - generic:
+      - navigation:
+        - link:
+          - /url: "#/"
+          - generic: "01"
+          - generic: Главная
+        - link:
+          - /url: "#/menu"
+          - generic: "02"
+          - generic: Меню
+        - link:
+          - /url: "#/daily"
+          - generic: "03"
+          - generic: Daily
+        - link:
+          - /url: https://docs.google.com/forms/d/e/1FAIpQLSc_POaT-B6XXcHm679E6L1214FlDxsUCgNGQMMXF1Ebg1RK4g/viewform
+          - generic: "04"
+          - generic: Вакансии
+        - link:
+          - /url: "#/reviews"
+          - generic: "05"
+          - generic: Обратная связь
+      - generic:
+        - generic:
+          - radiogroup:
+            - radio [checked]: RU
+            - radio: EN
+  - main [ref=e942]:
+    - generic [ref=e944]:
+      - generic [ref=e945]:
+        - generic [ref=e946]: Ваше мнение важно
+        - heading "Оставить отзыв" [level=1] [ref=e947]: Оставитьотзыв
+        - paragraph [ref=e948]: Расскажите о вашем опыте — каждый отзыв помогает нам становиться лучше и создавать для вас идеальный кофе
+      - generic [ref=e950]:
+        - generic [ref=e951]:
+          - generic [ref=e952]:
+            - generic [ref=e953]: Кофейня
+            - button "Выберите кофейню" [ref=e954] [cursor=pointer]
+          - generic [ref=e958]:
+            - generic [ref=e959]: Контакт для связи
+            - textbox "Телефон, email или Telegram" [ref=e960]
+          - generic [ref=e961]:
+            - generic [ref=e962]: Ваш отзыв
+            - textbox "Поделитесь впечатлениями о кофейне, напитках, атмосфере..." [ref=e964]
+        - generic [ref=e965]:
+          - button "Отправить отзыв" [disabled] [ref=e966]
+          - generic [ref=e970]:
+            - generic [ref=e971]: или свяжитесь напрямую
+            - generic [ref=e972]:
+              - link "Телефон" [ref=e973] [cursor=pointer]:
+                - /url: tel:+79280818632
+              - link "Telegram" [ref=e978] [cursor=pointer]:
+                - /url: https://t.me/+79280818632
+  - contentinfo [ref=e220]:
+    - generic [ref=e222]:
+      - generic [ref=e223]: Specialty Coffee
+      - heading "BALANCE COFFEE" [level=2] [ref=e224]
+      - paragraph [ref=e225]: Кофе, созданный с намерением
+    - generic [ref=e226]:
+      - generic [ref=e227]:
+        - generic [ref=e228]:
+          - generic [ref=e229]: География
+          - heading [level=3] [ref=e230]:
+            - generic [ref=e231]: Наши
+            - text: кофейни
+          - generic [ref=e233]:
+            - generic [ref=e234]:
+              - generic [ref=e235]: "6"
+              - generic [ref=e236]: Нальчик
+            - generic [ref=e237]:
+              - generic [ref=e238]: "3"
+              - generic [ref=e239]: Ростов-на-Дону
+            - generic [ref=e240]:
+              - generic [ref=e241]: "2"
+              - generic [ref=e242]: Сочи
+            - generic [ref=e243]:
+              - generic [ref=e244]: "3"
+              - generic [ref=e245]: Владикавказ
+            - generic [ref=e246]:
+              - generic [ref=e247]: "1"
+              - generic [ref=e248]: Ставрополь
+            - generic [ref=e249]:
+              - generic [ref=e250]: "1"
+              - generic [ref=e251]: Самара
+        - generic [ref=e252]:
+          - generic [ref=e253]: Навигация
+          - heading [level=3] [ref=e254]:
+            - generic [ref=e255]: Наши
+            - text: страницы
+          - navigation [ref=e256]:
+            - link "Главная" [ref=e257] [cursor=pointer]:
+              - /url: "#/"
+            - link "Меню" [ref=e261] [cursor=pointer]:
+              - /url: "#/menu"
+            - link "Daily" [ref=e265] [cursor=pointer]:
+              - /url: "#/daily"
+            - link "Отзывы" [ref=e269] [cursor=pointer]:
+              - /url: "#/reviews"
+        - generic [ref=e273]:
+          - generic [ref=e274]: Контакты
+          - heading [level=3] [ref=e275]:
+            - generic [ref=e276]: Свяжитесь
+            - text: с нами
+          - generic [ref=e277]:
+            - link "Instagram" [ref=e278] [cursor=pointer]:
+              - /url: https://www.instagram.com/balancecoffee.ru/
+            - link "Telegram" [ref=e279] [cursor=pointer]:
+              - /url: https://t.me/+79280818632
+            - link "+7 928 081 8632" [ref=e280] [cursor=pointer]:
+              - /url: tel:+79280818632
+          - generic [ref=e281]: 8:00 — 23:00
+      - generic [ref=e286]:
+        - generic [ref=e287]: Кофе, выпечка, свежевыжатые соки
+        - link [ref=e289] [cursor=pointer]:
+          - /url: "#/"
+          - img "Balance Coffee" [ref=e290]
+        - generic [ref=e291]: Specialty Coffee · Open 7/7
+      - generic [ref=e292]:
+        - paragraph [ref=e293]: © 2026 Balance Coffee
+        - link "Сайт сделали Lumako — откроется в новой вкладке" [ref=e294] [cursor=pointer]:
+          - /url: https://lumako.ru
+          - generic [ref=e295]: Lumako.

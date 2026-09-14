@@ -1,0 +1,45 @@
+/* The frame carries the blurred placeholder as its own background, so the
+   <img> on top can fade from 0 to 1 without taking the placeholder with it. */
+.frameCover,
+.frameIntrinsic {
+  display: block;
+  background-image: var(--lqip);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* Fills a positioned ancestor: typically a wrapper with a fixed aspect-ratio. */
+.frameCover {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+/* Reserves the image's own aspect ratio in flow (set inline from the manifest),
+   which is what keeps the Daily masonry from reflowing as images arrive. */
+.frameIntrinsic {
+  position: relative;
+  width: 100%;
+}
+
+.img {
+  opacity: 0;
+  transition: opacity 500ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.loaded {
+  opacity: 1;
+}
+
+/* Cached images and LCP images appear without a dissolve. */
+.instant {
+  opacity: 1;
+  transition: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .img {
+    transition: none;
+  }
+}

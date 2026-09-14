@@ -1,5 +1,7 @@
 import { motion } from 'motion/react';
 import { useLanguage } from '../../context/LanguageContext';
+import { Image } from '../common/Image';
+import { HERO_SIZES } from '../common/imageSizes';
 import styles from './HeroSection.module.css';
 
 const ease = [0.16, 1, 0.3, 1] as const;
@@ -8,24 +10,23 @@ export function HeroSection() {
   const { t } = useLanguage();
   return (
     <section className={styles.hero}>
-      <div className={styles.videoCard}>
-        {/* ── Video Background ── */}
-        <div className={styles.videoBackground}>
-          <video
-            className={styles.video}
-            autoPlay
-            muted
-            loop
-            playsInline
-            poster="/cafe photos/image.webp"
-          >
-            <source src="/cafe photos/video.mp4" type="video/mp4" />
-          </video>
-          <div className={styles.videoOverlay} />
+      <div className={styles.heroCard}>
+        {/* Background */}
+        <div className={styles.heroBackground}>
+          {/* The LCP element. index.html preloads it via the heroPreload
+              plugin, because #root stays empty until the bundle has parsed. */}
+          <Image
+            name="cafe/image"
+            alt=""
+            className={styles.heroImage}
+            sizes={HERO_SIZES}
+            priority
+          />
+          <div className={styles.heroOverlay} />
           <div className={styles.grain} aria-hidden="true" />
         </div>
 
-        {/* ── Corner: Top Left ── */}
+        {/* Corner: Top Left */}
         <motion.div
           className={styles.cornerTopLeft}
           initial={{ opacity: 0, x: -12 }}
@@ -35,10 +36,10 @@ export function HeroSection() {
           <span className={styles.cornerLabel}>Specialty Coffee</span>
         </motion.div>
 
-        {/* ── Bottom Left: Massive Editorial Headline ── */}
-        <div className={styles.headlineBlock}>
+        {/* Bottom Left: Massive Editorial Headline */}
+        <h1 className={styles.headlineBlock}>
           {/* Line 1 */}
-          <div className={styles.lineReveal}>
+          <span className={styles.lineReveal}>
             <motion.span
               className={styles.headlineBold}
               initial={{ y: '110%' }}
@@ -47,9 +48,9 @@ export function HeroSection() {
             >
               {t('hero.line1')}
             </motion.span>
-          </div>
+          </span>
           {/* Line 2 */}
-          <div className={styles.lineReveal}>
+          <span className={styles.lineReveal}>
             <motion.span
               className={styles.headlineBold}
               initial={{ y: '110%' }}
@@ -58,9 +59,9 @@ export function HeroSection() {
             >
               {t('hero.line2')}
             </motion.span>
-          </div>
-          {/* Line 3 — Playfair italic for contrast */}
-          <div className={styles.lineReveal}>
+          </span>
+          {/* Line 3: Playfair italic for contrast */}
+          <span className={styles.lineReveal}>
             <motion.span
               className={styles.headlineSerif}
               initial={{ y: '110%' }}
@@ -69,14 +70,16 @@ export function HeroSection() {
             >
               {t('hero.line3')}
             </motion.span>
-          </div>
-        </div>
+          </span>
+        </h1>
 
-        {/* ── Bottom Right: Brand Logo ── */}
+        {/* Bottom Right: Brand Logo */}
         <motion.img
           src="/logos/balance_4.avif"
           alt="Balance Coffee"
           className={styles.bottomRightLogo}
+          width={771}
+          height={77}
           fetchPriority="high"
           decoding="async"
           initial={{ opacity: 0, y: 12 }}

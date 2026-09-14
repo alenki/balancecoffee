@@ -1,5 +1,5 @@
 /* ============================================
-   MENU ITEM — Editorial Product Card
+   MENU ITEM: Editorial Product Card
    Flat design, 4:5 image, warm tint overlays,
    matching the homepage MenuPreview aesthetic
    ============================================ */
@@ -8,7 +8,7 @@
   cursor: default;
 }
 
-/* ── Image Container — 4:5 aspect with tint ── */
+/* Image Container: 4:5 aspect with tint */
 .imageWrapper {
   position: relative;
   aspect-ratio: 4 / 5;
@@ -25,7 +25,7 @@
   }
 }
 
-/* Warm neutral tone tint overlays — each card gets a distinct warm tone */
+/* Warm neutral tone tint overlays: each card gets a distinct warm tone */
 .card:nth-child(1) .imageWrapper::before { background: rgba(139, 120, 106, 0.08); }
 .card:nth-child(2) .imageWrapper::before { background: rgba(168, 148, 130, 0.10); }
 .card:nth-child(3) .imageWrapper::before { background: rgba(180, 160, 140, 0.07); }
@@ -62,7 +62,7 @@
   border-radius: 2px;
 }
 
-/* ── Badges ── */
+/* Badges */
 .badge {
   position: absolute;
   top: var(--space-4);
@@ -92,7 +92,7 @@
   background: var(--color-primary);
 }
 
-/* ── Card Info Row ── */
+/* Card Info Row */
 .info {
   display: flex;
   justify-content: space-between;
@@ -131,16 +131,19 @@
   }
 }
 
+/* Sans, matching the home page preview cards. Playfair italic is the site's
+   editorial accent; spending it on 56 product descriptions diluted the device
+   and cost legibility at this size. */
 .description {
-  font-family: var(--font-serif);
+  font-family: var(--font-primary);
   font-size: clamp(0.78rem, 1vw, 0.9rem);
   font-weight: var(--font-normal);
-  font-style: italic;
   color: var(--color-text-muted);
   line-height: 1.45;
   letter-spacing: 0.01em;
   display: -webkit-box;
   -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -153,7 +156,7 @@
   }
 }
 
-/* ── Single Price ── */
+/* Single Price */
 .price {
   flex-shrink: 0;
   font-family: var(--font-primary);
@@ -175,7 +178,7 @@
   background: var(--color-border-strong);
 }
 
-/* ── Price Variants — Inline row ── */
+/* Price Variants: Inline row */
 .variants {
   flex-shrink: 0;
   display: flex;

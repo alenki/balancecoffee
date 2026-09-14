@@ -1,7 +1,16 @@
 /* eslint-disable react-refresh/only-export-components */
-import { createContext, useContext, useState, useCallback, type ReactNode } from 'react';
+import {
+  createContext,
+  useContext,
+  useState,
+  useCallback,
+  useEffect,
+  type ReactNode,
+} from 'react';
 
 export type Lang = 'ru' | 'en';
+
+const STORAGE_KEY = 'balance-lang';
 
 interface LanguageContextValue {
   lang: Lang;
@@ -11,13 +20,36 @@ interface LanguageContextValue {
 
 const LanguageContext = createContext<LanguageContextValue | null>(null);
 
+function readStoredLang(): Lang {
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (stored === 'ru' || stored === 'en') return stored;
+  } catch {
+    // Private mode / blocked storage: fall through to the default.
+  }
+  return 'ru';
+}
+
 export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [lang, setLang] = useState<Lang>('ru');
+  const [lang, setLang] = useState<Lang>(readStoredLang);
+
+  // Keep the choice across reloads, and keep <html lang> honest so screen
+  // readers switch voices with the copy.
+  useEffect(() => {
+    document.documentElement.lang = lang;
+    try {
+      localStorage.setItem(STORAGE_KEY, lang);
+    } catch {
+      // Nothing to do if storage is unavailable.
+    }
+  }, [lang]);
 
   const t = useCallback((key: string): string => {
     const value = translations[lang]?.[key];
     if (!value) {
-      console.warn(`Missing translation: ${key} [${lang}]`);
+      if (import.meta.env.DEV) {
+        console.warn(`Missing translation: ${key} [${lang}]`);
+      }
       return translations['ru']?.[key] ?? key;
     }
     return value;
@@ -36,10 +68,13 @@ export function useLanguage() {
   return ctx;
 }
 
-// ─── Translations ───────────────────────────────────────────────
+// Translations
 
 const translations: Record<Lang, Record<string, string>> = {
   ru: {
+    // Shared
+    'common.timeRange': 'до',
+
     // Nav
     'nav.home': 'Главная',
     'nav.menu': 'Меню',
@@ -56,7 +91,7 @@ const translations: Record<Lang, Record<string, string>> = {
 
     // About
     'about.label': 'О нас',
-    'about.manifesto1': '5 лет назад мы открыли Balance Coffee с одной простой идеей — создать пространство,',
+    'about.manifesto1': '5 лет назад мы открыли Balance Coffee с одной простой идеей: создать пространство,',
     'about.manifesto1em': 'где современные, прогрессивные и деятельные люди',
     'about.manifesto1end': 'могли бы собираться вместе, обмениваться идеями и вдохновляться друг другом.',
     'about.manifesto2': 'Сегодня наши кофейни посещает более 6000 таких удивительных людей каждый день. Мы мечтаем объединить таких людей по всей территории',
@@ -68,7 +103,7 @@ const translations: Record<Lang, Record<string, string>> = {
     // Menu Preview
     'menuPreview.label': 'Меню',
     'menuPreview.itemCount': '50+ позиций',
-    'menuPreview.headerItalic': 'Каждая позиция в нашем меню —',
+    'menuPreview.headerItalic': 'Каждая позиция в нашем меню',
     'menuPreview.headerBold1': 'Продумана',
     'menuPreview.headerBold2': 'до деталей',
     'menuPreview.cta': 'Смотреть меню',
@@ -81,6 +116,10 @@ const translations: Record<Lang, Record<string, string>> = {
     'gallery.manifesto2': 'уникальную',
     'gallery.manifesto3': 'эстетику',
     'gallery.text': 'Мы за красивое и хорошее, творить и делиться.\nМы за уникальную эстетику.',
+    'gallery.cta': 'Смотреть Daily',
+    'gallery.altCafe': 'Интерьер кофейни Balance Coffee',
+    'gallery.altGuests': 'Гости в кофейне Balance Coffee',
+    'gallery.altStreet': 'Кофейня Balance Coffee снаружи',
 
     // Cafes
     'cafes.label': 'Кофейни',
@@ -110,26 +149,26 @@ const translations: Record<Lang, Record<string, string>> = {
     'footer.daily': 'Daily',
     'footer.reviews': 'Отзывы',
     'footer.descriptor': 'Кофе, выпечка, свежевыжатые соки',
-    'footer.creditAria': 'Сайт сделали Lumako — откроется в новой вкладке',
+    'footer.creditAria': 'Сайт сделали Lumako, откроется в новой вкладке',
 
     // Menu Page
     'menuPage.title': 'Меню',
     'menuPage.items': 'позиций',
     'menuPage.delivery': 'Доставка',
     'menuPage.call': 'Позвонить',
-    'menuPage.ctaItalic': 'Свяжитесь любым удобным способом —',
+    'menuPage.ctaItalic': 'Свяжитесь любым удобным способом',
     'menuPage.ctaTitle': 'Готовы сделать заказ?',
 
     // Daily Page
     'daily.subtitle': 'Добро пожаловать в журнал Balance Coffee.\nЗдесь мы делимся вдохновением, моментами и атмосферой,\nкоторые делают каждый день особенным.',
-    'daily.quote1': 'Каждая чашка кофе — маленькое путешествие. От Эфиопии до Бразилии, от зерна до аромата.',
-    'daily.quote2': 'Кофе — это не просто напиток. Это момент паузы в бесконечном ритме жизни.',
+    'daily.quote1': 'Каждая чашка кофе становится маленьким путешествием. От Эфиопии до Бразилии, от зерна до аромата.',
+    'daily.quote2': 'Кофе не просто напиток. Это момент паузы в бесконечном ритме жизни.',
 
     // Reviews Page
     'reviews.eyebrow': 'Ваше мнение важно',
     'reviews.title1': 'Оставить',
     'reviews.title2': 'отзыв',
-    'reviews.subtitle': 'Расскажите о вашем опыте — каждый отзыв помогает нам становиться лучше и создавать для вас идеальный кофе',
+    'reviews.subtitle': 'Расскажите о вашем опыте. Каждый отзыв помогает нам становиться лучше и создавать для вас идеальный кофе',
     'reviews.cafeLabel': 'Кофейня',
     'reviews.cafePlaceholder': 'Выберите кофейню',
     'reviews.contactLabel': 'Контакт для связи',
@@ -138,15 +177,28 @@ const translations: Record<Lang, Record<string, string>> = {
     'reviews.charCount': 'симв.',
     'reviews.reviewPlaceholder': 'Поделитесь впечатлениями о кофейне, напитках, атмосфере...',
     'reviews.submit': 'Отправить отзыв',
+    'reviews.hint': 'Выберите кофейню и напишите отзыв',
     'reviews.altContact': 'или свяжитесь напрямую',
     'reviews.phone': 'Телефон',
     'reviews.successTitle1': 'Спасибо за',
     'reviews.successTitle2': 'обратную связь',
-    'reviews.successText': 'Мы обязательно прочитаем ваш отзыв и постараемся стать ещё лучше. Ваше мнение — наш ориентир.',
+    'reviews.successText': 'Мы обязательно прочитаем ваш отзыв и постараемся стать ещё лучше. Ваше мнение задаёт нам ориентир.',
     'reviews.another': 'Оставить ещё один отзыв',
+
+    // 404
+    'notFound.eyebrow': 'Страница не найдена',
+    'notFound.title': 'Кажется, эта чашка уже допита',
+    'notFound.text': 'Страницы по этому адресу нет. Возможно, ссылка устарела или в ней опечатка.',
+    'notFound.home': 'На главную',
+
+    // Accessibility
+    'a11y.skipToContent': 'К содержимому',
   },
 
   en: {
+    // Shared
+    'common.timeRange': 'to',
+
     // Nav
     'nav.home': 'Home',
     'nav.menu': 'Menu',
@@ -163,7 +215,7 @@ const translations: Record<Lang, Record<string, string>> = {
 
     // About
     'about.label': 'About us',
-    'about.manifesto1': '5 years ago we opened Balance Coffee with one simple idea — to create a space',
+    'about.manifesto1': '5 years ago we opened Balance Coffee with one simple idea: to create a space',
     'about.manifesto1em': 'where modern, progressive and driven people',
     'about.manifesto1end': 'could come together, exchange ideas and inspire each other.',
     'about.manifesto2': 'Today our cafés welcome over 6,000 such amazing people every day. We dream of uniting these people across',
@@ -175,7 +227,7 @@ const translations: Record<Lang, Record<string, string>> = {
     // Menu Preview
     'menuPreview.label': 'Menu',
     'menuPreview.itemCount': '50+ items',
-    'menuPreview.headerItalic': 'Every item on our menu is —',
+    'menuPreview.headerItalic': 'Every item on our menu is',
     'menuPreview.headerBold1': 'Crafted',
     'menuPreview.headerBold2': 'to perfection',
     'menuPreview.cta': 'View menu',
@@ -188,6 +240,10 @@ const translations: Record<Lang, Record<string, string>> = {
     'gallery.manifesto2': 'unique',
     'gallery.manifesto3': 'aesthetics',
     'gallery.text': 'We believe in beauty and craft, in creating and sharing.\nWe stand for unique aesthetics.',
+    'gallery.cta': 'Explore Daily',
+    'gallery.altCafe': 'Balance Coffee cafe interior',
+    'gallery.altGuests': 'Guests inside a Balance Coffee cafe',
+    'gallery.altStreet': 'A Balance Coffee cafe from the street',
 
     // Cafes
     'cafes.label': 'Cafés',
@@ -217,14 +273,14 @@ const translations: Record<Lang, Record<string, string>> = {
     'footer.daily': 'Daily',
     'footer.reviews': 'Reviews',
     'footer.descriptor': 'Coffee, pastry, fresh juices',
-    'footer.creditAria': 'Site by Lumako — opens in a new tab',
+    'footer.creditAria': 'Site by Lumako, opens in a new tab',
 
     // Menu Page
     'menuPage.title': 'Menu',
     'menuPage.items': 'items',
     'menuPage.delivery': 'Delivery',
     'menuPage.call': 'Call us',
-    'menuPage.ctaItalic': 'Reach out any way you prefer —',
+    'menuPage.ctaItalic': 'Reach out any way you prefer',
     'menuPage.ctaTitle': 'Ready to order?',
 
     // Daily Page
@@ -236,7 +292,7 @@ const translations: Record<Lang, Record<string, string>> = {
     'reviews.eyebrow': 'Your opinion matters',
     'reviews.title1': 'Leave',
     'reviews.title2': 'feedback',
-    'reviews.subtitle': 'Tell us about your experience — every review helps us improve and craft the perfect coffee for you',
+    'reviews.subtitle': 'Tell us about your experience. Every review helps us improve and craft the perfect coffee for you',
     'reviews.cafeLabel': 'Café',
     'reviews.cafePlaceholder': 'Select a café',
     'reviews.contactLabel': 'Contact info',
@@ -245,11 +301,21 @@ const translations: Record<Lang, Record<string, string>> = {
     'reviews.charCount': 'chars',
     'reviews.reviewPlaceholder': 'Share your impressions about the café, drinks, atmosphere...',
     'reviews.submit': 'Submit review',
+    'reviews.hint': 'Pick a cafe and write your review',
     'reviews.altContact': 'or contact us directly',
     'reviews.phone': 'Phone',
     'reviews.successTitle1': 'Thank you for',
     'reviews.successTitle2': 'your feedback',
     'reviews.successText': 'We will carefully read your review and strive to get even better. Your opinion is our compass.',
     'reviews.another': 'Leave another review',
+
+    // 404
+    'notFound.eyebrow': 'Page not found',
+    'notFound.title': 'Looks like this cup is already empty',
+    'notFound.text': 'There is no page at this address. The link may be out of date or contain a typo.',
+    'notFound.home': 'Back home',
+
+    // Accessibility
+    'a11y.skipToContent': 'Skip to content',
   },
 };

@@ -1,3 +1,5 @@
+import type { ImageName } from '../generated/image-manifest';
+
 // Menu Types
 export interface PriceVariant {
   size: string;
@@ -10,7 +12,8 @@ export interface MenuItem {
   description?: string;
   price?: number;
   priceVariants?: PriceVariant[];
-  image: string;
+  /** Key into the generated image manifest, not a URL. */
+  image: ImageName;
   isPopular?: boolean;
   isNew?: boolean;
 }

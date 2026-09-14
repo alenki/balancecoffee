@@ -1,5 +1,5 @@
 /* ============================================
-   REVIEWS PAGE — Unified Light Editorial Layout
+   REVIEWS PAGE: Unified Light Editorial Layout
    Single white section with editorial typography
    and refined form with left-border focus accents
    ============================================ */
@@ -18,7 +18,7 @@
   background: var(--color-bg-white);
 }
 
-/* ── Container ── */
+/* Container */
 .container {
   position: relative;
   z-index: 1;
@@ -42,7 +42,7 @@
   }
 }
 
-/* ── Corner Accent ── */
+/* Corner Accent */
 .cornerAccent {
   position: absolute;
   z-index: 2;
@@ -122,7 +122,7 @@
   margin: var(--space-6) auto 0;
 }
 
-/* ── Divider ── */
+/* Divider */
 .divider {
   width: 48px;
   height: 1px;
@@ -138,9 +138,11 @@
   display: flex;
   flex-direction: column;
   width: 100%;
+  max-width: 46rem;
+  margin: 0 auto;
 }
 
-/* ── Form Header — Editorial numbering ── */
+/* Form Header: Editorial numbering */
 .formHeader {
   display: flex;
   align-items: center;
@@ -181,7 +183,7 @@
 }
 
 /* ============================================
-   FIELD STACK — Vertical form layout
+   FIELD STACK: Vertical form layout
    ============================================ */
 .fieldStack {
   display: flex;
@@ -189,7 +191,7 @@
   gap: var(--space-1);
 }
 
-/* ── Field Group — Each row with label ── */
+/* Field Group: Each row with label */
 .fieldGroup {
   position: relative;
   padding: var(--space-5) var(--space-6);
@@ -231,7 +233,7 @@
 }
 
 /* ============================================
-   FIELDS — Light theme underline inputs
+   FIELDS: Light theme underline inputs
    ============================================ */
 .field {
   width: 100%;
@@ -309,7 +311,7 @@
   white-space: nowrap;
 }
 
-/* ── Dropdown ── */
+/* Dropdown */
 .dropdown {
   position: absolute;
   top: 100%;
@@ -413,7 +415,22 @@
   border-top: 1px solid var(--color-border);
 }
 
-/* ── Submit Button ── */
+.submitCol {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-3);
+}
+
+.submitHint {
+  max-width: 28ch;
+  margin: 0;
+  font-size: var(--text-xs);
+  line-height: 1.5;
+  color: var(--color-text-muted);
+}
+
+/* Submit Button */
 .submitBtn {
   display: inline-flex;
   align-items: center;
@@ -447,7 +464,9 @@
 }
 
 .submitBtn:disabled {
-  opacity: 0.3;
+  background: var(--color-bg-light);
+  border: 1px solid var(--color-border-strong);
+  color: var(--color-text-body);
   cursor: not-allowed;
 }
 
@@ -465,7 +484,7 @@
   transform: translateX(3px);
 }
 
-/* ── Alternative Contact ── */
+/* Alternative Contact */
 .altContact {
   display: flex;
   flex-direction: column;

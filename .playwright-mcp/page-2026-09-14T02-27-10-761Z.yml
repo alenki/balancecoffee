@@ -1,0 +1,261 @@
+- generic [ref=f2e2]:
+  - button "К содержимому" [ref=f2e322] [cursor=pointer]
+  - banner [ref=f2e323]:
+    - generic [ref=f2e324]:
+      - navigation [ref=f2e325]:
+        - link "Главная" [ref=f2e326] [cursor=pointer]:
+          - /url: "#/"
+        - link "Меню" [ref=f2e328] [cursor=pointer]:
+          - /url: "#/menu"
+        - link "Daily" [ref=f2e330] [cursor=pointer]:
+          - /url: "#/daily"
+        - link "Вакансии" [ref=f2e332] [cursor=pointer]:
+          - /url: https://docs.google.com/forms/d/e/1FAIpQLSc_POaT-B6XXcHm679E6L1214FlDxsUCgNGQMMXF1Ebg1RK4g/viewform
+        - link "Обратная связь" [ref=f2e334] [cursor=pointer]:
+          - /url: "#/reviews"
+      - link [ref=f2e337] [cursor=pointer]:
+        - /url: "#/"
+        - img "Balance Coffee" [ref=f2e338]
+      - radiogroup "Language" [ref=f2e340]:
+        - radio "RU" [checked] [ref=f2e341] [cursor=pointer]
+        - radio "EN" [ref=f2e343] [cursor=pointer]
+  - main [ref=f2e431]:
+    - generic [ref=f2e433]:
+      - generic [ref=f2e436]: Specialty Coffee
+      - heading "Кофе, созданный с намерением" [level=1] [ref=f2e438]:
+        - generic [ref=f2e439]: Кофе,
+        - generic [ref=f2e441]: созданный
+        - generic [ref=f2e443]: с намерением
+      - img "Balance Coffee"
+    - generic [ref=f2e446]:
+      - generic [ref=f2e447]: О нас
+      - generic [ref=f2e448]: Est. 2019
+      - generic [ref=f2e449]:
+        - generic [ref=f2e450]:
+          - paragraph [ref=f2e451]:
+            - text: "5 лет назад мы открыли Balance Coffee с одной простой идеей: создать пространство,"
+            - emphasis [ref=f2e452]: где современные, прогрессивные и деятельные люди
+            - text: могли бы собираться вместе, обмениваться идеями и вдохновляться друг другом.
+          - paragraph [ref=f2e453]:
+            - text: Сегодня наши кофейни посещает более 6000 таких удивительных людей каждый день. Мы мечтаем объединить таких людей по всей территории
+            - emphasis [ref=f2e454]: России и за её пределами.
+        - generic [ref=f2e455]:
+          - generic [ref=f2e456]:
+            - generic [ref=f2e457]: "6"
+            - generic [ref=f2e459]: городов
+          - generic [ref=f2e460]:
+            - generic [ref=f2e461]: "16"
+            - generic [ref=f2e463]: кофеен
+          - generic [ref=f2e464]:
+            - generic [ref=f2e465]: 50+
+            - generic [ref=f2e467]: позиций
+    - generic [ref=f2e468]:
+      - generic [ref=f2e469]: Меню
+      - generic [ref=f2e470]: 50+ позиций
+      - generic [ref=f2e471]:
+        - generic [ref=f2e472]:
+          - generic [ref=f2e473]: Каждая позиция в нашем меню
+          - heading "Продумана до деталей" [level=2] [ref=f2e474]: Продуманадо деталей
+        - generic [ref=f2e475]:
+          - link "Эспрессо Хит Эспрессо Плотный, насыщенный, с бархатной крема 120 ₽" [ref=f2e477] [cursor=pointer]:
+            - /url: "#/menu"
+            - generic [ref=f2e478]:
+              - img "Эспрессо" [ref=f2e479]
+              - generic [ref=f2e480]: Хит
+            - generic [ref=f2e481]:
+              - generic [ref=f2e482]:
+                - heading "Эспрессо" [level=3] [ref=f2e483]
+                - paragraph [ref=f2e484]: Плотный, насыщенный, с бархатной крема
+              - generic [ref=f2e485]: 120 ₽
+          - link "Капучино Хит Капучино Мягкий, сливочный, идеальный баланс от 180 ₽" [ref=f2e487] [cursor=pointer]:
+            - /url: "#/menu"
+            - generic [ref=f2e488]:
+              - img "Капучино" [ref=f2e489]
+              - generic [ref=f2e490]: Хит
+            - generic [ref=f2e491]:
+              - generic [ref=f2e492]:
+                - heading "Капучино" [level=3] [ref=f2e493]
+                - paragraph [ref=f2e494]: Мягкий, сливочный, идеальный баланс
+              - generic [ref=f2e495]: от 180 ₽
+          - link "Раф Хит Раф Сливочный, ванильный, с нежной пеной от 250 ₽" [ref=f2e497] [cursor=pointer]:
+            - /url: "#/menu"
+            - generic [ref=f2e498]:
+              - img "Раф" [ref=f2e499]
+              - generic [ref=f2e500]: Хит
+            - generic [ref=f2e501]:
+              - generic [ref=f2e502]:
+                - heading "Раф" [level=3] [ref=f2e503]
+                - paragraph [ref=f2e504]: Сливочный, ванильный, с нежной пеной
+              - generic [ref=f2e505]: от 250 ₽
+          - link "Боул с курицей Хит Боул с курицей Киноа, курица гриль, авокадо, овощи 420 ₽" [ref=f2e507] [cursor=pointer]:
+            - /url: "#/menu"
+            - generic [ref=f2e508]:
+              - img "Боул с курицей" [ref=f2e509]
+              - generic [ref=f2e510]: Хит
+            - generic [ref=f2e511]:
+              - generic [ref=f2e512]:
+                - heading "Боул с курицей" [level=3] [ref=f2e513]
+                - paragraph [ref=f2e514]: Киноа, курица гриль, авокадо, овощи
+              - generic [ref=f2e515]: 420 ₽
+          - link "Чизкейк Хит Чизкейк Классический нью-йоркский 280 ₽" [ref=f2e517] [cursor=pointer]:
+            - /url: "#/menu"
+            - generic [ref=f2e518]:
+              - img "Чизкейк" [ref=f2e519]
+              - generic [ref=f2e520]: Хит
+            - generic [ref=f2e521]:
+              - generic [ref=f2e522]:
+                - heading "Чизкейк" [level=3] [ref=f2e523]
+                - paragraph [ref=f2e524]: Классический нью-йоркский
+              - generic [ref=f2e525]: 280 ₽
+          - link "Макарон Хит Макарон Ассорти вкусов (3 шт) 250 ₽" [ref=f2e527] [cursor=pointer]:
+            - /url: "#/menu"
+            - generic [ref=f2e528]:
+              - img "Макарон" [ref=f2e529]
+              - generic [ref=f2e530]: Хит
+            - generic [ref=f2e531]:
+              - generic [ref=f2e532]:
+                - heading "Макарон" [level=3] [ref=f2e533]
+                - paragraph [ref=f2e534]: Ассорти вкусов (3 шт)
+              - generic [ref=f2e535]: 250 ₽
+        - link "Смотреть меню" [ref=f2e537] [cursor=pointer]:
+          - /url: "#/menu"
+    - generic [ref=f2e539]:
+      - generic [ref=f2e540]: Daily Journal
+      - generic [ref=f2e541]:
+        - generic [ref=f2e542]:
+          - img "Balance Coffee atmosphere" [ref=f2e544]
+          - img "Balance Coffee counter" [ref=f2e546]
+        - generic [ref=f2e547]:
+          - img "Balance Coffee interior" [ref=f2e549]
+          - generic [ref=f2e550]:
+            - heading "Мы за уникальную эстетику" [level=2] [ref=f2e551]:
+              - generic [ref=f2e552]: Мы за
+              - generic [ref=f2e553]: уникальную
+              - generic [ref=f2e554]: эстетику
+            - paragraph [ref=f2e555]:
+              - generic [ref=f2e556]: Мы за красивое и хорошее, творить и делиться.
+              - text: Мы за уникальную эстетику.
+            - link "Lifestyle" [ref=f2e558] [cursor=pointer]:
+              - /url: "#/daily"
+        - generic [ref=f2e559]:
+          - img "Balance Coffee exterior" [ref=f2e561]
+          - img "Balance Coffee community" [ref=f2e563]
+    - generic [ref=f2e564]:
+      - generic [ref=f2e565]: Кофейни
+      - generic [ref=f2e566]: 6 городов
+      - generic [ref=f2e567]:
+        - generic [ref=f2e568]:
+          - generic [ref=f2e569]: Мы по всей России
+          - heading "Наши кофейни" [level=2] [ref=f2e570]: Нашикофейни
+        - generic [ref=f2e571]:
+          - button "01 Нальчик 6 кофеен" [ref=f2e573] [cursor=pointer]:
+            - generic [ref=f2e574]:
+              - generic [ref=f2e575]: "01"
+              - heading "Нальчик" [level=3] [ref=f2e576]
+              - generic [ref=f2e577]: 6 кофеен
+          - button "02 Ростов-на-Дону 3 кофейни" [ref=f2e582] [cursor=pointer]:
+            - generic [ref=f2e583]:
+              - generic [ref=f2e584]: "02"
+              - heading "Ростов-на-Дону" [level=3] [ref=f2e585]
+              - generic [ref=f2e586]: 3 кофейни
+          - button "03 Сочи 2 кофейни Скоро открытие" [ref=f2e591] [cursor=pointer]:
+            - generic [ref=f2e592]:
+              - generic [ref=f2e593]: "03"
+              - heading "Сочи" [level=3] [ref=f2e594]
+              - generic [ref=f2e595]:
+                - text: 2 кофейни
+                - generic "Скоро открытие" [ref=f2e596]
+          - button "04 Владикавказ 3 кофейни" [ref=f2e601] [cursor=pointer]:
+            - generic [ref=f2e602]:
+              - generic [ref=f2e603]: "04"
+              - heading "Владикавказ" [level=3] [ref=f2e604]
+              - generic [ref=f2e605]: 3 кофейни
+          - button "05 Ставрополь 1 кофейня" [ref=f2e610] [cursor=pointer]:
+            - generic [ref=f2e611]:
+              - generic [ref=f2e612]: "05"
+              - heading "Ставрополь" [level=3] [ref=f2e613]
+              - generic [ref=f2e614]: 1 кофейня
+          - button "06 Самара 1 кофейня" [ref=f2e619] [cursor=pointer]:
+            - generic [ref=f2e620]:
+              - generic [ref=f2e621]: "06"
+              - heading "Самара" [level=3] [ref=f2e622]
+              - generic [ref=f2e623]: 1 кофейня
+        - generic [ref=f2e627]:
+          - generic [ref=f2e628]:
+            - generic [ref=f2e629]:
+              - generic [ref=f2e630]: "6"
+              - generic [ref=f2e631]: городов
+            - generic [ref=f2e633]:
+              - generic [ref=f2e634]: "16"
+              - generic [ref=f2e635]: кофеен
+          - link "Связаться с нами" [ref=f2e637] [cursor=pointer]:
+            - /url: https://t.me/+79280818632
+  - contentinfo [ref=f2e355]:
+    - generic [ref=f2e357]:
+      - generic [ref=f2e358]: Specialty Coffee
+      - heading "BALANCE COFFEE" [level=2] [ref=f2e359]
+      - paragraph [ref=f2e360]: Кофе, созданный с намерением
+    - generic [ref=f2e361]:
+      - generic [ref=f2e362]:
+        - generic [ref=f2e363]:
+          - generic [ref=f2e364]: География
+          - heading [level=3] [ref=f2e365]:
+            - generic [ref=f2e366]: Наши
+            - text: кофейни
+          - generic [ref=f2e368]:
+            - generic [ref=f2e369]:
+              - generic [ref=f2e370]: "6"
+              - generic [ref=f2e371]: Нальчик
+            - generic [ref=f2e372]:
+              - generic [ref=f2e373]: "3"
+              - generic [ref=f2e374]: Ростов-на-Дону
+            - generic [ref=f2e375]:
+              - generic [ref=f2e376]: "2"
+              - generic [ref=f2e377]: Сочи
+            - generic [ref=f2e378]:
+              - generic [ref=f2e379]: "3"
+              - generic [ref=f2e380]: Владикавказ
+            - generic [ref=f2e381]:
+              - generic [ref=f2e382]: "1"
+              - generic [ref=f2e383]: Ставрополь
+            - generic [ref=f2e384]:
+              - generic [ref=f2e385]: "1"
+              - generic [ref=f2e386]: Самара
+        - generic [ref=f2e387]:
+          - generic [ref=f2e388]: Навигация
+          - heading [level=3] [ref=f2e389]:
+            - generic [ref=f2e390]: Наши
+            - text: страницы
+          - navigation [ref=f2e391]:
+            - link "Главная" [ref=f2e392] [cursor=pointer]:
+              - /url: "#/"
+            - link "Меню" [ref=f2e396] [cursor=pointer]:
+              - /url: "#/menu"
+            - link "Daily" [ref=f2e400] [cursor=pointer]:
+              - /url: "#/daily"
+            - link "Отзывы" [ref=f2e404] [cursor=pointer]:
+              - /url: "#/reviews"
+        - generic [ref=f2e408]:
+          - generic [ref=f2e409]: Контакты
+          - heading [level=3] [ref=f2e410]:
+            - generic [ref=f2e411]: Свяжитесь
+            - text: с нами
+          - generic [ref=f2e412]:
+            - link "Instagram" [ref=f2e413] [cursor=pointer]:
+              - /url: https://www.instagram.com/balancecoffee.ru/
+            - link "Telegram" [ref=f2e414] [cursor=pointer]:
+              - /url: https://t.me/+79280818632
+            - link "+7 928 081 8632" [ref=f2e415] [cursor=pointer]:
+              - /url: tel:+79280818632
+          - generic [ref=f2e416]: 8:00 до 23:00
+      - generic [ref=f2e421]:
+        - generic [ref=f2e422]: Кофе, выпечка, свежевыжатые соки
+        - link [ref=f2e424] [cursor=pointer]:
+          - /url: "#/"
+          - img "Balance Coffee" [ref=f2e425]
+        - generic [ref=f2e426]: Specialty Coffee · Open 7/7
+      - generic [ref=f2e427]:
+        - paragraph [ref=f2e428]: © 2026 Balance Coffee
+        - link "Сайт сделали Lumako, откроется в новой вкладке" [ref=f2e429] [cursor=pointer]:
+          - /url: https://lumako.ru
+          - generic [ref=f2e430]: Lumako.

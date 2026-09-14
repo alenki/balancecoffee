@@ -1,6 +1,8 @@
 import { motion } from 'motion/react';
 import type { MenuItem as MenuItemType } from '../../types';
 import { useLanguage } from '../../context/LanguageContext';
+import { Image } from '../common/Image';
+import { MENU_CARD_SIZES } from '../common/imageSizes';
 import styles from './MenuItem.module.css';
 
 const EASE = [0.16, 1, 0.3, 1] as const;
@@ -23,12 +25,11 @@ export function MenuItem({ item, index, isVisible }: MenuItemProps) {
       transition={{ duration: 0.6, delay: 0.1 + Math.min(index * 0.08, 0.4), ease: EASE }}
     >
       <div className={styles.imageWrapper}>
-        <img
-          src={item.image}
+        <Image
+          name={item.image}
           alt={item.name}
           className={styles.image}
-          loading="lazy"
-          decoding="async"
+          sizes={MENU_CARD_SIZES}
         />
         {item.isNew && (
           <span className={`${styles.badge} ${styles.badgeNew}`}>{t('badge.new')}</span>

@@ -6,7 +6,7 @@ import { CafesSection } from '../components/home/CafesSection';
 
 export function HomePage() {
   return (
-    <main>
+    <main id="main">
       <HeroSection />
       <AboutSection />
       <MenuPreview />

@@ -29,7 +29,7 @@ export function ReviewsPage() {
     };
     el.addEventListener('wheel', handleWheel, { passive: false });
     return () => el.removeEventListener('wheel', handleWheel);
-  });
+  }, [isDropdownOpen]);
 
   const sectionInView = useInView(sectionRef, { once: true, margin: '-40px' });
   const formInView = useInView(formRef, { once: true, margin: '-60px' });
@@ -60,6 +60,9 @@ export function ReviewsPage() {
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     if (!selectedCafe || !review.trim()) return;
+    // TODO: nothing is sent anywhere yet. The review text is discarded and the
+    // visitor is shown a thank-you screen. Wire this to a real destination
+    // (Telegram bot, Google Form, or an email endpoint) before relying on it.
     setIsSubmitted(true);
   };
 
@@ -70,13 +73,14 @@ export function ReviewsPage() {
     setIsSubmitted(false);
   };
 
+  const canSubmit = Boolean(selectedCafe) && review.trim().length > 0;
   const selectedLabel = allCafes.find(c => c.value === selectedCafe);
 
   return (
-    <main className={styles.page}>
+    <main className={styles.page} id="main">
       <section className={styles.section} ref={sectionRef}>
         <div className={styles.container}>
-          {/* Editorial Header — hidden after submission */}
+          {/* Editorial Header: hidden after submission */}
           <AnimatePresence>
             {!isSubmitted && (
               <motion.div
@@ -138,9 +142,13 @@ export function ReviewsPage() {
                       className={`${styles.fieldGroup} ${focusedField === 'cafe' ? styles.fieldGroupActive : ''}`}
                       ref={dropdownRef}
                     >
-                      <label className={styles.fieldLabel}>{t('reviews.cafeLabel')}</label>
+                      <label className={styles.fieldLabel} id="cafe-label">
+                        {t('reviews.cafeLabel')}
+                      </label>
                       <button
                         type="button"
+                        id="cafe-trigger"
+                        aria-labelledby="cafe-label cafe-trigger"
                         className={`${styles.selectTrigger} ${selectedCafe ? styles.selectFilled : ''}`}
                         onClick={() => {
                           setIsDropdownOpen(!isDropdownOpen);
@@ -216,8 +224,11 @@ export function ReviewsPage() {
 
                     {/* Contact */}
                     <div className={`${styles.fieldGroup} ${focusedField === 'contact' ? styles.fieldGroupActive : ''}`}>
-                      <label className={styles.fieldLabel}>{t('reviews.contactLabel')}</label>
+                      <label className={styles.fieldLabel} htmlFor="contact-field">
+                        {t('reviews.contactLabel')}
+                      </label>
                       <input
+                        id="contact-field"
                         type="text"
                         className={styles.field}
                         placeholder={t('reviews.contactPlaceholder')}
@@ -231,14 +242,18 @@ export function ReviewsPage() {
                     {/* Review textarea */}
                     <div className={`${styles.fieldGroup} ${styles.fieldGroupLarge} ${focusedField === 'review' ? styles.fieldGroupActive : ''}`}>
                       <div className={styles.textareaHeader}>
-                        <label className={styles.fieldLabel}>{t('reviews.reviewLabel')}</label>
+                        <label className={styles.fieldLabel} htmlFor="review-field">
+                          {t('reviews.reviewLabel')}
+                        </label>
                         <span className={styles.charCount}>
                           {review.length > 0 && `${review.length} ${t('reviews.charCount')}`}
                         </span>
                       </div>
                       <textarea
+                        id="review-field"
                         className={`${styles.field} ${styles.textarea}`}
                         placeholder={t('reviews.reviewPlaceholder')}
+                        required
                         rows={6}
                         value={review}
                         onChange={e => setReview(e.target.value)}
@@ -250,18 +265,28 @@ export function ReviewsPage() {
 
                   {/* Actions */}
                   <div className={styles.formActions}>
-                    <button
-                      type="submit"
-                      className={styles.submitBtn}
-                      disabled={!selectedCafe || !review.trim()}
-                    >
-                      <span className={styles.submitText}>{t('reviews.submit')}</span>
-                      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true" className={styles.submitArrow}>
-                        <path d="M3.75 9H14.25M14.25 9L9.75 4.5M14.25 9L9.75 13.5"
-                          stroke="currentColor" strokeWidth="1.5"
-                          strokeLinecap="round" strokeLinejoin="round" />
-                      </svg>
-                    </button>
+                    <div className={styles.submitCol}>
+                      <button
+                        type="submit"
+                        className={styles.submitBtn}
+                        disabled={!canSubmit}
+                        aria-describedby={canSubmit ? undefined : 'submit-hint'}
+                      >
+                        <span className={styles.submitText}>{t('reviews.submit')}</span>
+                        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true" className={styles.submitArrow}>
+                          <path d="M3.75 9H14.25M14.25 9L9.75 4.5M14.25 9L9.75 13.5"
+                            stroke="currentColor" strokeWidth="1.5"
+                            strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                      </button>
+
+                      {/* A disabled control with no explanation reads as broken. */}
+                      {!canSubmit && (
+                        <p className={styles.submitHint} id="submit-hint">
+                          {t('reviews.hint')}
+                        </p>
+                      )}
+                    </div>
 
                     <div className={styles.altContact}>
                       <span className={styles.altContactLabel}>{t('reviews.altContact')}</span>

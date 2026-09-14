@@ -60,10 +60,18 @@ export function MenuPage() {
   }, []);
 
   return (
-    <main className={styles.page}>
-      {/* Hero Section — Editorial */}
+    <main className={styles.page} id="main">
+      {/* Hero Section: Editorial */}
       <section className={styles.hero}>
         {/* Corner accents */}
+        <motion.div
+          className={`${styles.cornerAccent} ${styles.cornerTL}`}
+          initial={{ opacity: 0, x: -15 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.6, delay: 0.2, ease: EASE }}
+        >
+          Specialty Coffee
+        </motion.div>
         <motion.div
           className={`${styles.cornerAccent} ${styles.cornerTR}`}
           initial={{ opacity: 0, x: 15 }}
@@ -94,11 +102,16 @@ export function MenuPage() {
                 <circle cx="12" cy="12" r="9"/>
                 <path d="M12 6v6l4 2"/>
               </svg>
-              <span>{t('menuPage.delivery')} {contactInfo.deliveryHours.start}–{contactInfo.deliveryHours.end}</span>
+              <span>{t('menuPage.delivery')} {contactInfo.deliveryHours.start} {t('common.timeRange')} {contactInfo.deliveryHours.end}</span>
             </div>
             <span className={styles.deliveryDot} />
             <div className={styles.deliveryActions}>
-              <a href={contactInfo.phoneHref} className={styles.deliveryLink} target="_blank" rel="noopener noreferrer">
+              <a
+                href={contactInfo.phoneHref}
+                className={`${styles.deliveryLink} ${styles.deliveryLinkPrimary}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 {t('menuPage.call')}
               </a>
               <a href={contactInfo.telegram} className={styles.deliveryLink} target="_blank" rel="noopener noreferrer">
@@ -130,7 +143,7 @@ export function MenuPage() {
         </div>
       </div>
 
-      {/* Bottom CTA — Editorial */}
+      {/* Bottom CTA: Editorial */}
       <section className={styles.bottomCta}>
         <div className={styles.container}>
           <motion.div
