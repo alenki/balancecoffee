@@ -4,6 +4,13 @@ import react from '@vitejs/plugin-react'
 
 const HERO = 'cafe/image'
 
+/**
+ * Deploy base. The site is hosted in a subdirectory (lumako.ru/harmonycoffee),
+ * so every generated URL has to carry that prefix. Override with VITE_BASE to
+ * build for a different path, or with '/' for a domain root.
+ */
+const BASE = process.env.VITE_BASE ?? '/harmonycoffee/'
+
 interface ManifestEntry {
   base: string
   widths: number[]
@@ -34,6 +41,9 @@ function heroPreload(): Plugin {
       }
       if (!hero) return html
       const { base, widths } = hero
+      // Manifest bases are relative to the deploy base, and `imagesrcset` is
+      // not one of the attributes Vite rewrites, so prefix it here.
+      const prefixed = BASE + base
 
       return {
         html,
@@ -44,7 +54,7 @@ function heroPreload(): Plugin {
               rel: 'preload',
               as: 'image',
               type: 'image/avif',
-              imagesrcset: widths.map((w) => `${base}-${w}.avif ${w}w`).join(', '),
+              imagesrcset: widths.map((w) => `${prefixed}-${w}.avif ${w}w`).join(', '),
               imagesizes: '100vw',
               fetchpriority: 'high',
             },
@@ -58,5 +68,6 @@ function heroPreload(): Plugin {
 
 // https://vite.dev/config/
 export default defineConfig({
+  base: BASE,
   plugins: [react(), heroPreload()],
 })

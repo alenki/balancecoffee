@@ -10,8 +10,11 @@ import styles from './LoadingScreen.module.css';
 const EASE = [0.16, 1, 0.3, 1] as const;
 const EASE_PART = [0.76, 0, 0.24, 1] as const;
 
+/** Manifest bases are relative to the deploy base; BASE_URL ends in a slash. */
+const urlFor = (base: string) => `${import.meta.env.BASE_URL}${base}`;
+
 const srcSet = (base: string, widths: readonly number[], ext: string) =>
-  widths.map((w) => `${base}-${w}.${ext} ${w}w`).join(', ');
+  widths.map((w) => `${urlFor(base)}-${w}.${ext} ${w}w`).join(', ');
 
 /**
  * Pipeline images are responsive, so warming a hardcoded URL would cache a
@@ -37,7 +40,7 @@ function warm(name: ImageName, sizes: string): () => Promise<void> {
       img.addEventListener('load', done, { once: true });
       img.addEventListener('error', done, { once: true });
       img.srcset = srcSet(meta.base, meta.widths, 'webp');
-      img.src = `${meta.base}-${meta.widths[meta.widths.length - 1]}.webp`;
+      img.src = `${urlFor(meta.base)}-${meta.widths[meta.widths.length - 1]}.webp`;
     });
   };
 }

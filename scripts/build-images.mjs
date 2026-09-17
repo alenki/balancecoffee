@@ -137,7 +137,9 @@ async function main() {
     const role = roleFor(item.key);
     item.role = role;
     item.widths = ladderFor(role, item.meta.width);
-    item.base = `/img/${item.key}`;
+    // Base relative, no leading slash: consumers prepend the deploy base
+    // (`import.meta.env.BASE_URL`), so the site works under a subdirectory.
+    item.base = `img/${item.key}`;
   }
 
   // Resolve duplicates up front, so concurrent workers can't both encode the
@@ -219,7 +221,7 @@ async function main() {
 // Run \`npm run images\` to regenerate.
 
 export interface ImageMeta {
-  /** Path prefix; append \`-<width>.<format>\`. */
+  /** Path prefix relative to the deploy base; append \`-<width>.<format>\`. */
   base: string;
   /** Intrinsic dimensions of the original, for width/height attributes. */
   w: number;

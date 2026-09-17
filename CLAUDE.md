@@ -89,6 +89,32 @@ src/
 `leaflet`, `react-leaflet` and `@types/leaflet` are still in `package.json` but
 nothing imports them. They can be uninstalled.
 
+## Deployment
+
+The site is hosted on reg.ru at **lumako.ru/harmonycoffee**, a subdirectory
+rather than a domain root, so `base` in `vite.config.ts` is `/harmonycoffee/`.
+Set `VITE_BASE` to build for a different path (`VITE_BASE=/ npm run build` for a
+root).
+
+Every asset URL has to carry that prefix:
+
+- Vite rewrites `src` and `href` in `index.html` and all bundled imports.
+- Image manifest bases are stored **relative** (`img/cafe/image`, no leading
+  slash). `Image.tsx` and `LoadingScreen.tsx` prepend
+  `import.meta.env.BASE_URL`; the hero preload plugin prepends `BASE`, because
+  `imagesrcset` is not an attribute Vite rewrites.
+- `og:image` and `og:url` in `index.html` are written out in full. Link
+  unfurlers fetch a plain URL and do not resolve a site relative path, and Vite
+  does not touch `meta` content.
+
+`public/.htaccess` ships with the build: it serves `index.html` for anything
+that is not a real file, enables gzip, declares the AVIF and WebP types, and
+caches hashed assets for a year while keeping `index.html` uncached. Its
+`RewriteBase` repeats the deploy path, so change it alongside `base`.
+
+To deploy: `npm run build`, then upload the **contents** of `dist/` (including
+the dotfile `.htaccess`) into `harmonycoffee/` under the site root.
+
 ## TypeScript Configuration
 
 Strict mode enabled with additional checks:

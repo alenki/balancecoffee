@@ -1,0 +1,48 @@
+# Apache config for reg.ru shared hosting. Vite copies this file into dist/,
+# so it ships alongside index.html in /harmonycoffee/.
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /harmonycoffee/
+
+  # The app uses HashRouter, so the server only ever needs to serve
+  # index.html. Anything that is not a real file resolves to it, which keeps a
+  # mistyped or stale path from returning the host's own 404 page.
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+  RewriteRule ^ index.html [L]
+</IfModule>
+
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css text/javascript application/javascript application/json image/svg+xml
+</IfModule>
+
+<IfModule mod_mime.c>
+  AddType image/avif .avif
+  AddType image/webp .webp
+</IfModule>
+
+<IfModule mod_expires.c>
+  ExpiresActive On
+
+  # Hashed bundle filenames and the image derivatives never change contents
+  # under the same name, so they can be cached for a year.
+  <FilesMatch "\.(js|css|avif|webp|woff2|svg)$">
+    ExpiresDefault "access plus 1 year"
+  </FilesMatch>
+
+  # index.html points at the hashed filenames, so it must never be cached.
+  <FilesMatch "\.html$">
+    ExpiresDefault "access plus 0 seconds"
+  </FilesMatch>
+</IfModule>
+
+<IfModule mod_headers.c>
+  <FilesMatch "\.(js|css|avif|webp|woff2|svg)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+  <FilesMatch "\.html$">
+    Header set Cache-Control "no-cache, must-revalidate"
+  </FilesMatch>
+</IfModule>
