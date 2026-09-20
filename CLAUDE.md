@@ -114,12 +114,37 @@ them.
 To add an image: drop the original in `assets-src/<area>/`, run
 `npm run images`, then reference it by its key (path minus extension).
 
+### Scroll reveals
+
+Every entrance on this site starts at `opacity: 0`, which means a reveal that
+never fires is not a missed animation: it is copy that never appears, with no
+scroll position that brings it back. Use **`useReveal`** from
+`src/hooks/useReveal.ts` and nothing else. Do not reach for Motion's
+`whileInView`, `viewport={{ once: true }}` or `useInView`: those are a single
+IntersectionObserver callback with no second chance, and when one is missed
+the section is gone for the life of the page.
+
+`useReveal` keeps the observer as the fast path and adds two nets behind it: a
+geometric re-check on a timer, which catches an observation computed while the
+site was still mounting behind the loading field and `html` was
+`overflow: hidden`, and a failsafe that shows the element outright if the
+observer never reported at all. The timer is deliberately not
+`requestAnimationFrame`, because frames stop in a background tab.
+
+It returns `{ ref, revealed }`, and the call site drives Motion with
+`animate={revealed ? { ... } : undefined}`. Prefer one reveal per band with the
+children separated by their own `delay`, rather than an observer per line.
+
+The same rule applies anywhere else content is hidden until a callback: `Image`
+consults `img.complete` as well as `onLoad`, because a cached image can finish
+before React attaches the handler, and `LoadingScreen` carries a wall clock cap
+because the site mounts behind it and its counter runs on frames.
+
 ### Routing
 
 Uses `HashRouter` from react-router-dom (hash-based routing for static hosting compatibility):
 - `/` - HomePage
 - `/menu` - MenuPage, the 53 real items
-- `/roastery` - RoasteryPage, the Loring S15 and the four origins
 - `/branches` - BranchesPage
 - `/contact` - ContactPage
 - `*` - NotFoundPage

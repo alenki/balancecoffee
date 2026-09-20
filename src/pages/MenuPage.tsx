@@ -56,14 +56,27 @@ export function MenuPage() {
     <main className={styles.page} id="main">
       <section className={styles.hero}>
         <div className={styles.container}>
-          <motion.span
-            className={styles.eyebrow}
-            initial={{ opacity: 0, x: -14 * sign }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6, delay: 0.15, ease: EASE }}
-          >
-            {t('hero.eyebrow')}
-          </motion.span>
+          {/* The eyebrow and the total hold the two ends of one line, which
+              leaves the whole measure for the title to centre in. */}
+          <div className={styles.topRow}>
+            <motion.span
+              className={styles.eyebrow}
+              initial={{ opacity: 0, x: -14 * sign }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, delay: 0.15, ease: EASE }}
+            >
+              {t('hero.eyebrow')}
+            </motion.span>
+
+            <motion.span
+              className={styles.count}
+              initial={{ opacity: 0, x: 14 * sign }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, delay: 0.2, ease: EASE }}
+            >
+              <bdi>{allItems.length}</bdi> {t('menu.itemsLabel')}
+            </motion.span>
+          </div>
 
           <motion.h1
             className={styles.title}
@@ -75,39 +88,48 @@ export function MenuPage() {
           </motion.h1>
 
           <motion.div
-            className={styles.meta}
+            className={styles.actions}
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.3, ease: EASE }}
           >
-            <span className={styles.metaItem}>
-              <bdi>{allItems.length}</bdi> {t('menu.itemsLabel')}
-            </span>
-            <span className={styles.metaDiamond} aria-hidden="true" />
-            <span className={styles.metaItem}>
+            <span className={styles.hours}>
+              <svg
+                className={styles.clock}
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                aria-hidden="true"
+              >
+                <circle cx="12" cy="12" r="9" />
+                <path d="M12 6v6l4 2" />
+              </svg>
+              {t('branches.daily')}{' '}
               <bdi>
                 {contactInfo.hours.start} {t('common.timeRange')} {contactInfo.hours.end}
               </bdi>
             </span>
-            <span className={styles.metaDiamond} aria-hidden="true" />
-            <a
-              href={contactInfo.whatsapp}
-              className={styles.metaLink}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              WhatsApp
-            </a>
-          </motion.div>
 
-          <motion.p
-            className={styles.note}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.4, ease: EASE }}
-          >
-            {t('menu.pricesNote')}
-          </motion.p>
+            <span className={styles.diamond} aria-hidden="true" />
+
+            <span className={styles.buttons}>
+              <a
+                href={contactInfo.phoneHref}
+                className={`${styles.button} ${styles.buttonPrimary}`}
+              >
+                {t('contact.callUs')}
+              </a>
+              <a
+                href={contactInfo.whatsapp}
+                className={styles.button}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {t('contact.whatsapp')}
+              </a>
+            </span>
+          </motion.div>
         </div>
       </section>
 
@@ -124,6 +146,10 @@ export function MenuPage() {
           {menuData.map((category) => (
             <MenuCategory key={category.id} category={category} />
           ))}
+
+          {/* Kept out of the header so the top of the page stays three lines.
+              It reads as a footnote, which is where a menu puts it anyway. */}
+          <p className={styles.note}>{t('menu.pricesNote')}</p>
         </div>
       </div>
     </main>

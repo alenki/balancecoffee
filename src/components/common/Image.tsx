@@ -1,4 +1,4 @@
-import { useState, type CSSProperties } from 'react';
+import { useCallback, useState, type CSSProperties } from 'react';
 import { motion, type MotionStyle } from 'motion/react';
 import { images, type ImageName } from '../../generated/image-manifest';
 import styles from './Image.module.css';
@@ -67,6 +67,16 @@ export function Image({
   const [seenBefore] = useState(() => shown.has(name));
   const [loaded, setLoaded] = useState(seenBefore);
 
+  /**
+   * A cached image can finish decoding before React has attached `onLoad`,
+   * and the load event never comes round again. Without this the picture sits
+   * at opacity 0 over its own blurred placeholder for the life of the page,
+   * with nothing left that could raise it.
+   */
+  const settle = useCallback((node: HTMLImageElement | null) => {
+    if (node?.complete) setLoaded(true);
+  }, []);
+
   if (!meta) {
     if (import.meta.env.DEV) console.warn(`<Image>: "${name}" is not in the manifest.`);
     return null;
@@ -82,6 +92,7 @@ export function Image({
     .join(' ');
 
   const shared = {
+    ref: settle,
     alt,
     sizes,
     className: imgClass,

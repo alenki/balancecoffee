@@ -69,7 +69,10 @@ export function useLenis() {
   // cold load on a deep link, which the PUSH-only check used to miss.
   useEffect(() => {
     if (lenisRef.current) {
-      lenisRef.current.scrollTo(0, { immediate: true });
+      // `force`, because the loading field stops Lenis for the whole boot and
+      // a stopped instance drops scrollTo on the floor without saying so. The
+      // first route lands during exactly that window.
+      lenisRef.current.scrollTo(0, { immediate: true, force: true });
     } else {
       window.scrollTo(0, 0);
     }

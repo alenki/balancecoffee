@@ -103,6 +103,29 @@
   --space-24: 6rem;
   --space-32: 8rem;
 
+  /* ----- Measures ---------------------------
+     Bands that cap themselves rather than
+     running to the viewport. A branch name and
+     its rating have to be read as one thing,
+     and they cannot be across 1800px of
+     nothing.
+
+     1320 carries the page gutter with it, so at
+     that width and above the content box is
+     1192: the number StorySection sets by hand,
+     which is how these bands line up with it.
+     896 is the narrower editorial measure the
+     numbered indexes sit on. */
+  --measure-page: 1320px;
+  --measure-index: 896px;
+
+  /* The CSS counterpart of `sign` from LanguageContext: +1 in LTR, -1 in RTL.
+     `translate` has no logical form, so an inline nudge is written once as
+     `calc(6px * var(--dir)) 0` instead of as a rule and its [dir='rtl'] twin.
+     LanguageContext is the only writer of documentElement.dir today; anything
+     that ever sets `dir` on a subtree has to set --dir on it as well. */
+  --dir: 1;
+
   --radius-sm: 2px;
   --radius-md: 4px;
   --radius-lg: 10px;
@@ -134,6 +157,7 @@
 [dir='rtl'] {
   --track-display: 0;
   --track-eyebrow: 0.06em;
+  --dir: -1;
 }
 
 [dir='rtl'] body {
@@ -361,6 +385,17 @@ button {
   translate: -50% -50%;
   rotate: 45deg;
   background: var(--color-chartreuse);
+}
+
+/**
+ * `inset-inline-start: 50%` resolves to `right: 50%` when the document flips,
+ * so the 7px box lands at [W/2 - 7, W/2] instead of [W/2, W/2 + 7]. `translate`
+ * has no logical form and keeps its sign, so the -50% that centres the diamond
+ * in LTR pushes it a further 3.5px the same way in RTL and leaves its centre
+ * at W/2 - 7. Flipping the sign puts it back on the middle.
+ */
+[dir='rtl'] .seam::after {
+  translate: 50% -50%;
 }
 
 /* ============================================

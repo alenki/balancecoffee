@@ -1,174 +1,769 @@
+/**
+ * BLOOM ROASTERY FOOTER
+ * The nameplate.
+ *
+ * Three beats, each a different weight.
+ *
+ *   1. The nameplate. One acid hairline runs the full width of the viewport,
+ *      the monogram straddles it the way a broadsheet device cuts its own
+ *      rule, and the brand name is set underneath at display scale. This is
+ *      the anchor.
+ *   2. The ledger. Four tracks divided by vertical hairlines, bracketed by one
+ *      rule above and one below. Only Browse, the track that is a list of
+ *      destinations, carries a hairline under each of its rows, which is also
+ *      the one column the reference rules. The other three are stacks of a
+ *      label over its value with no rules at all, and the stack is what
+ *      removes the label to value span: a label at the start of a track and a
+ *      number at the end of it is the geometry this footer was criticised for
+ *      at 250px, and an uncapped band only widens it.
+ *   3. The colophon. Copyright at the reading start, the studio credit at the
+ *      reading end, and the brand ornament holding the space between them.
+ *
+ * Why the width changed. The ledger used to cap its text at
+ * `var(--measure-page)` while the ground and the rules ran full bleed, so past
+ * 1320px the extra width became ink margin with rules running through it:
+ * 364px a side at 1920 and 1124px at 3440, with hairlines crossing all of it.
+ * `.bandInner` is now the page containers' ladder, the same four steps
+ * `MenuPage`, `BranchesPage`, `ContactPage` and `MenuPreview` each declare, so
+ * the gutter settles at a constant 64px from 1200px up and the band reaches
+ * within 64px of both edges at every width. Nothing at or below 1320px moves:
+ * the old cap already resolved to a 1192px content box there.
+ *
+ * Not Header's ladder, which is a tighter three steps: 24px, then 32px at
+ * 1180 and 48px at 1280. The two are deliberately not matched, so do not read
+ * this band as pinned to the bar at the top of the page. The footer keeps the
+ * rhythm of the pages it closes.
+ *
+ * The cost, taken knowingly. Above 1320px the footer's reading edge no longer
+ * lands on StorySection's, BranchesSection's or RoasterySection's, which stay
+ * capped: those bands cap their text at `--measure-page` and this one no
+ * longer does. The measure is protected per track rather than per page, by
+ * `--track-measure` on `.tracks`, so a column still holds a stack a 14px link
+ * can fill and no hairline runs longer than the word it underlines.
+ *
+ * Twenty four horizontal hairlines became eight at four up. The two full bleed
+ * `.ledger` rules moved inside the gutter onto `.tracks`, the four `.bars`
+ * leading rules went, and twelve of the sixteen row rules went with them. What
+ * is left, in order: the acid wire, the rule above the tracks, four under the
+ * Browse rows, the rule under the tracks, and the colophon seam. The wire is
+ * now the only rule in the footer that still bleeds, which is what marks it as
+ * the accent rather than as structure.
+ *
+ * Chartreuse is spent five times at rest: the monogram Logo brings, the wire,
+ * the Coming soon badge, the colophon diamond and the full stop in the Lumako
+ * mark. Two more are conditional and both on the sanctioned list, the focus
+ * ring and the hover rule. Every eyebrow that used to be acid is bone here.
+ */
+
 .footer {
+  position: relative;
   margin-block-start: auto;
   background: var(--color-ink);
   color: var(--color-on-dark);
-  padding-block: var(--space-20) var(--space-10);
+  padding-block: var(--space-16) var(--space-10);
+  overflow: hidden;
 }
 
-.container {
+/**
+ * The global ring is `--color-chartreuse-deep`, an olive mixed to be legible
+ * on bone. Against ink it is about 3:1 and all but disappears, and this band
+ * is almost nothing but links. The acid value is around 11:1 here, and a focus
+ * ring is explicitly on the list the accent is kept for, so this costs nothing
+ * from the ration.
+ */
+.footer :focus-visible {
+  outline-color: var(--color-chartreuse);
+}
+
+/* The same overlay the site's other two ink bands carry, at the same opacity.
+   The footer was the only dark ground without it. */
+.grain {
+  position: absolute;
+  inset: 0;
+  opacity: 0.2;
+  mix-blend-mode: overlay;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+}
+
+/* Bands are full bleed, so every rule they draw reaches the viewport edge.
+   Positioned, so they paint above the grain without a z-index. */
+.band {
+  position: relative;
   width: 100%;
-  max-width: 1320px;
-  margin-inline: auto;
-  padding-inline: var(--space-6);
 }
 
-@media (min-width: 768px) {
-  .container {
-    padding-inline: var(--space-10);
+/* One inner for all three beats, so their reading edges line up exactly.
+   No cap and no auto margin: these four steps are the page containers' ladder,
+   declared identically in MenuPage, BranchesPage, ContactPage and MenuPreview.
+   Header runs a different, tighter ladder and is not what this matches.
+   Deleted here: `max-width: var(--measure-page)` and `margin-inline: auto`. */
+.bandInner {
+  width: 100%;
+  padding-inline: var(--space-4);
+}
+
+@media (min-width: 640px) {
+  .bandInner {
+    padding-inline: var(--space-6);
   }
 }
 
-@media (min-width: 1280px) {
-  .container {
+@media (min-width: 768px) {
+  .bandInner {
+    padding-inline: var(--space-12);
+  }
+}
+
+@media (min-width: 1200px) {
+  .bandInner {
     padding-inline: var(--space-16);
   }
 }
 
-/* ---------- Brand band ---------- */
-.brandBand {
-  padding-block-end: var(--space-16);
+/* ===== Beat one: the nameplate ===== */
+
+/**
+ * The one acid rule, full bleed, drawn from the reading edge on reveal.
+ *
+ * `transform-origin` accepts no logical keyword: `inline-start` is an invalid
+ * value, so it is dropped and the origin falls back to the 50% 50% default,
+ * which draws the rule out of its own centre. The pair below is the only
+ * construction that actually follows the script.
+ */
+.wire {
+  width: 100%;
+  height: 1px;
+  background: var(--color-chartreuse);
+  transform-origin: 0 50%;
 }
 
-.brandInner {
+[dir='rtl'] .wire {
+  transform-origin: 100% 50%;
+}
+
+/**
+ * The monogram straddles the wire: a zero height row, so it costs no layout,
+ * and a pad in the ground colour that cuts the rule. The offset is vertical,
+ * so no direction handling is needed.
+ */
+.crown {
   display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
+  justify-content: center;
+  /* `start` matters: the row is zero height and the default stretch would
+     flatten the pad to nothing. */
   align-items: start;
+  height: 0;
 }
 
-.tagline {
-  font-family: var(--font-accent);
-  font-size: clamp(var(--text-lg), 2.4vw, var(--text-2xl));
-  font-weight: var(--font-normal);
-  color: var(--color-chartreuse);
-  line-height: 1.5;
-  max-width: 34ch;
+.crownPad {
+  display: inline-flex;
+  translate: 0 -50%;
+  padding-inline: var(--space-6);
+  background: var(--color-ink);
 }
 
-/* ---------- Panels ---------- */
-.grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: var(--space-10);
-  padding-block: var(--space-14);
+.crownMark {
+  display: inline-flex;
 }
 
-@media (min-width: 620px) {
-  .grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
+.masthead {
+  padding-block: var(--space-14) var(--space-16);
+  text-align: center;
 }
 
-@media (min-width: 1000px) {
-  .grid {
-    grid-template-columns: repeat(4, 1fr);
-    gap: var(--space-8);
-  }
-}
-
-.panel {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-5);
-}
-
-.panelLabel {
+.eyebrow {
   font-size: var(--text-xs);
   font-weight: var(--font-medium);
   letter-spacing: var(--track-eyebrow);
   text-transform: uppercase;
-  color: var(--color-chartreuse);
+  color: var(--color-on-dark-muted);
+  line-height: 1.4;
+  max-width: none;
+  /* Tracking is added after every letter including the last, so a centred run
+     hangs to the start by one step. `text-indent` is start relative, so this
+     one declaration corrects both scripts. */
+  text-indent: var(--track-eyebrow);
 }
 
-[dir='rtl'] .panelLabel {
+[dir='rtl'] .eyebrow {
   text-transform: none;
   font-size: var(--text-sm);
 }
 
-.list {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
+.name {
+  margin-block-start: var(--space-6);
 }
 
-.listLink {
+/**
+ * Latin: the Didone of their own logo file, at the logo's own spec. Tracking
+ * is what makes this run wide: fourteen caps at 0.24em measure roughly 12em,
+ * so 80px of type spans about 960px of the 1192px measure.
+ *
+ * The claw-back sits on the START edge, which is the opposite edge to the one
+ * Logo.module.css uses, because this run is centred and that one is not.
+ * `letter-spacing` adds its step after the last glyph too, so the text box is
+ * 0.24em wider than the ink and centring the box leaves the ink 0.12em short
+ * of centre. Padding on the start edge shortens the content box from that
+ * side, which carries the centred line back towards the end by the same
+ * amount. Padding on the end edge moves it the other way and doubles the
+ * error: measured at the 80px ceiling, the ink landed 19px to the start of the
+ * monogram that `.crown` centres geometrically above it.
+ */
+.nameLatin {
+  display: block;
+  font-family: var(--font-wordmark);
+  font-weight: var(--font-normal);
+  font-size: clamp(var(--text-3xl), 6vw, var(--text-7xl));
+  text-transform: uppercase;
+  letter-spacing: 0.24em;
+  padding-inline-start: 0.24em;
+  line-height: 1.05;
+  text-wrap: balance;
+}
+
+/**
+ * Arabic: Readex Pro at 200 with the kashida string, the way their logo file
+ * draws it. No Didone covers Arabic, and the script takes no tracking, so this
+ * run is narrower per em than the Latin. It gets the next size token up to
+ * reach a comparable optical width, and more leading, because the tatweels sit
+ * on a long baseline and the descenders are deep. 200 rather than the usual
+ * Arabic display 500 because this is the wordmark, and Readex loads 160 to
+ * 700, so the weight is real and not synthesised.
+ */
+.nameArabic {
+  display: block;
+  font-family: var(--font-arabic);
+  font-weight: 200;
+  /* 8.5rem is a literal because the scale carries no token above
+     `--text-7xl`. The kashida run sets narrower per em than the tracked
+     Latin, so matching it optically takes more px than the Latin's own
+     ceiling: the same reasoning that already gives this run the next size
+     token up. The 8.5vw coefficient is lower than the 9vw it replaces, so the
+     tightest point in the ladder, 768px, gains slack rather than losing it. */
+  font-size: clamp(var(--text-3xl), 8.5vw, 8.5rem);
+  letter-spacing: 0;
+  line-height: 1.35;
+}
+
+/**
+ * The one editorial accent line in the footer, and bone rather than acid: the
+ * outgoing tagline printed at up to 24px of chartreuse, which was the largest
+ * run of acid text on the site. In Arabic no Didone applies, so the line
+ * resolves to Readex Pro and separates itself by weight instead of by face,
+ * which is what every other Arabic accent here does.
+ */
+.tagline {
+  font-family: var(--font-accent);
+  font-style: italic;
+  font-weight: var(--font-normal);
+  font-size: clamp(var(--text-lg), 1.6vw, var(--text-2xl));
+  line-height: 1.5;
+  color: var(--color-on-dark);
+  max-width: none;
+  margin-block-start: var(--space-6);
+}
+
+[dir='rtl'] .tagline {
+  font-family: var(--font-accent);
+  font-style: normal;
+  font-weight: 200;
+  font-size: clamp(var(--text-base), 1.4vw, var(--text-xl));
+  line-height: 1.8;
+}
+
+/* ===== Beat two: the ledger ===== */
+
+/**
+ * The band's two hairlines sit here rather than on the band, so they stop at
+ * the gutter instead of at the viewport edge and each one measures the four
+ * columns it brackets. The acid wire above is the only rule in this footer
+ * that still bleeds.
+ *
+ * `--track-measure` caps the row stacks rather than the page, which is what
+ * keeps the measure honest now that the page cap is gone. Nothing inside a
+ * track sets more than about 360px, so 416px is generous, and it is inert at
+ * every width below roughly 1900px because the bay is narrower than the cap
+ * there anyway. Above that it stops a Browse hairline running several times
+ * the length of the word it underlines.
+ */
+.tracks {
+  --track-measure: 26rem;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  border-block: 1px solid var(--color-border-dark);
+}
+
+.track {
+  display: flex;
+  flex-direction: column;
+  padding-block: var(--space-10);
+  border-block-start: 1px solid var(--color-border-dark);
+}
+
+.track:first-child {
+  border-block-start: 0;
+}
+
+/**
+ * Two up. No column gap: the tracks carry symmetric padding either side of a
+ * single hairline, so the rule lands halfway between two columns of text. Four
+ * tracks make two clean rows here, with no empty cell.
+ */
+@media (min-width: 700px) {
+  .tracks {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .track {
+    padding-inline: var(--space-8) 0;
+    border-inline-start: 1px solid var(--color-border-dark);
+  }
+
+  .track:nth-child(2n + 1) {
+    padding-inline: 0 var(--space-8);
+    border-inline-start: 0;
+  }
+
+  .track:nth-child(-n + 2) {
+    border-block-start: 0;
+  }
+}
+
+/**
+ * Four up at 1100, which is Header's and BranchesPage's breakpoint rather than
+ * a new one. The inner padding is a fixed step, not a vw clamp: the measure is
+ * capped, so padding that kept growing past the cap would only eat the text.
+ *
+ * `:nth-child(n)` matches every track and carries the same specificity as the
+ * two up rules above, so source order settles it. Without that, the odd track
+ * rule would keep winning at this width.
+ */
+@media (min-width: 1100px) {
+  .tracks {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .track:nth-child(n) {
+    padding-block: var(--space-12);
+    padding-inline: var(--space-5);
+    border-block-start: 0;
+    border-inline-start: 1px solid var(--color-border-dark);
+  }
+
+  .track:first-child {
+    padding-inline-start: 0;
+    border-inline-start: 0;
+  }
+
+  .track:last-child {
+    padding-inline-end: 0;
+  }
+}
+
+@media (min-width: 1200px) {
+  .track:nth-child(n) {
+    padding-inline: var(--space-6);
+  }
+
+  .track:first-child {
+    padding-inline-start: 0;
+  }
+
+  .track:last-child {
+    padding-inline-end: 0;
+  }
+}
+
+/**
+ * The track label is an `<h2>`, so four columns are navigable instead of being
+ * four unstructured spans. That means undoing the global heading rule and
+ * restating the eyebrow: in Arabic `[dir='rtl'] h2` zeroes `letter-spacing` at
+ * specificity (0,1,1), so the tracking has to be written again below or these
+ * labels would be the only eyebrows on the site without it.
+ */
+.trackLabel {
+  font-family: var(--font-primary);
+  font-size: var(--text-xs);
+  font-weight: var(--font-medium);
+  letter-spacing: var(--track-eyebrow);
+  text-transform: uppercase;
+  line-height: 1.4;
+  color: var(--color-on-dark);
+  margin: 0;
+  /* `.track` is a column flex, so its cross axis is the inline axis and a bare
+     `<h2>` would stretch across the whole bay. */
+  align-self: start;
+}
+
+[dir='rtl'] .trackLabel {
+  font-family: var(--font-arabic);
+  font-weight: var(--font-medium);
+  text-transform: none;
+  letter-spacing: var(--track-eyebrow);
+  font-size: var(--text-sm);
+}
+
+/* ===== The bar: the one row unit every track is built from ===== */
+
+/* The leading rule went with the trailing ones. The label and the air under
+   it open a track now, which is how the reference opens its columns. The cap
+   is read from `.tracks` so the lever stays in one place. */
+.bars {
+  margin-block-start: var(--space-5);
+  max-width: var(--track-measure);
+}
+
+/**
+ * The row unit, and a stack in every track now. A label at the start of a
+ * track and a number at the end of it is the geometry this footer was already
+ * criticised for at 250px, and an uncapped band only widens that span, so the
+ * row stacks and the span is removed rather than shortened. This is what
+ * `.barStack` did for Legal alone; it is what every track does now, and that
+ * modifier is gone.
+ *
+ * `minmax(0, 1fr)` rather than `1fr`: the 48 character Arabic company name and
+ * the 15 digit VAT are exactly the content that makes a plain `1fr` overflow
+ * its track instead of wrapping inside it.
+ *
+ * `justify-items: start` is load bearing twice. It sizes each child to its own
+ * content instead of stretching it across the bay, which is what lets
+ * `text-align` stay at the inherited `start` everywhere. And it is why
+ * `[dir='rtl'] .barFigure { direction: rtl }` could be deleted: a stretched
+ * `bdi` carries `dir="auto"`, a run of bare digits holds no strong character
+ * so the scan falls back to ltr, and the inherited `text-align: start` then
+ * resolved against that ltr and flushed the figure to the left of an Arabic
+ * row while its label sat at the right. Nothing stretches now. Put these
+ * children back on `stretch` and that bug returns with no rule left to catch
+ * it, and the fix is that exact deleted rule and never a generalised
+ * `[dir='rtl'] bdi`: the phone number opens with a plus sign, a bidi neutral
+ * that in an rtl box resolves to the far side of the digits.
+ *
+ * `position: relative` anchors `.barRule`, and it is why the `sr-only` map
+ * label can be absolute and so take no cell in this grid.
+ */
+.bar {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  justify-items: start;
+  align-items: start;
+  row-gap: var(--space-1);
+  padding-block: var(--space-3);
+}
+
+/**
+ * Browse is the one track that keeps a hairline under every row, which is the
+ * one column the reference rules too: the column that is a list of
+ * destinations. The name and its arrow sit together at the reading start
+ * rather than at the two ends of a bay that now grows with the viewport. A
+ * flex row follows `direction`, so in Arabic the name sits at the start with
+ * the arrow after it: no `row-reverse`, no twin.
+ *
+ * Written as a compound selector so specificity, not source order, settles the
+ * `display` it takes off `.bar`. Split into a bare `.barNav` at (0,1,0) and
+ * these rows silently fall back to the stack, with a rule under a two line
+ * block.
+ */
+.bar.barNav {
   display: flex;
   align-items: center;
   gap: var(--space-3);
+  padding-block: var(--space-4);
+  border-block-end: 1px solid var(--color-border-dark);
+}
+
+.barLink {
+  color: var(--color-on-dark);
+}
+
+/* The global `a:hover` is chartreuse-deep, which on ink is near black on near
+   black. Every anchor in this band has to say otherwise. */
+.barLink:hover {
+  color: var(--color-on-dark);
+}
+
+/**
+ * The site's signature affordance: a rule that grows from the reading edge.
+ * Drawn as a real element, the way Header draws its nav rule, and with the
+ * explicit origin pair because `transform` is one of the few things logical
+ * flow does not mirror.
+ */
+.barRule {
+  position: absolute;
+  inset-inline: 0;
+  /* The stacked rows carry no border under them, so the rule lands on the
+     padding edge. The Browse rows restate -1px below, to land on top of
+     theirs. */
+  inset-block-end: 0;
+  height: 1px;
+  /**
+   * `justify-self` is not decoration here. This is an absolutely positioned
+   * grid child with both inline insets set and an auto width, and CSS Box
+   * Alignment sizes such a box shrink to fit the moment its alignment is
+   * anything but `normal` or `stretch`. `.bar` sets `justify-items: start`,
+   * which an `auto` `justify-self` computes from, so without this the rule is
+   * an empty span shrunk to zero width and the affordance disappears on all
+   * ten links in both languages, silently, and only under the pointer. The fix
+   * belongs on the rule and not on `.bar`: that element needs its
+   * `justify-items` for every other child it has.
+   */
+  justify-self: stretch;
+  background: var(--color-chartreuse);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  transition: transform var(--transition-base);
+}
+
+[dir='rtl'] .barRule {
+  transform-origin: 100% 50%;
+}
+
+/* The four rows that keep a border are the only ones whose rule has to land on
+   top of it rather than on the padding edge. */
+.bar.barNav .barRule {
+  inset-block-end: -1px;
+}
+
+/* Twelve of the sixteen rows lost their resting hairline, so on Branches and
+   Contact this growing rule is the only structural feedback left. A hover only
+   selector would make it pointer exclusive. */
+.barLink:hover .barRule,
+.barLink:focus-visible .barRule {
+  transform: scaleX(1);
+}
+
+.barLead {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.barName {
+  font-family: var(--font-display);
+  font-weight: var(--font-semibold);
+  font-size: clamp(var(--text-base), 1.2vw, var(--text-lg));
+  text-transform: uppercase;
+  letter-spacing: var(--track-display);
+  line-height: 1.2;
+  color: var(--color-on-dark);
+}
+
+[dir='rtl'] .barName {
+  font-family: var(--font-arabic);
+  font-weight: var(--font-medium);
+  font-size: var(--text-base);
+  text-transform: none;
+  letter-spacing: 0;
+  line-height: 1.5;
+}
+
+/**
+ * Row labels are tracked tighter than `--track-eyebrow`: "COMMERCIAL REGISTER"
+ * at 0.28em does not fit a 250px track. 0.06em is the value that token already
+ * resolves to in Arabic, which is why this literal needs no RTL reset, the
+ * same reasoning BranchesSection records on its badge.
+ */
+.barLabel {
+  font-size: var(--text-xs);
+  font-weight: var(--font-medium);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-on-dark-muted);
+  line-height: 1.5;
+}
+
+[dir='rtl'] .barLabel {
+  text-transform: none;
   font-size: var(--text-sm);
+}
+
+.barValue {
+  font-size: var(--text-sm);
+  color: var(--color-on-dark);
+  font-variant-numeric: tabular-nums;
+}
+
+.barMeta {
+  font-size: var(--text-xs);
   color: var(--color-on-dark-muted);
   transition: color var(--transition-fast);
 }
 
-.listLink:hover {
+.barLink:hover .barMeta,
+.barLink:focus-visible .barMeta {
   color: var(--color-on-dark);
 }
 
-.soon {
-  font-size: 0.6875rem;
-  letter-spacing: 0.06em;
-  color: var(--color-ink);
-  background: var(--color-chartreuse);
-  padding: 1px 7px;
-  border-radius: var(--radius-full);
-}
-
-.hours {
-  font-size: var(--text-sm);
-  color: var(--color-on-dark-muted);
+.barFigure {
+  font-size: var(--text-base);
+  color: var(--color-on-dark);
   font-variant-numeric: tabular-nums;
+  line-height: 1.5;
 }
 
-/* ---------- Legal ---------- */
-.legal {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-  font-size: var(--text-xs);
-  color: var(--color-on-dark-muted);
-}
-
-.legalCompany {
+.barCompany {
+  font-size: var(--text-sm);
   color: var(--color-on-dark);
   line-height: 1.6;
   max-width: none;
 }
 
-.legalRow {
-  display: flex;
-  gap: var(--space-2);
-  justify-content: space-between;
-  max-width: none;
-  border-block-end: 1px dotted var(--color-border-dark);
-  padding-block-end: var(--space-1);
+/* `address` ships italic by default. It takes no measure cap of its own: the
+   global 62ch rule is written against `p`, which does not match this element,
+   so unlike the paragraphs in this file it needs no `max-width` reset. */
+.barAddress {
+  font-style: normal;
+  font-size: var(--text-xs);
+  color: var(--color-on-dark-muted);
+  line-height: 1.7;
 }
 
-.legalValue {
-  font-variant-numeric: tabular-nums;
+/**
+ * The arrow points along the reading direction, and the outbound one points
+ * out of the page.
+ *
+ * `scale` and `rotate` are standalone properties, and the transform they build
+ * applies scale before rotate. So mirroring a right pointing arrow and then
+ * rotating it by +45deg sends it up and towards the reading edge's opposite
+ * side, which is out of the page in Arabic. Mirroring alone would send it
+ * down. Both are written by hand because neither property is mirrored by flow.
+ */
+.barArrow {
+  align-self: center;
+  color: var(--color-on-dark-muted);
+  transition: color var(--transition-fast);
+}
+
+[dir='rtl'] .barArrow {
+  scale: -1 1;
+}
+
+.barArrowOut {
+  rotate: -45deg;
+}
+
+[dir='rtl'] .barArrowOut {
+  rotate: 45deg;
+}
+
+.barLink:hover .barArrow,
+.barLink:focus-visible .barArrow {
   color: var(--color-on-dark);
 }
 
-.legalAddress {
-  line-height: 1.7;
-  max-width: none;
-  margin-block-start: var(--space-2);
+/* Ink on acid, which is the one pairing chartreuse reads well in. The scale
+   has no token anywhere on the site: these are the literal values the three
+   other badges use. */
+.soon {
+  flex: none;
+  font-size: 0.6875rem;
+  letter-spacing: 0.06em;
+  color: var(--color-ink);
+  background: var(--color-chartreuse);
+  padding: 2px 10px;
+  border-radius: var(--radius-full);
+  white-space: nowrap;
 }
 
-/* ---------- Colophon ---------- */
-.colophon {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-4);
+.channels {
+  display: inline-flex;
   align-items: center;
-  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.channel {
+  font-size: var(--text-sm);
+  color: var(--color-on-dark-muted);
+  transition: color var(--transition-fast);
+}
+
+/* Two classes, so the global `a:hover` cannot pull it to the olive. */
+.channel:hover {
+  color: var(--color-on-dark);
+}
+
+/* The brand ornament reduced: a rotated square, drawn with the standalone
+   `rotate` property the way every diamond on this site is. A 45deg rotation of
+   a square is symmetric, so it needs no direction rule. */
+.channelDiamond {
+  flex: none;
+  width: 4px;
+  height: 4px;
+  rotate: 45deg;
+  background: var(--color-on-dark-muted);
+}
+
+/* ===== Beat three: the colophon ===== */
+
+.colophon {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  justify-items: center;
+  align-items: center;
+  gap: var(--space-5);
   padding-block-start: var(--space-8);
-  border-block-start: 1px solid var(--color-border-dark);
+  text-align: center;
 }
 
 .copyright {
   font-size: var(--text-xs);
   color: var(--color-on-dark-muted);
+  font-variant-numeric: tabular-nums;
   max-width: none;
+}
+
+/**
+ * The brand ornament at full size: a hairline with the chartreuse diamond on
+ * it, the way index.css draws its seam.
+ *
+ * The diamond is centred with `inset-inline` plus `margin-inline: auto`, not
+ * with a percentage horizontal translate. A percentage translate is physical,
+ * so once `inset-inline-start` resolves to the right edge in Arabic the shift
+ * goes the wrong way and the diamond lands half its own width off centre.
+ * This way the ornament needs no direction rule.
+ */
+.colophonSeam {
+  display: none;
+  position: relative;
+  height: 1px;
+  /**
+   * The ornament is a rule with a diamond on it, so the rule has to stay short
+   * enough for the diamond to be the point of it. Uncapped, the middle track
+   * of the colophon now runs about 1500px at 1920 and about 2900px at 3440,
+   * and a 7px mark in that reads as dust rather than as the brand mark. 34rem
+   * holds roughly the proportion the seam has on every other band.
+   * `max-width` and `margin-inline` are both logical, so this needs no
+   * direction rule.
+   *
+   * `width: 100%` is not redundant next to the cap, it is what makes the cap
+   * work at all. This is a grid item the 900px block puts back on
+   * `justify-items: stretch`, and an auto width plus `margin-inline: auto`
+   * resolves the other way round: the auto margins absorb the free space
+   * first, the auto width falls to shrink to fit, and an empty 1px element
+   * shrinks to nothing. The rule then measures zero and the band shows a
+   * diamond floating with no line under it. A definite width resolves against
+   * the grid area, the cap trims it to 544px, and the auto margins centre what
+   * is left.
+   */
+  width: 100%;
+  max-width: 34rem;
+  margin-inline: auto;
+  background: var(--color-border-dark);
+}
+
+.colophonSeam::after {
+  content: '';
+  position: absolute;
+  inset-inline: 0;
+  inset-block-start: 50%;
+  width: 7px;
+  height: 7px;
+  margin-inline: auto;
+  translate: 0 -50%;
+  rotate: 45deg;
+  background: var(--color-chartreuse);
 }
 
 .credit {
@@ -180,14 +775,69 @@
   color: var(--color-on-dark);
 }
 
-/* Inter is loaded for this wordmark and nothing else on the site. */
+/* Inter is loaded for this wordmark and nothing else on the site. The tracking
+   is the Lumako mark's own spec, the way 0.24em is Bloom's, and it stays Latin
+   in both languages. */
 .creditMark {
   font-family: var(--font-lumako);
   font-size: var(--text-sm);
-  font-weight: 600;
+  font-weight: var(--font-semibold);
   letter-spacing: -0.02em;
 }
 
 .creditDot {
   color: var(--color-chartreuse);
 }
+
+/**
+ * Wide enough for two ends: the copyright takes one, the credit the other, and
+ * the ornament is the span between them.
+ *
+ * This block sits last on purpose. It overrides `.colophonSeam` at the same
+ * specificity, so source order is the only thing that decides it, and written
+ * above the base rule it would lose and the seam would never appear.
+ *
+ * `justify-items` has to return to `stretch` here. The centred default sizes a
+ * grid item to its own content, and the seam is an empty element, so it would
+ * measure zero and leave the credit sitting in the middle track rather than at
+ * the end of the row.
+ */
+@media (min-width: 900px) {
+  .colophon {
+    /* The ledger row one last time: a mark at each end and a rule between
+       them, so the closing band is the rule rather than two items marooned at
+       either end of one. */
+    grid-template-columns: auto minmax(var(--space-8), 1fr) auto;
+    justify-items: stretch;
+    gap: var(--space-6);
+    text-align: start;
+  }
+
+  .colophonSeam {
+    display: block;
+  }
+}
+
+/* =========================================================
+   DELETED IN THE FULL WIDTH PASS, and why
+   =========================================================
+   .ledger { border-block }             -> moved onto `.tracks`, inside the
+                                           gutter, so the rules stop where the
+                                           text does
+   .bars { border-block-start } x4      -> the label and its air open a track
+                                           now
+   .bar { border-block-end } x12        -> kept on the Browse rows only, which
+                                           is the one column the reference
+                                           rules
+   .barStack                            -> its single column stack is `.bar`'s
+                                           own layout now
+   .barValue / .barMeta text-align: end -> no end aligned cell survives, and a
+                                           shrink wrapped child has no slack
+                                           for it to act on
+   [dir='rtl'] .barFigure { direction }  -> nothing stretches any more, so the
+                                           misalignment it corrected is gone.
+                                           Precondition: `.bar` keeps
+                                           `justify-items: start`
+   .bandInner max-width / margin-inline -> the band is on the site's full bleed
+                                           ladder now
+   ========================================================= */

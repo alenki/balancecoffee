@@ -3,65 +3,65 @@
   padding-block: var(--space-24);
 }
 
+/* Same capped ladder as the roastery band above it: the home page gutter,
+   with `--measure-page` over the top so the band stops growing at 1192. */
 .container {
   width: 100%;
-  max-width: 1320px;
+  max-width: var(--measure-page);
   margin-inline: auto;
-  padding-inline: var(--space-6);
+  padding-inline: var(--space-4);
+}
+
+@media (min-width: 640px) {
+  .container {
+    padding-inline: var(--space-6);
+  }
 }
 
 @media (min-width: 768px) {
   .container {
-    padding-inline: var(--space-10);
+    padding-inline: var(--space-12);
   }
 }
 
-@media (min-width: 1280px) {
+@media (min-width: 1200px) {
   .container {
     padding-inline: var(--space-16);
   }
 }
 
-/* ---------- Header ---------- */
-.header {
-  display: grid;
-  grid-template-columns: 1fr;
+/* ---------- Masthead ---------- */
+
+/**
+ * The eyebrow sits with its title rather than in the opposite corner of the
+ * screen. The hours moved out of this block entirely and now close the
+ * section, next to the link, where a reader has just finished the list and is
+ * deciding whether to go.
+ */
+.masthead {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
   gap: var(--space-4);
-  margin-block-end: var(--space-12);
+  margin-block-end: var(--space-16);
 }
 
-@media (min-width: 900px) {
-  .header {
-    grid-template-columns: auto 1fr auto;
-    align-items: end;
-    gap: var(--space-8);
-  }
-}
-
-.label,
-.hours {
+.label {
   font-size: var(--text-xs);
   font-weight: var(--font-medium);
   letter-spacing: var(--track-eyebrow);
   text-transform: uppercase;
   color: var(--color-ink-muted);
-  white-space: nowrap;
+  /* Tracking is added after every letter including the last, so a centred run
+     hangs to the start by one step. `text-indent` is start relative, so this
+     one declaration corrects both scripts. */
+  text-indent: var(--track-eyebrow);
 }
 
-[dir='rtl'] .label,
-[dir='rtl'] .hours {
+[dir='rtl'] .label {
   text-transform: none;
   font-size: var(--text-sm);
-}
-
-.hours {
-  font-variant-numeric: tabular-nums;
-}
-
-@media (min-width: 900px) {
-  .hours {
-    text-align: end;
-  }
 }
 
 .title {
@@ -84,51 +84,85 @@
   font-size: clamp(var(--text-2xl), 4.5vw, var(--text-4xl));
 }
 
+/* The accent word sits in the heading's own face, so the display line reads
+   as one run of type rather than two. */
 .titleAccent {
-  text-transform: none;
-  font-weight: var(--font-normal);
-  font-family: var(--font-accent);
-  font-style: italic;
-  color: var(--color-chartreuse-deep);
-}
-
-[dir='rtl'] .titleAccent {
-  font-weight: 200;
-  font-family: var(--font-accent);
-  font-style: normal;
+  font: inherit;
+  color: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
 }
 
 /* ---------- Rows ---------- */
+
+/**
+ * The index caps at `--measure-index` rather than running to the content
+ * edge. At a 2000px viewport the old row was roughly 1870px wide and left
+ * about 1500px of nothing between a branch name and its rating, which is
+ * further than an eye will carry an association.
+ *
+ * `--row-pad` is the air between that cap and the row's own content: the
+ * index at the start, the go button at the end. Without it the plate a
+ * hovered row draws ends exactly where the button does, and the button's
+ * hover nudge travels straight out of it. The padding is added back to the
+ * cap rather than taken out of it, so the reading measure stays the 896 this
+ * band was set on.
+ */
 .list {
+  --row-pad: var(--space-3);
+
   display: flex;
   flex-direction: column;
+  width: 100%;
+  max-width: calc(var(--measure-index) + var(--row-pad) * 2);
+  margin-inline: auto;
   border-block-start: 1px solid var(--color-border);
 }
 
 .row {
   display: grid;
-  grid-template-columns: auto 1fr;
+  grid-template-columns: auto 1fr auto;
   align-items: center;
   gap: var(--space-4);
   padding-block: var(--space-6);
+  padding-inline: var(--row-pad);
   border-block-end: 1px solid var(--color-border);
   color: var(--color-ink);
-  transition: padding-inline var(--transition-base);
+  transition: background var(--transition-base);
 }
 
 @media (min-width: 700px) {
-  .row {
-    grid-template-columns: auto 1fr auto;
-    gap: var(--space-6);
+  .list {
+    --row-pad: var(--space-4);
   }
 
-  /* Nudges along the reading direction, so it works in both scripts. */
-  .row:hover {
-    padding-inline-start: var(--space-4);
+  .row {
+    gap: var(--space-6);
   }
 }
 
+/**
+ * The plate and the go button carry the hover, and nothing else moves. The
+ * global `a:hover` repaints a link chartreuse-deep, and `a:hover` outranks a
+ * single class, so the branch name turned olive under the cursor: the one row
+ * a reader had picked out was the one row that read as switched off. The
+ * class pair below outranks it and restates the row's own ink.
+ */
+.row:hover,
+.row:focus-visible {
+  background: var(--color-surface);
+  color: var(--color-ink);
+}
+
 .rowSoon {
+  color: var(--color-ink-muted);
+}
+
+/* After the pair above and level with it on specificity, so a branch that has
+   not opened yet stays muted under the cursor rather than being promoted to
+   full ink by the rule that defeats the olive. */
+.rowSoon:hover,
+.rowSoon:focus-visible {
   color: var(--color-ink-muted);
 }
 
@@ -136,6 +170,9 @@
   font-size: var(--text-xs);
   color: var(--color-chartreuse-deep);
   font-variant-numeric: tabular-nums;
+  /* A bare Western numeral alone in its cell, held out of the Arabic run
+     around it. Precedent: MenuPreview.module.css and Price.module.css. */
+  unicode-bidi: isolate;
 }
 
 .rowMain {
@@ -143,6 +180,23 @@
   flex-direction: column;
   gap: var(--space-1);
   min-width: 0;
+}
+
+/**
+ * Name and meta on one line, which is the whole point of the redesign: the
+ * rating now sits beside the branch it belongs to instead of at the far edge
+ * of the screen.
+ *
+ * `flex-wrap` is load bearing and must not be dropped. In Arabic the pair is
+ * الفيصلية beside المدينة المنورة, and المدينة المنورة is roughly twice the
+ * width of Madinah, so the meta has to be able to fall to its own line rather
+ * than overflow.
+ */
+.rowHead {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-4);
 }
 
 .rowName {
@@ -162,39 +216,39 @@
   line-height: 1.5;
 }
 
+.rowMeta {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+}
+
 .rowStreet {
   font-size: var(--text-sm);
   color: var(--color-ink-muted);
 }
 
-.rowMeta {
-  display: flex;
-  align-items: center;
-  gap: var(--space-4);
-  grid-column: 2;
-}
-
-@media (min-width: 700px) {
-  .rowMeta {
-    grid-column: 3;
-    justify-content: end;
-  }
-}
-
+/**
+ * Plain inline, NOT inline-flex, and the diamond is a pseudo rather than an
+ * empty element. An empty box at the head of a flex container supplies that
+ * container's first baseline from its own margin edge, which would hang the
+ * rating off the branch name it is supposed to sit level with.
+ */
 .rating {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
   font-size: var(--text-sm);
   font-variant-numeric: tabular-nums;
   color: var(--color-ink);
+  white-space: nowrap;
 }
 
-.ratingDiamond {
+.rating::before {
+  content: '';
+  display: inline-block;
   width: 6px;
   height: 6px;
   rotate: 45deg;
   background: var(--color-chartreuse);
+  margin-inline-end: var(--space-2);
+  vertical-align: middle;
 }
 
 .rowCity {
@@ -210,25 +264,91 @@
 }
 
 .soonBadge {
+  /* Deliberately tighter than `--track-eyebrow` at this size. It happens to
+     equal the Arabic value of that token, so it needs no RTL rule; anything
+     written here as a literal would. */
   font-size: 0.6875rem;
   letter-spacing: 0.06em;
   color: var(--color-ink);
   background: var(--color-chartreuse);
   padding: 2px 10px;
   border-radius: var(--radius-full);
+  white-space: nowrap;
 }
 
-/* ---------- CTA ---------- */
-.action {
+/* ---------- Row affordance ---------- */
+.rowGo {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-full);
+  color: var(--color-ink);
+  transition:
+    background var(--transition-base),
+    border-color var(--transition-base),
+    color var(--transition-base),
+    translate var(--transition-base);
+}
+
+.row:hover .rowGo,
+.row:focus-visible .rowGo {
+  background: var(--color-chartreuse);
+  border-color: var(--color-chartreuse);
+  /* `translate` has no logical form, so the direction is carried by --dir
+     rather than by a second rule under [dir='rtl']. The travel stays well
+     under `--row-pad`, so the button nudges inside the plate at either end
+     instead of over its edge. */
+  translate: calc(5px * var(--dir)) 0;
+}
+
+.rowGoIcon {
+  width: 14px;
+  height: 14px;
+}
+
+/**
+ * The arrow points along the reading direction. The mirror lives here on the
+ * icon's own `scale` while the travel above lives on the wrapper's
+ * `translate`: two separate elements, so the two can never collapse into one
+ * matrix where the scale would silently invert the nudge in Arabic.
+ */
+[dir='rtl'] .rowGoIcon {
+  scale: -1 1;
+}
+
+/* ---------- Close ---------- */
+.footer {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-8);
   margin-block-start: var(--space-12);
+}
+
+.hours {
+  font-size: var(--text-xs);
+  font-weight: var(--font-medium);
+  letter-spacing: var(--track-eyebrow);
+  text-transform: uppercase;
+  color: var(--color-ink-muted);
+  font-variant-numeric: tabular-nums;
+  text-indent: var(--track-eyebrow);
+}
+
+[dir='rtl'] .hours {
+  text-transform: none;
+  font-size: var(--text-sm);
 }
 
 .cta {
   display: inline-flex;
   align-items: center;
-  padding: var(--space-4) var(--space-10);
+  padding-block: var(--space-4);
+  /* Tracking carried back into the start padding, so the label sits optically
+     centred in the pill. Arabic unwinds it: there is no tracking to correct. */
+  padding-inline: calc(var(--space-10) + var(--track-eyebrow)) var(--space-10);
   border: 1px solid var(--color-ink);
   border-radius: var(--radius-full);
   font-size: var(--text-xs);
@@ -244,6 +364,7 @@
 [dir='rtl'] .cta {
   text-transform: none;
   font-size: var(--text-sm);
+  padding-inline: var(--space-10);
 }
 
 .cta:hover {

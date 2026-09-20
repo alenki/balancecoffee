@@ -1,6 +1,10 @@
 import { readFileSync } from 'node:fs'
 import { defineConfig, type Plugin } from 'vite'
 import react from '@vitejs/plugin-react'
+// The same constant the hero <img> renders with. A preload that declares a
+// different `sizes` picks a different rung, and the browser then downloads the
+// LCP image twice.
+import { HERO_SIZES } from './src/components/common/imageSizes'
 
 const HERO = 'brand/cover'
 
@@ -55,7 +59,7 @@ function heroPreload(): Plugin {
               as: 'image',
               type: 'image/avif',
               imagesrcset: widths.map((w) => `${prefixed}-${w}.avif ${w}w`).join(', '),
-              imagesizes: '100vw',
+              imagesizes: HERO_SIZES,
               fetchpriority: 'high',
             },
             injectTo: 'head-prepend',

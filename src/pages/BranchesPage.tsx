@@ -1,4 +1,5 @@
 import { motion } from 'motion/react';
+import { useReveal } from '../hooks/useReveal';
 import { useLanguage } from '../context/LanguageContext';
 import { branches } from '../data/branches';
 import { contactInfo } from '../data/contact';
@@ -9,6 +10,9 @@ const EASE = [0.16, 1, 0.3, 1] as const;
 
 export function BranchesPage() {
   const { lang, t, sign } = useLanguage();
+  // The grid reveals as one block; the cards are separated by their stagger.
+  const { ref: gridRef, revealed: gridIn } = useReveal<HTMLDivElement>({ margin: -60 });
+  const { ref: noteRef, revealed: noteIn } = useReveal<HTMLParagraphElement>();
 
   return (
     <main className={styles.page} id="main">
@@ -49,14 +53,13 @@ export function BranchesPage() {
 
       <section className={styles.list}>
         <div className={styles.container}>
-          <div className={styles.grid}>
+          <div className={styles.grid} ref={gridRef}>
             {branches.map((branch, index) => (
               <motion.article
                 key={branch.id}
                 className={`${styles.card} ${branch.isComingSoon ? styles.cardSoon : ''}`}
                 initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: '-60px' }}
+                animate={gridIn ? { opacity: 1, y: 0 } : undefined}
                 transition={{ duration: 0.7, delay: index * 0.07, ease: EASE }}
               >
                 <header className={styles.cardHeader}>
@@ -115,9 +118,9 @@ export function BranchesPage() {
 
           <motion.p
             className={styles.contactNote}
+            ref={noteRef}
             initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
+            animate={noteIn ? { opacity: 1 } : undefined}
             transition={{ duration: 0.6, ease: EASE }}
           >
             <a href={contactInfo.phoneHref} className={styles.contactLink}>

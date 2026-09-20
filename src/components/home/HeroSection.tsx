@@ -19,6 +19,7 @@ export function HeroSection() {
             name="brand/cover"
             alt=""
             className={styles.heroImage}
+            frameClassName={styles.heroFrame}
             sizes={HERO_SIZES}
             priority
           />
@@ -58,7 +59,7 @@ export function HeroSection() {
               {t('hero.line2')}
             </motion.span>
           </span>{' '}
-          {/* The rationed accent face: one line, once per page. */}
+          {/* The closing line: same face as the rest, chartreuse alone. */}
           <span className={styles.lineReveal}>
             <motion.span
               className={styles.headlineAccent}

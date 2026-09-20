@@ -208,6 +208,27 @@ All photography is Bloom's own published material:
 - one hero, their own cover shot
 - the wordmark and the B/R monogram
 
+> **The hero was replaced on 2026-09-20.** The cover shot is the banner the QR
+> menu carries, `image_background` on its `api/info/` payload, and it is the
+> breakfast frame from their Moments 2026 campaign: a table of plates, which
+> reads as a brunch franchise rather than a roastery. At 1280 by 505 it was
+> also the wrong shape for a card that is a full fold: on a phone the browser
+> drew it at roughly three times its own pixel width.
+>
+> The hero is now the filter pour from their Instagram, post `DYRnafRjfKn`,
+> published at 3072 by 4096 and the only frame in that feed that is coffee
+> first, carries no campaign lettering and has the resolution a fold height
+> hero needs. It is cropped to a 3:2 band around the pour and stored at 2400
+> by 1600, which leaves the desktop card a wide centre band and the phone a
+> near full height column of the same frame. Still Bloom's own published
+> material.
+>
+> Two consequences are recorded where they live: the hero now runs warm and
+> low key against the rest of the site's daylight, so `.heroScrim` gained an
+> inline wash on the side the headline starts from and the RTL frame is
+> mirrored so the type always lands on the quiet side; and `HERO_SIZES` is
+> corrected for the cover rule, which the 2.53 source had left wrong.
+
 Google Maps photographs were deliberately **not** used. They belong to the
 reviewers who took them, not to Bloom.
 

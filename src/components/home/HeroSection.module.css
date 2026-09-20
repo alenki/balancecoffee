@@ -8,11 +8,11 @@
 
 @media (min-width: 768px) {
   .hero {
-    padding-inline: var(--space-10);
+    padding-inline: var(--space-12);
   }
 }
 
-@media (min-width: 1280px) {
+@media (min-width: 1200px) {
   .hero {
     padding-inline: var(--space-16);
   }
@@ -20,9 +20,13 @@
 
 .heroCard {
   position: relative;
-  max-width: 1320px;
-  margin-inline: auto;
-  min-height: min(82vh, 760px);
+  width: 100%;
+  /* The card fills the fold: the viewport less the header clearance above it
+     and the air below it, so the section measures exactly one screen.
+     svh rather than dvh, because a retracting mobile URL bar would
+     otherwise resize the hero under the reader mid scroll. */
+  min-height: calc(100vh - var(--space-20) - var(--space-8) - var(--space-12));
+  min-height: calc(100svh - var(--space-20) - var(--space-8) - var(--space-12));
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -48,23 +52,44 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  /* Their cover is shot bright and cool; a touch of warmth ties it to the
-     bone canvas the rest of the page sits on. */
-  filter: saturate(1.04);
 }
 
-/* Their photography is very light, so the type needs a floor to sit on.
-   Weighted to the block-end, where the headline lives. */
+/* Arabic mirrors the page and the headline moves with it, from the inline
+   start on the left to the inline start on the right. The photograph cannot
+   follow on its own: its quiet side is the one the type needs, so unflipped it
+   would sit over the pour in one direction and over empty table in the other.
+   `transform` has no logical form, so the flip is keyed on direction. It goes
+   on the frame rather than the <img> so the blurred placeholder turns with the
+   picture, and the picture itself carries no text, no logo and nothing else
+   that would read backwards. */
+[dir='rtl'] .heroFrame {
+  transform: scaleX(-1);
+}
+
+/* Two washes, because the headline sits in one corner rather than across the
+   whole band. The block one gives the type a floor. The inline one darkens
+   only the side the headline starts from, so the pour keeps its highlights on
+   the other side. `linear-gradient` has no logical direction and the W3C
+   proposal for one is still open, so the inline axis is named explicitly and
+   flipped for RTL; the block wash is declared once and inherited. */
 .heroScrim {
+  --scrim-inline: to right;
+
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    to top,
-    rgba(35, 31, 32, 0.82) 0%,
-    rgba(35, 31, 32, 0.48) 38%,
-    rgba(35, 31, 32, 0.12) 70%,
-    rgba(35, 31, 32, 0.22) 100%
-  );
+  background:
+    linear-gradient(var(--scrim-inline), rgba(35, 31, 32, 0.6) 0%, rgba(35, 31, 32, 0) 62%),
+    linear-gradient(
+      to top,
+      rgba(35, 31, 32, 0.74) 0%,
+      rgba(35, 31, 32, 0.4) 38%,
+      rgba(35, 31, 32, 0.08) 70%,
+      rgba(35, 31, 32, 0.18) 100%
+    );
+}
+
+[dir='rtl'] .heroScrim {
+  --scrim-inline: to left;
 }
 
 .grain {
@@ -140,25 +165,26 @@
   line-height: 1.35;
 }
 
+/* The third line is the headline's own face; only the colour sets it apart,
+   so the whole h1 reads as one run of type. */
 .headlineAccent {
-  text-transform: none;
   display: block;
-  font-family: var(--font-accent);
-  font-style: italic;
-  font-size: clamp(1.75rem, 6vw, 4.25rem);
-  font-weight: var(--font-normal);
-  line-height: 1.15;
-  letter-spacing: 0.02em;
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 9vw, 6.5rem);
+  font-weight: var(--font-bold);
+  line-height: 1.02;
+  text-transform: uppercase;
+  letter-spacing: var(--track-display);
   color: var(--color-chartreuse);
 }
 
 [dir='rtl'] .headlineAccent {
-  font-weight: 200;
-  font-family: var(--font-accent);
-  font-style: normal;
-  font-size: clamp(1.5rem, 5.5vw, 3.5rem);
+  font-family: var(--font-arabic);
+  font-size: clamp(2rem, 7.5vw, 5rem);
+  font-weight: var(--font-medium);
+  text-transform: none;
   letter-spacing: 0;
-  line-height: 1.5;
+  line-height: 1.35;
 }
 
 /* ---------- Corner mark ---------- */

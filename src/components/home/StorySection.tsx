@@ -1,5 +1,6 @@
 import { useRef } from 'react';
-import { motion, useInView, useScroll, useTransform } from 'motion/react';
+import { motion, useScroll, useTransform } from 'motion/react';
+import { useReveal } from '../../hooks/useReveal';
 import { useLanguage } from '../../context/LanguageContext';
 import { openBranches } from '../../data/branches';
 import { origins } from '../../data/contact';
@@ -11,8 +12,7 @@ const EASE = [0.16, 1, 0.3, 1] as const;
 export function StorySection() {
   const { t } = useLanguage();
   const sectionRef = useRef<HTMLElement>(null);
-  const innerRef = useRef<HTMLDivElement>(null);
-  const inView = useInView(innerRef, { once: true, margin: '-80px' });
+  const { ref: innerRef, revealed: inView } = useReveal<HTMLDivElement>({ margin: -80 });
 
   const { scrollYProgress } = useScroll({
     target: sectionRef,

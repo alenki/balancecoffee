@@ -5,18 +5,22 @@
 
 .container {
   width: 100%;
-  max-width: 1320px;
-  margin-inline: auto;
-  padding-inline: var(--space-6);
+  padding-inline: var(--space-4);
+}
+
+@media (min-width: 640px) {
+  .container {
+    padding-inline: var(--space-6);
+  }
 }
 
 @media (min-width: 768px) {
   .container {
-    padding-inline: var(--space-10);
+    padding-inline: var(--space-12);
   }
 }
 
-@media (min-width: 1280px) {
+@media (min-width: 1200px) {
   .container {
     padding-inline: var(--space-16);
   }
@@ -27,9 +31,9 @@
   display: grid;
   grid-template-columns: 1fr;
   gap: var(--space-4);
-  margin-block-end: var(--space-16);
-  padding-block-end: var(--space-8);
-  border-block-end: 1px solid var(--color-border);
+  /* No rule under this band: the grid below it is its own edge. The old
+     4rem margin and 2rem of rule clearance are kept as one 6rem gap. */
+  margin-block-end: var(--space-24);
 }
 
 @media (min-width: 900px) {
@@ -86,18 +90,13 @@
   font-size: clamp(var(--text-2xl), 4.5vw, var(--text-4xl));
 }
 
+/* The accent word sits in the heading's own face, so the display line reads
+   as one run of type rather than two. */
 .titleAccent {
-  text-transform: none;
-  font-weight: var(--font-normal);
-  font-family: var(--font-accent);
-  font-style: italic;
-  color: var(--color-chartreuse-deep);
-}
-
-[dir='rtl'] .titleAccent {
-  font-weight: 200;
-  font-family: var(--font-accent);
-  font-style: normal;
+  font: inherit;
+  color: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
 }
 
 /* ---------- CTA ---------- */

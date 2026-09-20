@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from 'react';
 import { motion } from 'motion/react';
+import { useReveal } from '../hooks/useReveal';
 import { useLanguage } from '../context/LanguageContext';
 import { contactInfo } from '../data/contact';
 import { openBranches } from '../data/branches';
@@ -17,6 +18,8 @@ const SOCIALS = [
 
 export function ContactPage() {
   const { lang, t, sign } = useLanguage();
+  // One reveal for the pair: the stagger below is what separates them.
+  const { ref: bodyRef, revealed: bodyIn } = useReveal<HTMLDivElement>({ margin: -60 });
   const [name, setName] = useState('');
   const [message, setMessage] = useState('');
 
@@ -76,13 +79,12 @@ export function ContactPage() {
 
       <section className={styles.body}>
         <div className={styles.container}>
-          <div className={styles.layout}>
+          <div className={styles.layout} ref={bodyRef}>
             {/* Channels */}
             <motion.div
               className={styles.channels}
               initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-60px' }}
+              animate={bodyIn ? { opacity: 1, y: 0 } : undefined}
               transition={{ duration: 0.7, ease: EASE }}
             >
               <a href={contactInfo.phoneHref} className={styles.channel}>
@@ -141,8 +143,7 @@ export function ContactPage() {
               className={styles.form}
               onSubmit={handleSubmit}
               initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-60px' }}
+              animate={bodyIn ? { opacity: 1, y: 0 } : undefined}
               transition={{ duration: 0.7, delay: 0.1, ease: EASE }}
             >
               <label className={styles.field}>

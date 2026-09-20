@@ -96,6 +96,18 @@ const BEATS = {
 
 const BEATS_REDUCED = { handoff: 240, exit: 400, clear: 520 } as const;
 
+/**
+ * Wall clock ceiling on the whole field (ms).
+ *
+ * The counter is driven by requestAnimationFrame, and its own `maxDuration`
+ * escape lives inside that same loop, so neither runs in a background tab.
+ * The site mounts behind the field, which means a visitor who opens the page
+ * in a tab they do not look at for a minute comes back to a frozen figure and
+ * nothing else at all: no header, no copy, no footer. A timer still fires when
+ * frames do not, so this resolves the field regardless.
+ */
+const HARD_CAP = 8000;
+
 type Phase = 'loading' | 'resolved' | 'exiting' | 'done';
 
 interface LoadingScreenProps {
@@ -132,6 +144,12 @@ export function LoadingScreen({ onDone }: LoadingScreenProps) {
     gate: countGate,
     onComplete: resolve,
   });
+
+  useEffect(() => {
+    if (phase !== 'loading') return;
+    const cap = setTimeout(resolve, HARD_CAP);
+    return () => clearTimeout(cap);
+  }, [phase, resolve]);
 
   const exiting = phase === 'exiting';
 

@@ -1,19 +1,17 @@
-import { useRef } from 'react';
-import { Link } from 'react-router-dom';
-import { motion, useInView } from 'motion/react';
+import { motion } from 'motion/react';
+import { useReveal } from '../../hooks/useReveal';
 import { useLanguage } from '../../context/LanguageContext';
 import { contactInfo, origins } from '../../data/contact';
 import { pick } from '../../types';
 import { Image } from '../common/Image';
-import { ROASTERY_SIZES } from '../common/imageSizes';
+import { ROASTERY_PLATE_SIZES } from '../common/imageSizes';
 import styles from './RoasterySection.module.css';
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
 export function RoasterySection() {
   const { lang, t, sign } = useLanguage();
-  const ref = useRef<HTMLElement>(null);
-  const inView = useInView(ref, { once: true, margin: '-80px' });
+  const { ref, revealed: inView } = useReveal<HTMLElement>({ margin: -80 });
 
   return (
     <section className={styles.section} ref={ref}>
@@ -36,7 +34,7 @@ export function RoasterySection() {
               animate={inView ? { opacity: 1, y: 0 } : undefined}
               transition={{ duration: 0.8, delay: 0.15, ease: EASE }}
             >
-              {t('roastery.title1')}{' '}
+              {t('roastery.title1')}
               <br />
               <span className={styles.titleAccent}>{t('roastery.title2')}</span>
             </motion.h2>
@@ -50,6 +48,19 @@ export function RoasterySection() {
               {t('roastery.body')}
             </motion.p>
 
+            {/* The roaster is named beside the sentence that describes it, and
+                deliberately not under the photograph: that picture is a pour
+                over from the menu shoot, not the Loring. */}
+            <motion.span
+              className={styles.machine}
+              initial={{ opacity: 0, y: 16 }}
+              animate={inView ? { opacity: 1, y: 0 } : undefined}
+              transition={{ duration: 0.7, delay: 0.3, ease: EASE }}
+            >
+              <span className={styles.machineDiamond} aria-hidden="true" />
+              <span className={styles.machineName}>{t('roastery.machine')}</span>
+            </motion.span>
+
             <motion.div
               className={styles.shop}
               initial={{ opacity: 0, y: 16 }}
@@ -58,12 +69,9 @@ export function RoasterySection() {
             >
               <p className={styles.shopLead}>{t('roastery.shopLead')}</p>
               <div className={styles.shopActions}>
-                <Link to="/roastery" className={styles.ctaPrimary}>
-                  {t('roastery.label')}
-                </Link>
                 <a
                   href={contactInfo.shop}
-                  className={styles.ctaSecondary}
+                  className={styles.ctaPrimary}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -73,37 +81,45 @@ export function RoasterySection() {
             </motion.div>
           </div>
 
-          {/* Origins */}
           <motion.div
-            className={styles.origins}
+            className={styles.plate}
             initial={{ opacity: 0, y: 30 }}
             animate={inView ? { opacity: 1, y: 0 } : undefined}
             transition={{ duration: 0.9, delay: 0.3, ease: EASE }}
           >
-            <div className={styles.originsFrame}>
-              <Image
-                name="menu/hot/v60"
-                alt=""
-                className={styles.originsImage}
-                sizes={ROASTERY_SIZES}
-              />
-            </div>
-
-            <span className={styles.originsLabel}>{t('roastery.originsLabel')}</span>
-            <ul className={styles.originsList}>
-              {origins.map((origin, index) => (
-                <li key={origin.id} className={styles.origin}>
-                  <span className={styles.originIndex}>
-                    {String(index + 1).padStart(2, '0')}
-                  </span>
-                  <span className={styles.originCountry}>{pick(origin.country, lang)}</span>
-                  <span className={styles.originLot}>{pick(origin.lot, lang)}</span>
-                </li>
-              ))}
-            </ul>
-            <p className={styles.originsNote}>{t('roastery.originsNote')}</p>
+            <Image
+              name="menu/hot/v60"
+              alt=""
+              className={styles.plateImage}
+              sizes={ROASTERY_PLATE_SIZES}
+            />
           </motion.div>
         </div>
+
+        {/* The lots close the band across its full width, so they read as a
+            ledger under a spread and not as a second numbered list stacked
+            above the one in the branches section below. */}
+        <motion.div
+          className={styles.lotsBand}
+          initial={{ opacity: 0, y: 24 }}
+          animate={inView ? { opacity: 1, y: 0 } : undefined}
+          transition={{ duration: 0.8, delay: 0.45, ease: EASE }}
+        >
+          <div className={styles.lotsHead}>
+            <span className={styles.lotsLabel}>{t('roastery.originsLabel')}</span>
+            <p className={styles.lotsNote}>{t('roastery.originsNote')}</p>
+          </div>
+
+          <ul className={styles.lots}>
+            {origins.map((origin, index) => (
+              <li key={origin.id} className={styles.lot}>
+                <span className={styles.lotIndex}>{String(index + 1).padStart(2, '0')}</span>
+                <span className={styles.lotCountry}>{pick(origin.country, lang)}</span>
+                <span className={styles.lotName}>{pick(origin.lot, lang)}</span>
+              </li>
+            ))}
+          </ul>
+        </motion.div>
       </div>
     </section>
   );

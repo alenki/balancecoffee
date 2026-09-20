@@ -13,7 +13,6 @@ const HIDE_DELAY = 600;
 const NAV = [
   { to: '/', key: 'nav.home' },
   { to: '/menu', key: 'nav.menu' },
-  { to: '/roastery', key: 'nav.roastery' },
   { to: '/branches', key: 'nav.branches' },
   { to: '/contact', key: 'nav.contact' },
 ] as const;

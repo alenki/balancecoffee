@@ -100,7 +100,6 @@ const translations: Record<Lang, Record<string, string>> = {
 
     'nav.home': 'الرئيسية',
     'nav.menu': 'المنيو',
-    'nav.roastery': 'المحمصة',
     'nav.branches': 'الفروع',
     'nav.contact': 'تواصل',
     'nav.openMenu': 'فتح القائمة',
@@ -189,7 +188,6 @@ const translations: Record<Lang, Record<string, string>> = {
 
     'nav.home': 'Home',
     'nav.menu': 'Menu',
-    'nav.roastery': 'Roastery',
     'nav.branches': 'Branches',
     'nav.contact': 'Contact',
     'nav.openMenu': 'Open menu',
