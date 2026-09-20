@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
 import styles from './NotFoundPage.module.css';
 
-const ease = [0.16, 1, 0.3, 1] as const;
+const EASE = [0.16, 1, 0.3, 1] as const;
 
 export function NotFoundPage() {
   const { t } = useLanguage();
@@ -16,34 +16,34 @@ export function NotFoundPage() {
             className={styles.eyebrow}
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, ease }}
+            transition={{ duration: 0.7, ease: EASE }}
           >
             {t('notFound.eyebrow')}
           </motion.span>
 
-          <motion.h1
+          <motion.p
             className={styles.code}
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.9, delay: 0.08, ease }}
+            transition={{ duration: 0.9, delay: 0.08, ease: EASE }}
           >
             404
-          </motion.h1>
+          </motion.p>
 
-          <motion.p
-            className={styles.italic}
+          <motion.h1
+            className={styles.title}
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.18, ease }}
+            transition={{ duration: 0.7, delay: 0.18, ease: EASE }}
           >
             {t('notFound.title')}
-          </motion.p>
+          </motion.h1>
 
           <motion.p
             className={styles.text}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.28, ease }}
+            transition={{ duration: 0.6, delay: 0.28, ease: EASE }}
           >
             {t('notFound.text')}
           </motion.p>
@@ -52,7 +52,7 @@ export function NotFoundPage() {
             className={styles.links}
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.38, ease }}
+            transition={{ duration: 0.6, delay: 0.38, ease: EASE }}
             aria-label={t('notFound.eyebrow')}
           >
             <Link to="/" className={styles.primaryLink}>
@@ -61,8 +61,8 @@ export function NotFoundPage() {
             <Link to="/menu" className={styles.secondaryLink}>
               {t('nav.menu')}
             </Link>
-            <Link to="/daily" className={styles.secondaryLink}>
-              {t('nav.daily')}
+            <Link to="/branches" className={styles.secondaryLink}>
+              {t('nav.branches')}
             </Link>
           </motion.nav>
         </div>

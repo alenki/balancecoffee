@@ -1,9 +1,9 @@
 # Apache config for reg.ru shared hosting. Vite copies this file into dist/,
-# so it ships alongside index.html in /harmonycoffee/.
+# so it ships alongside index.html in /bloomroastery/.
 
 <IfModule mod_rewrite.c>
   RewriteEngine On
-  RewriteBase /harmonycoffee/
+  RewriteBase /bloomroastery/
 
   # The app uses HashRouter, so the server only ever needs to serve
   # index.html. Anything that is not a real file resolves to it, which keeps a

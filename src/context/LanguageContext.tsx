@@ -5,15 +5,29 @@ import {
   useState,
   useCallback,
   useEffect,
+  useMemo,
   type ReactNode,
 } from 'react';
 
-export type Lang = 'ru' | 'en';
+export type Lang = 'ar' | 'en';
 
-const STORAGE_KEY = 'balance-lang';
+const STORAGE_KEY = 'bloom-lang';
+
+/** Arabic is the default: this is a Madinah roastery selling to Madinah. */
+const DEFAULT_LANG: Lang = 'ar';
 
 interface LanguageContextValue {
   lang: Lang;
+  dir: 'rtl' | 'ltr';
+  /**
+   * +1 in LTR, -1 in RTL.
+   *
+   * `transform` has no logical equivalent and the proposal for one is still
+   * open at the W3C, so `translateX` keeps its sign when the document flips.
+   * Motion's `x` prop is `translateX`, so every horizontal entrance offset
+   * has to be multiplied by this or it will animate the wrong way in Arabic.
+   */
+  sign: 1 | -1;
   setLang: (lang: Lang) => void;
   t: (key: string) => string;
 }
@@ -23,43 +37,50 @@ const LanguageContext = createContext<LanguageContextValue | null>(null);
 function readStoredLang(): Lang {
   try {
     const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored === 'ru' || stored === 'en') return stored;
+    if (stored === 'ar' || stored === 'en') return stored;
   } catch {
-    // Private mode / blocked storage: fall through to the default.
+    // Private mode or blocked storage: fall through to the default.
   }
-  return 'ru';
+  return DEFAULT_LANG;
 }
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
   const [lang, setLang] = useState<Lang>(readStoredLang);
+  const dir: 'rtl' | 'ltr' = lang === 'ar' ? 'rtl' : 'ltr';
 
-  // Keep the choice across reloads, and keep <html lang> honest so screen
-  // readers switch voices with the copy.
+  // Keep the choice across reloads, and keep <html lang> and <html dir>
+  // honest: dir drives every logical property in the stylesheet, and lang
+  // makes screen readers switch voices with the copy.
   useEffect(() => {
     document.documentElement.lang = lang;
+    document.documentElement.dir = dir;
     try {
       localStorage.setItem(STORAGE_KEY, lang);
     } catch {
       // Nothing to do if storage is unavailable.
     }
-  }, [lang]);
+  }, [lang, dir]);
 
-  const t = useCallback((key: string): string => {
-    const value = translations[lang]?.[key];
-    if (!value) {
-      if (import.meta.env.DEV) {
-        console.warn(`Missing translation: ${key} [${lang}]`);
+  const t = useCallback(
+    (key: string): string => {
+      const value = translations[lang]?.[key];
+      if (value === undefined) {
+        if (import.meta.env.DEV) {
+          console.warn(`Missing translation: ${key} [${lang}]`);
+        }
+        return translations[DEFAULT_LANG]?.[key] ?? key;
       }
-      return translations['ru']?.[key] ?? key;
-    }
-    return value;
-  }, [lang]);
-
-  return (
-    <LanguageContext.Provider value={{ lang, setLang, t }}>
-      {children}
-    </LanguageContext.Provider>
+      return value;
+    },
+    [lang]
   );
+
+  const value = useMemo(
+    () => ({ lang, dir, sign: (dir === 'rtl' ? -1 : 1) as 1 | -1, setLang, t }),
+    [lang, dir, t]
+  );
+
+  return <LanguageContext.Provider value={value}>{children}</LanguageContext.Provider>;
 }
 
 export function useLanguage() {
@@ -71,251 +92,181 @@ export function useLanguage() {
 // Translations
 
 const translations: Record<Lang, Record<string, string>> = {
-  ru: {
-    // Shared
-    'common.timeRange': 'до',
+  ar: {
+    'common.timeRange': 'إلى',
+    'common.currency': 'ر.س',
+    'common.calories': 'سعرة',
+    'common.and': 'و',
 
-    // Nav
-    'nav.home': 'Главная',
-    'nav.menu': 'Меню',
-    'nav.daily': 'Daily',
-    'nav.vacancies': 'Вакансии',
-    'nav.feedback': 'Обратная связь',
-    'nav.openMenu': 'Открыть меню',
-    'nav.closeMenu': 'Закрыть меню',
+    'nav.home': 'الرئيسية',
+    'nav.menu': 'المنيو',
+    'nav.roastery': 'المحمصة',
+    'nav.branches': 'الفروع',
+    'nav.contact': 'تواصل',
+    'nav.openMenu': 'فتح القائمة',
+    'nav.closeMenu': 'إغلاق القائمة',
+    'nav.shop': 'المتجر',
 
-    // Hero
-    'hero.line1': 'Кофе,',
-    'hero.line2': 'созданный',
-    'hero.line3': 'с намерением',
+    'hero.eyebrow': 'قهوة مختصة',
+    'hero.line1': 'وُلدت',
+    'hero.line2': 'في المدينة',
+    'hero.line3': 'ونواصل الازدهار',
 
-    // About
-    'about.label': 'О нас',
-    'about.manifesto1': 'В 2021 году мы придумали Harmony Coffee как место,',
-    'about.manifesto1em': 'где за чашкой кофе рождаются идеи',
-    'about.manifesto1end': 'и завязываются настоящие дружбы.',
-    'about.manifesto2': 'Сегодня наши кофейни стали частью утреннего ритуала тысяч гостей. И это только начало:',
-    'about.manifesto2em': 'впереди новые города и новые истории.',
-    'about.statCities': 'городов',
-    'about.statCafes': 'кофеен',
-    'about.statItems': 'позиций',
+    'story.label': 'عن بلوم',
+    'story.since': 'منذ ٢٠١٨',
+    'story.lead': 'اسمنا يأتي من الازدهار.',
+    'story.body1': 'محمصة ومقهى في المدينة المنورة، نعمل على الارتقاء بمستوى القهوة في المنطقة.',
+    'story.body2': 'نسعى أن نكون منصة لنشر المعرفة حول القهوة المختصة: أنواعها ومصادرها، وطرق طحنها وتحضيرها.',
+    'story.statBranches': 'فروع',
+    'story.statOrigins': 'محاصيل',
+    'story.statItems': 'صنفًا',
 
-    // Menu Preview
-    'menuPreview.label': 'Меню',
-    'menuPreview.itemCount': '50+ позиций',
-    'menuPreview.headerItalic': 'Каждая позиция в нашем меню',
-    'menuPreview.headerBold1': 'Продумана',
-    'menuPreview.headerBold2': 'до деталей',
-    'menuPreview.cta': 'Смотреть меню',
-    'menuPreview.from': 'от',
-    'badge.new': 'Новинка',
-    'badge.hit': 'Хит',
+    'menu.label': 'المنيو',
+    'menu.headerLead': 'كل كوب وكل طبق',
+    'menu.headerAccent': 'محسوب بدقة',
+    'menu.cta': 'المنيو كاملًا',
+    'menu.count': '٥٣ صنفًا',
+    'menu.title': 'المنيو',
+    'menu.itemsLabel': 'صنفًا',
+    'menu.pricesNote': 'الأسعار بالريال السعودي وتشمل الضريبة.',
 
-    // Gallery
-    'gallery.manifesto1': 'Мы за',
-    'gallery.manifesto2': 'уникальную',
-    'gallery.manifesto3': 'эстетику',
-    'gallery.text': 'Мы за красивое и хорошее, творить и делиться.\nМы за уникальную эстетику.',
-    'gallery.cta': 'Смотреть Daily',
-    'gallery.altCafe': 'Интерьер кофейни Harmony Coffee',
-    'gallery.altGuests': 'Гости в кофейне Harmony Coffee',
-    'gallery.altStreet': 'Кофейня Harmony Coffee снаружи',
+    'roastery.label': 'المحمصة',
+    'roastery.title1': 'نحمّص',
+    'roastery.title2': 'على لورينغ',
+    'roastery.body': 'نحمّص على لورينغ S15 فالكون، وهي محمصة بهواء ساخن مغلق الدورة، تمنحنا تحكمًا دقيقًا في منحنى التحميص وتقلل الدخان إلى أدنى حد.',
+    'roastery.machine': 'لورينغ S15 فالكون',
+    'roastery.originsLabel': 'محاصيلنا',
+    'roastery.originsNote': 'محاصيل مفردة وخلطة البيت.',
+    'roastery.shopLead': 'الحبوب وأدوات التحضير في متجرنا.',
+    'roastery.shopCta': 'زيارة المتجر',
 
-    // Cafes
-    'cafes.label': 'Кофейни',
-    'cafes.cityCount': 'городов',
-    'cafes.headerItalic': 'Мы по всей России',
-    'cafes.headerBold1': 'Наши',
-    'cafes.headerBold2': 'кофейни',
-    'cafes.cafe1': 'кофейня',
-    'cafes.cafe2to4': 'кофейни',
-    'cafes.cafe5plus': 'кофеен',
-    'cafes.soonLabel': 'Скоро открытие',
-    'cafes.soon': 'скоро',
-    'cafes.statCities': 'городов',
-    'cafes.statCafes': 'кофеен',
-    'cafes.cta': 'Связаться с нами',
+    'branches.label': 'الفروع',
+    'branches.title1': 'أين',
+    'branches.title2': 'تجدنا',
+    'branches.daily': 'يوميًا',
+    'branches.comingSoon': 'قريبًا',
+    'branches.viewMap': 'الموقع على الخريطة',
+    'branches.reviews': 'تقييم',
+    'branches.openedIn': 'افتتح',
 
-    // Footer
-    'footer.tagline': 'Кофе, созданный с намерением',
-    'footer.geography': 'География',
-    'footer.ourCafes': 'Наши\nкофейни',
-    'footer.navigation': 'Навигация',
-    'footer.ourPages': 'Наши\nстраницы',
-    'footer.contacts': 'Контакты',
-    'footer.contactUs': 'Свяжитесь\nс нами',
-    'footer.home': 'Главная',
-    'footer.menu': 'Меню',
-    'footer.daily': 'Daily',
-    'footer.reviews': 'Отзывы',
-    'footer.descriptor': 'Кофе, выпечка, свежевыжатые соки',
-    'footer.creditAria': 'Сайт сделали Lumako, откроется в новой вкладке',
+    'contact.label': 'تواصل',
+    'contact.title1': 'تحدث',
+    'contact.title2': 'إلينا',
+    'contact.subtitle': 'للاستفسارات والطلبات الخاصة والتوريد للشركات.',
+    'contact.callUs': 'اتصل',
+    'contact.whatsapp': 'واتساب',
+    'contact.email': 'البريد',
+    'contact.follow': 'تابعنا',
+    'contact.visit': 'زورنا',
+    'contact.formName': 'الاسم',
+    'contact.formMessage': 'رسالتك',
+    'contact.formSend': 'إرسال',
+    'contact.formNote': 'أو تواصل معنا مباشرة عبر واتساب.',
 
-    // Menu Page
-    'menuPage.title': 'Меню',
-    'menuPage.items': 'позиций',
-    'menuPage.delivery': 'Доставка',
-    'menuPage.call': 'Позвонить',
-    'menuPage.ctaItalic': 'Свяжитесь любым удобным способом',
-    'menuPage.ctaTitle': 'Готовы сделать заказ?',
+    'footer.tagline': 'قهوة مختصة من المدينة المنورة',
+    'footer.navigation': 'تصفح',
+    'footer.contacts': 'تواصل',
+    'footer.legal': 'بيانات نظامية',
+    'footer.cr': 'السجل التجاري',
+    'footer.vat': 'الرقم الضريبي',
+    'footer.rights': 'جميع الحقوق محفوظة',
+    'footer.creditAria': 'صُمم الموقع بواسطة لوماكو، يفتح في تبويب جديد',
 
-    // Daily Page
-    'daily.subtitle': 'Добро пожаловать в журнал Harmony Coffee.\nЗдесь мы делимся вдохновением, моментами и атмосферой,\nкоторые делают каждый день особенным.',
-    'daily.quote1': 'Каждая чашка кофе становится маленьким путешествием. От Эфиопии до Бразилии, от зерна до аромата.',
-    'daily.quote2': 'Кофе не просто напиток. Это момент паузы в бесконечном ритме жизни.',
+    'notFound.eyebrow': 'الصفحة غير موجودة',
+    'notFound.title': 'يبدو أن هذا الكوب قد فرغ',
+    'notFound.text': 'لا توجد صفحة على هذا العنوان. قد يكون الرابط قديمًا أو به خطأ.',
+    'notFound.home': 'إلى الرئيسية',
 
-    // Reviews Page
-    'reviews.eyebrow': 'Ваше мнение важно',
-    'reviews.title1': 'Оставить',
-    'reviews.title2': 'отзыв',
-    'reviews.subtitle': 'Расскажите о вашем опыте. Каждый отзыв помогает нам становиться лучше и создавать для вас идеальный кофе',
-    'reviews.cafeLabel': 'Кофейня',
-    'reviews.cafePlaceholder': 'Выберите кофейню',
-    'reviews.contactLabel': 'Контакт для связи',
-    'reviews.contactPlaceholder': 'Телефон, email или Telegram',
-    'reviews.reviewLabel': 'Ваш отзыв',
-    'reviews.charCount': 'симв.',
-    'reviews.reviewPlaceholder': 'Поделитесь впечатлениями о кофейне, напитках, атмосфере...',
-    'reviews.submit': 'Отправить отзыв',
-    'reviews.hint': 'Выберите кофейню и напишите отзыв',
-    'reviews.altContact': 'или свяжитесь напрямую',
-    'reviews.phone': 'Телефон',
-    'reviews.successTitle1': 'Спасибо за',
-    'reviews.successTitle2': 'обратную связь',
-    'reviews.successText': 'Мы обязательно прочитаем ваш отзыв и постараемся стать ещё лучше. Ваше мнение задаёт нам ориентир.',
-    'reviews.another': 'Оставить ещё один отзыв',
-
-    // 404
-    'notFound.eyebrow': 'Страница не найдена',
-    'notFound.title': 'Кажется, эта чашка уже допита',
-    'notFound.text': 'Страницы по этому адресу нет. Возможно, ссылка устарела или в ней опечатка.',
-    'notFound.home': 'На главную',
-
-    // Accessibility
-    'a11y.skipToContent': 'К содержимому',
+    'a11y.skipToContent': 'تخطٍ إلى المحتوى',
+    'a11y.language': 'اللغة',
   },
 
   en: {
-    // Shared
     'common.timeRange': 'to',
+    'common.currency': 'SAR',
+    'common.calories': 'cal',
+    'common.and': 'and',
 
-    // Nav
     'nav.home': 'Home',
     'nav.menu': 'Menu',
-    'nav.daily': 'Daily',
-    'nav.vacancies': 'Careers',
-    'nav.feedback': 'Feedback',
+    'nav.roastery': 'Roastery',
+    'nav.branches': 'Branches',
+    'nav.contact': 'Contact',
     'nav.openMenu': 'Open menu',
     'nav.closeMenu': 'Close menu',
+    'nav.shop': 'Shop',
 
-    // Hero
-    'hero.line1': 'Coffee,',
-    'hero.line2': 'crafted',
-    'hero.line3': 'with intention',
+    'hero.eyebrow': 'Specialty Coffee',
+    'hero.line1': 'Born in',
+    'hero.line2': 'Madinah',
+    'hero.line3': 'growing beyond',
 
-    // About
-    'about.label': 'About us',
-    'about.manifesto1': 'In 2021 we imagined Harmony Coffee as a place',
-    'about.manifesto1em': 'where ideas are born over a cup of coffee',
-    'about.manifesto1end': 'and real friendships begin.',
-    'about.manifesto2': 'Today our cafés are part of the morning ritual for thousands of guests. And this is only the beginning:',
-    'about.manifesto2em': 'new cities and new stories ahead.',
-    'about.statCities': 'cities',
-    'about.statCafes': 'cafés',
-    'about.statItems': 'items',
+    'story.label': 'About Bloom',
+    'story.since': 'Since 2018',
+    'story.lead': 'Our name comes from izdihar: to bloom.',
+    'story.body1': 'A roastery and cafe in Madinah, working to raise the level of coffee in the region.',
+    'story.body2': 'We want to be a platform for specialty coffee knowledge: where it grows, how it is ground, and every way it can be brewed.',
+    'story.statBranches': 'branches',
+    'story.statOrigins': 'origins',
+    'story.statItems': 'items',
 
-    // Menu Preview
-    'menuPreview.label': 'Menu',
-    'menuPreview.itemCount': '50+ items',
-    'menuPreview.headerItalic': 'Every item on our menu is',
-    'menuPreview.headerBold1': 'Crafted',
-    'menuPreview.headerBold2': 'to perfection',
-    'menuPreview.cta': 'View menu',
-    'menuPreview.from': 'from',
-    'badge.new': 'New',
-    'badge.hit': 'Popular',
+    'menu.label': 'Menu',
+    'menu.headerLead': 'Every cup and every plate',
+    'menu.headerAccent': 'measured precisely',
+    'menu.cta': 'See the full menu',
+    'menu.count': '53 items',
+    'menu.title': 'Menu',
+    'menu.itemsLabel': 'items',
+    'menu.pricesNote': 'Prices in Saudi riyals, tax included.',
 
-    // Gallery
-    'gallery.manifesto1': 'We stand for',
-    'gallery.manifesto2': 'unique',
-    'gallery.manifesto3': 'aesthetics',
-    'gallery.text': 'We believe in beauty and craft, in creating and sharing.\nWe stand for unique aesthetics.',
-    'gallery.cta': 'Explore Daily',
-    'gallery.altCafe': 'Harmony Coffee cafe interior',
-    'gallery.altGuests': 'Guests inside a Harmony Coffee cafe',
-    'gallery.altStreet': 'A Harmony Coffee cafe from the street',
+    'roastery.label': 'The Roastery',
+    'roastery.title1': 'Roasted',
+    'roastery.title2': 'on a Loring',
+    'roastery.body': 'We roast on a Loring S15 Falcon, a closed loop hot air roaster that gives us fine control over the curve and cuts smoke to a minimum.',
+    'roastery.machine': 'Loring S15 Falcon',
+    'roastery.originsLabel': 'Our lots',
+    'roastery.originsNote': 'Single origins and the house blend.',
+    'roastery.shopLead': 'Beans and brewing gear live in our shop.',
+    'roastery.shopCta': 'Visit the shop',
 
-    // Cafes
-    'cafes.label': 'Cafés',
-    'cafes.cityCount': 'cities',
-    'cafes.headerItalic': 'Across Russia',
-    'cafes.headerBold1': 'Our',
-    'cafes.headerBold2': 'cafés',
-    'cafes.cafe1': 'café',
-    'cafes.cafe2to4': 'cafés',
-    'cafes.cafe5plus': 'cafés',
-    'cafes.soonLabel': 'Coming soon',
-    'cafes.soon': 'soon',
-    'cafes.statCities': 'cities',
-    'cafes.statCafes': 'cafés',
-    'cafes.cta': 'Contact us',
+    'branches.label': 'Branches',
+    'branches.title1': 'Where',
+    'branches.title2': 'to find us',
+    'branches.daily': 'daily',
+    'branches.comingSoon': 'Coming soon',
+    'branches.viewMap': 'Open in maps',
+    'branches.reviews': 'reviews',
+    'branches.openedIn': 'Opened',
 
-    // Footer
-    'footer.tagline': 'Coffee, crafted with intention',
-    'footer.geography': 'Geography',
-    'footer.ourCafes': 'Our\ncafés',
-    'footer.navigation': 'Navigation',
-    'footer.ourPages': 'Our\npages',
-    'footer.contacts': 'Contacts',
-    'footer.contactUs': 'Get in\ntouch',
-    'footer.home': 'Home',
-    'footer.menu': 'Menu',
-    'footer.daily': 'Daily',
-    'footer.reviews': 'Reviews',
-    'footer.descriptor': 'Coffee, pastry, fresh juices',
+    'contact.label': 'Contact',
+    'contact.title1': 'Talk',
+    'contact.title2': 'to us',
+    'contact.subtitle': 'For enquiries, special orders and wholesale.',
+    'contact.callUs': 'Call',
+    'contact.whatsapp': 'WhatsApp',
+    'contact.email': 'Email',
+    'contact.follow': 'Follow',
+    'contact.visit': 'Visit',
+    'contact.formName': 'Name',
+    'contact.formMessage': 'Your message',
+    'contact.formSend': 'Send',
+    'contact.formNote': 'Or reach us directly on WhatsApp.',
+
+    'footer.tagline': 'Specialty coffee from Madinah',
+    'footer.navigation': 'Browse',
+    'footer.contacts': 'Contact',
+    'footer.legal': 'Legal',
+    'footer.cr': 'Commercial register',
+    'footer.vat': 'VAT number',
+    'footer.rights': 'All rights reserved',
     'footer.creditAria': 'Site by Lumako, opens in a new tab',
 
-    // Menu Page
-    'menuPage.title': 'Menu',
-    'menuPage.items': 'items',
-    'menuPage.delivery': 'Delivery',
-    'menuPage.call': 'Call us',
-    'menuPage.ctaItalic': 'Reach out any way you prefer',
-    'menuPage.ctaTitle': 'Ready to order?',
-
-    // Daily Page
-    'daily.subtitle': 'Welcome to the Harmony Coffee journal.\nHere we share inspiration, moments and the atmosphere\nthat make every day special.',
-    'daily.quote1': 'Every cup of coffee is a small journey. From Ethiopia to Brazil, from bean to aroma.',
-    'daily.quote2': 'Coffee is not just a drink. It is a moment of pause in the endless rhythm of life.',
-
-    // Reviews Page
-    'reviews.eyebrow': 'Your opinion matters',
-    'reviews.title1': 'Leave',
-    'reviews.title2': 'feedback',
-    'reviews.subtitle': 'Tell us about your experience. Every review helps us improve and craft the perfect coffee for you',
-    'reviews.cafeLabel': 'Café',
-    'reviews.cafePlaceholder': 'Select a café',
-    'reviews.contactLabel': 'Contact info',
-    'reviews.contactPlaceholder': 'Phone, email or Telegram',
-    'reviews.reviewLabel': 'Your review',
-    'reviews.charCount': 'chars',
-    'reviews.reviewPlaceholder': 'Share your impressions about the café, drinks, atmosphere...',
-    'reviews.submit': 'Submit review',
-    'reviews.hint': 'Pick a cafe and write your review',
-    'reviews.altContact': 'or contact us directly',
-    'reviews.phone': 'Phone',
-    'reviews.successTitle1': 'Thank you for',
-    'reviews.successTitle2': 'your feedback',
-    'reviews.successText': 'We will carefully read your review and strive to get even better. Your opinion is our compass.',
-    'reviews.another': 'Leave another review',
-
-    // 404
     'notFound.eyebrow': 'Page not found',
     'notFound.title': 'Looks like this cup is already empty',
     'notFound.text': 'There is no page at this address. The link may be out of date or contain a typo.',
     'notFound.home': 'Back home',
 
-    // Accessibility
     'a11y.skipToContent': 'Skip to content',
+    'a11y.language': 'Language',
   },
 };

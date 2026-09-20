@@ -1,330 +1,101 @@
-/* ============================================
-   MENU PAGE: Editorial Magazine Layout
-   Premium, warm, typographically-driven
-   ============================================ */
-
 .page {
-  padding-top: 80px;
-}
-
-/* ============================================
-   HERO: Editorial Typographic Header
-   ============================================ */
-.hero {
-  position: relative;
-  padding: clamp(3rem, 6vw, 5rem) 0 clamp(1.5rem, 3vw, 2.5rem);
-  background: var(--color-bg-white);
-  overflow: hidden;
-}
-
-.heroContainer {
-  position: relative;
-  z-index: 1;
-  width: 100%;
-  padding: 0 var(--space-6);
-}
-
-@media (min-width: 768px) {
-  .heroContainer {
-    padding: 0 var(--space-12);
-  }
-}
-
-@media (min-width: 1200px) {
-  .heroContainer {
-    padding: 0 var(--space-16);
-  }
-}
-
-/* Corner Accents */
-.cornerAccent {
-  position: absolute;
-  z-index: 2;
-  font-family: var(--font-primary);
-  font-size: var(--text-xs);
-  font-weight: var(--font-medium);
-  color: var(--color-text-muted);
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-}
-
-.cornerTL {
-  top: var(--space-8);
-  left: var(--space-8);
-}
-
-.cornerTR {
-  top: var(--space-8);
-  right: var(--space-8);
-}
-
-@media (max-width: 600px) {
-  .cornerAccent {
-    display: none;
-  }
-}
-
-@media (min-width: 768px) {
-  .cornerTL {
-    top: var(--space-10);
-    left: var(--space-12);
-  }
-  .cornerTR {
-    top: var(--space-10);
-    right: var(--space-12);
-  }
-}
-
-/* Header Typography */
-.headerBlock {
-  text-align: center;
-  margin-bottom: var(--space-4);
-}
-
-.headerItalic {
-  display: block;
-  font-family: var(--font-serif);
-  font-size: clamp(1rem, 2.2vw, 1.4rem);
-  font-weight: 400;
-  font-style: italic;
-  color: var(--color-text-muted);
-  letter-spacing: 0.02em;
-  line-height: 1.4;
-  margin-bottom: var(--space-3);
-}
-
-.headerBold {
-  font-family: var(--font-display);
-  font-size: clamp(2.5rem, 7vw, 5.5rem);
-  font-weight: var(--font-heavy);
-  color: var(--color-text-dark);
-  text-transform: uppercase;
-  letter-spacing: -0.02em;
-  line-height: 1.05;
-  margin-bottom: 0;
-}
-
-.headerBoldAccent {
-  color: var(--color-primary);
-}
-
-/* Delivery Info: Subtle inline */
-.deliveryRow {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
-  gap: var(--space-4);
-  padding-top: var(--space-5);
-}
-
-.deliveryInfo {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  font-family: var(--font-primary);
-  font-size: var(--text-xs);
-  font-weight: var(--font-medium);
-  color: var(--color-text-muted);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.deliveryInfo svg {
-  color: var(--color-accent-olive);
-  flex-shrink: 0;
-}
-
-.deliveryDot {
-  width: 3px;
-  height: 3px;
-  border-radius: 50%;
-  background: var(--color-text-light);
-  flex-shrink: 0;
-}
-
-.deliveryActions {
-  display: flex;
-  gap: var(--space-3);
-}
-
-.deliveryLink {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-  padding: var(--space-2) var(--space-4);
-  font-family: var(--font-primary);
-  font-size: var(--text-xs);
-  font-weight: var(--font-medium);
-  color: var(--color-text-body);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  text-decoration: none;
-  border: 1px solid var(--color-border-strong);
-  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.deliveryLink:hover {
-  background: var(--color-text-dark);
-  border-color: var(--color-text-dark);
-  color: var(--color-text-on-dark);
-}
-
-/* Filled so the row has one obvious primary action. */
-.deliveryLinkPrimary {
-  background: var(--color-text-dark);
-  border-color: var(--color-text-dark);
-  color: var(--color-text-on-dark);
-}
-
-.deliveryLinkPrimary:hover {
-  background: var(--color-primary-dark);
-  border-color: var(--color-primary-dark);
-  color: var(--color-text-on-dark);
-}
-
-/* ============================================
-   CONTENT
-   ============================================ */
-.content {
-  padding-bottom: var(--space-16);
+  background: var(--color-canvas);
 }
 
 .container {
   width: 100%;
-  padding: 0 var(--space-4);
-}
-
-@media (min-width: 640px) {
-  .container {
-    padding: 0 var(--space-6);
-  }
+  max-width: 1320px;
+  margin-inline: auto;
+  padding-inline: var(--space-6);
 }
 
 @media (min-width: 768px) {
   .container {
-    padding: 0 var(--space-12);
+    padding-inline: var(--space-10);
   }
 }
 
-@media (min-width: 1200px) {
+@media (min-width: 1280px) {
   .container {
-    padding: 0 var(--space-16);
+    padding-inline: var(--space-16);
   }
 }
 
-/* ============================================
-   BOTTOM CTA: Editorial Centered
-   ============================================ */
-.bottomCta {
-  position: relative;
-  padding: clamp(var(--space-16), 8vw, var(--space-24)) 0;
-  background: var(--color-bg-white);
+/* ---------- Hero ---------- */
+.hero {
+  padding-block: calc(var(--space-24) + var(--space-8)) var(--space-10);
 }
 
-.ctaDivider {
-  width: 100%;
-  max-width: 120px;
-  height: 1px;
-  background: var(--color-border-strong);
-  margin: 0 auto var(--space-12);
-}
-
-@media (min-width: 768px) {
-  .ctaDivider {
-    max-width: 160px;
-    margin-bottom: var(--space-16);
-  }
-}
-
-.ctaContent {
-  text-align: center;
-  max-width: 600px;
-  margin: 0 auto;
-}
-
-.ctaItalic {
+.eyebrow {
   display: block;
-  font-family: var(--font-serif);
-  font-size: clamp(1rem, 2vw, 1.3rem);
-  font-weight: 400;
-  font-style: italic;
-  color: var(--color-text-muted);
-  letter-spacing: 0.02em;
-  margin-bottom: var(--space-3);
-}
-
-.ctaTitle {
-  font-family: var(--font-display);
-  font-size: clamp(1.5rem, 3.5vw, 2.5rem);
-  font-weight: var(--font-heavy);
-  color: var(--color-text-dark);
-  text-transform: uppercase;
-  letter-spacing: -0.02em;
-  line-height: 1.1;
-  margin-bottom: var(--space-8);
-}
-
-.ctaActions {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: var(--space-4);
-}
-
-.ctaButton {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-3);
-  padding: var(--space-4) var(--space-10);
-  background: transparent;
-  border: 1px solid var(--color-text-dark);
-  font-family: var(--font-primary);
   font-size: var(--text-xs);
   font-weight: var(--font-medium);
-  color: var(--color-text-dark);
-  letter-spacing: 0.18em;
+  letter-spacing: var(--track-eyebrow);
   text-transform: uppercase;
-  text-decoration: none;
-  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-  cursor: pointer;
+  color: var(--color-chartreuse-deep);
+  margin-block-end: var(--space-4);
 }
 
-.ctaButton:hover {
-  background: var(--color-text-dark);
-  border-color: var(--color-text-dark);
-  color: var(--color-text-on-dark);
+[dir='rtl'] .eyebrow {
+  text-transform: none;
+  font-size: var(--text-sm);
 }
 
-.ctaButton svg {
-  width: 14px;
-  height: 14px;
+.title {
+  font-family: var(--font-display);
+  font-size: clamp(var(--text-4xl), 11vw, var(--text-7xl));
+  font-weight: var(--font-bold);
+  line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: var(--track-display);
+  color: var(--color-ink);
+  margin: 0;
 }
 
-.ctaButtonSecondary {
-  border-color: var(--color-border-strong);
-  color: var(--color-text-body);
+[dir='rtl'] .title {
+  font-family: var(--font-arabic);
+  font-weight: var(--font-medium);
+  text-transform: none;
+  letter-spacing: 0;
+  line-height: 1.3;
+  font-size: clamp(var(--text-3xl), 9vw, var(--text-6xl));
 }
 
-.ctaButtonSecondary:hover {
-  background: var(--color-primary);
-  border-color: var(--color-primary);
-  color: var(--color-text-on-dark);
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-4);
+  margin-block-start: var(--space-8);
 }
 
-@media (min-width: 768px) {
-  .ctaButton {
-    padding: var(--space-5) var(--space-12);
-    font-size: var(--text-sm);
-  }
+.metaItem {
+  font-size: var(--text-sm);
+  color: var(--color-ink-muted);
+  font-variant-numeric: tabular-nums;
 }
 
-/* ============================================
-   REDUCED MOTION
-   ============================================ */
-@media (prefers-reduced-motion: reduce) {
-  .deliveryLink,
-  .ctaButton {
-    transition: none;
-  }
+.metaLink {
+  font-size: var(--text-sm);
+  color: var(--color-ink);
+  border-block-end: 1px solid var(--color-chartreuse);
+  padding-block-end: 1px;
+}
+
+.metaDiamond {
+  width: 4px;
+  height: 4px;
+  rotate: 45deg;
+  background: var(--color-border-strong);
+}
+
+.note {
+  margin-block-start: var(--space-4);
+  font-size: var(--text-xs);
+  color: var(--color-ink-faint);
+}
+
+/* ---------- Content ---------- */
+.content {
+  padding-block: var(--space-16) var(--space-10);
 }

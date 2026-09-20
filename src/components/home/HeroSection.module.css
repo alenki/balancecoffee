@@ -1,314 +1,187 @@
-/* ============================================
-   HERO SECTION: Bold Editorial Cinema
-   Video card with massive typography,
-   asymmetric bottom-anchored layout,
-   and cinematic grain overlay
-   ============================================ */
-
+/* The header is fixed, so the first term clears its height and the second
+   is the air between the ink rule and the top of the card. */
 .hero {
-  position: relative;
-  min-height: 100vh;
-  min-height: 100svh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: calc(var(--space-6) + 64px) var(--space-6) var(--space-6);
-  background: #ffffff;
+  padding-block-start: calc(var(--space-20) + var(--space-8));
+  padding-block-end: var(--space-12);
+  padding-inline: var(--space-6);
 }
 
 @media (min-width: 768px) {
   .hero {
-    padding: calc(var(--space-12) + 72px) var(--space-12) var(--space-12);
+    padding-inline: var(--space-10);
   }
 }
 
-@media (min-width: 1200px) {
+@media (min-width: 1280px) {
   .hero {
-    padding: calc(var(--space-16) + 72px) var(--space-16) var(--space-16);
+    padding-inline: var(--space-16);
   }
 }
 
-/* ============================================
-   VIDEO CARD
-   ============================================ */
 .heroCard {
   position: relative;
-  width: 100%;
-  height: calc(100vh - var(--space-12) - 64px);
-  height: calc(100svh - var(--space-12) - 64px);
-  border-radius: var(--radius-xl);
+  max-width: 1320px;
+  margin-inline: auto;
+  min-height: min(82vh, 760px);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
   overflow: hidden;
-  box-shadow:
-    0 4px 6px rgba(0, 0, 0, 0.03),
-    0 10px 20px rgba(0, 0, 0, 0.04);
+  border-radius: var(--radius-xl);
+  isolation: isolate;
+  padding: var(--space-8);
 }
 
 @media (min-width: 768px) {
   .heroCard {
-    height: calc(100vh - var(--space-24) - 72px);
-    height: calc(100svh - var(--space-24) - 72px);
-    border-radius: var(--radius-2xl);
+    padding: var(--space-12);
   }
 }
 
-@media (min-width: 1200px) {
-  .heroCard {
-    height: calc(100vh - var(--space-32) - 72px);
-    height: calc(100svh - var(--space-32) - 72px);
-    border-radius: 32px;
-  }
-}
-
-/* ============================================
-   VIDEO BACKGROUND + OVERLAYS
-   ============================================ */
 .heroBackground {
   position: absolute;
   inset: 0;
-  z-index: 0;
+  z-index: -1;
 }
 
 .heroImage {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: left center;
+  /* Their cover is shot bright and cool; a touch of warmth ties it to the
+     bone canvas the rest of the page sits on. */
+  filter: saturate(1.04);
 }
 
-@media (min-width: 768px) {
-  .heroImage {
-    object-position: center;
-  }
-}
-
-/* Cinematic multi-layer gradient:
-   - Vignette from edges for depth
-   - Heavy bottom fade for headline readability
-   - Subtle top darken for corner text */
-.heroOverlay {
+/* Their photography is very light, so the type needs a floor to sit on.
+   Weighted to the block-end, where the headline lives. */
+.heroScrim {
   position: absolute;
   inset: 0;
-  background:
-    radial-gradient(
-      ellipse at center,
-      rgba(0, 0, 0, 0.05) 0%,
-      rgba(0, 0, 0, 0.18) 55%,
-      rgba(0, 0, 0, 0.4) 100%
-    ),
-    linear-gradient(
-      to top,
-      rgba(0, 0, 0, 0.6) 0%,
-      rgba(0, 0, 0, 0.25) 35%,
-      rgba(0, 0, 0, 0.0) 60%
-    ),
-    linear-gradient(
-      to bottom,
-      rgba(0, 0, 0, 0.15) 0%,
-      rgba(0, 0, 0, 0.0) 18%
-    );
-  pointer-events: none;
+  background: linear-gradient(
+    to top,
+    rgba(35, 31, 32, 0.82) 0%,
+    rgba(35, 31, 32, 0.48) 38%,
+    rgba(35, 31, 32, 0.12) 70%,
+    rgba(35, 31, 32, 0.22) 100%
+  );
 }
 
-/* Grain texture: matching About section */
 .grain {
   position: absolute;
   inset: 0;
-  opacity: 0.04;
+  opacity: 0.32;
+  mix-blend-mode: overlay;
   pointer-events: none;
-  z-index: 1;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  background-size: 200px 200px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
 }
 
-/* ============================================
-   CORNER ACCENTS
-   ============================================ */
-.cornerTopLeft {
+/* ---------- Eyebrow ---------- */
+.eyebrow {
   position: absolute;
-  top: var(--space-6);
-  left: var(--space-6);
-  z-index: 3;
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
+  top: var(--space-8);
+  inset-inline-start: var(--space-8);
 }
 
 @media (min-width: 768px) {
-  .cornerTopLeft {
-    top: var(--space-10);
-    left: var(--space-10);
-  }
-}
-
-@media (min-width: 1200px) {
-  .cornerTopLeft {
+  .eyebrow {
     top: var(--space-12);
-    left: var(--space-12);
+    inset-inline-start: var(--space-12);
   }
 }
 
-@media (max-width: 600px) {
-  .cornerTopLeft {
-    display: none;
-  }
-}
-
-.cornerLabel {
-  font-family: var(--font-primary);
+.eyebrowText {
   font-size: var(--text-xs);
   font-weight: var(--font-medium);
-  color: rgba(255, 255, 255, 0.55);
-  letter-spacing: 0.12em;
+  letter-spacing: var(--track-eyebrow);
   text-transform: uppercase;
+  color: var(--color-chartreuse);
 }
 
-@media (min-width: 768px) {
-  .cornerLabel {
-    font-size: var(--text-sm);
-  }
+[dir='rtl'] .eyebrowText {
+  text-transform: none;
+  font-size: var(--text-sm);
 }
 
-/* ============================================
-   BOTTOM RIGHT LOGO
-   ============================================ */
-.bottomRightLogo {
-  position: absolute;
-  z-index: 3;
-  top: var(--space-6);
-  right: var(--space-6);
+/* ---------- Headline ---------- */
+.headline {
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
-  line-height: 1;
-  color: #ffffff;
-  opacity: 0.7;
-}
-
-.brandName {
-  font-family: var(--font-logo);
-  font-weight: 800;
-  text-transform: lowercase;
-  letter-spacing: -0.01em;
-  line-height: 0.92;
-  font-size: clamp(15px, 3.2vw, 34px);
-}
-
-.brandSub {
-  font-family: var(--font-logo);
-  font-weight: 300;
-  text-transform: uppercase;
-  letter-spacing: 0.3em;
-  text-indent: 0.3em;
-  margin-top: 0.12em;
-  font-size: clamp(6.5px, 1.3vw, 13px);
-}
-
-@media (min-width: 768px) {
-  .bottomRightLogo {
-    top: var(--space-10);
-    right: var(--space-10);
-  }
-}
-
-/* Stays top-right at every width: it balances the "Specialty Coffee"
-   eyebrow opposite it and leaves the bottom band to the headline alone.
-   Dropped to the bottom corner it crowded the serif line and read as a
-   second copy of the header logo. */
-@media (min-width: 1200px) {
-  .bottomRightLogo {
-    top: var(--space-12);
-    right: var(--space-12);
-  }
-}
-
-/* ============================================
-   HEADLINE BLOCK: Massive editorial type
-   Bottom-left anchored, stacked lines with
-   masked slide-up reveal animation.
-
-   Lines 1-2: Bold sans-serif (heavy weight)
-   Line 3: Playfair Display italic (contrast)
-   ============================================ */
-/* This is the page <h1>; the per-line spans own every type decision,
-   so the global heading styles are neutralised here. */
-.headlineBlock {
-  position: absolute;
-  z-index: 3;
-  bottom: var(--space-10);
-  left: var(--space-6);
-  right: var(--space-6);
-  max-width: 85%;
   margin: 0;
-  font-size: inherit;
-  font-weight: inherit;
-  line-height: inherit;
-  letter-spacing: normal;
+  color: var(--color-on-dark);
   text-transform: none;
-  text-wrap: wrap;
-  color: inherit;
+  letter-spacing: 0;
 }
 
-@media (min-width: 768px) {
-  .headlineBlock {
-    bottom: var(--space-14);
-    left: var(--space-10);
-    right: auto;
-    max-width: 70%;
-  }
-}
-
-@media (min-width: 1200px) {
-  .headlineBlock {
-    bottom: var(--space-20);
-    left: var(--space-12);
-    max-width: 65%;
-  }
-}
-
-/* Each line wrapped in overflow:hidden for
-   the masked reveal effect */
+/* Each line masks its own rise. */
 .lineReveal {
   display: block;
   overflow: hidden;
-  /* Slight negative margin to tighten line spacing */
-  margin-bottom: -0.05em;
+  padding-block-end: 0.06em;
 }
 
-.lineReveal:last-child {
-  margin-bottom: 0;
-}
-
-/* Bold sans-serif lines (lines 1 and 2) */
-.headlineBold {
+.headlineMain {
   display: block;
-  font-family: var(--font-primary);
-  font-size: clamp(2.2rem, 9vw, 6.5rem);
-  font-weight: var(--font-heavy);
-  line-height: 1.0;
-  color: rgba(255, 255, 255, 0.95);
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 9vw, 6.5rem);
+  font-weight: var(--font-bold);
+  line-height: 1.02;
   text-transform: uppercase;
-  letter-spacing: -0.03em;
+  letter-spacing: var(--track-display);
+  color: var(--color-on-dark);
 }
 
-/* Serif italic line (line 3): typographic contrast */
-.headlineSerif {
+[dir='rtl'] .headlineMain {
+  font-family: var(--font-arabic);
+  font-size: clamp(2rem, 7.5vw, 5rem);
+  font-weight: var(--font-medium);
+  text-transform: none;
+  letter-spacing: 0;
+  line-height: 1.35;
+}
+
+.headlineAccent {
+  text-transform: none;
   display: block;
-  font-family: var(--font-serif);
-  font-size: clamp(1.8rem, 7.5vw, 5.5rem);
-  font-weight: 400;
+  font-family: var(--font-accent);
   font-style: italic;
+  font-size: clamp(1.75rem, 6vw, 4.25rem);
+  font-weight: var(--font-normal);
   line-height: 1.15;
-  color: rgba(255, 255, 255, 0.85);
-  letter-spacing: -0.01em;
-  padding-top: 0.08em;
+  letter-spacing: 0.02em;
+  color: var(--color-chartreuse);
 }
 
-/* ============================================
-   REDUCED MOTION
-   ============================================ */
-@media (prefers-reduced-motion: reduce) {
-  .headlineBold,
-  .headlineSerif {
-    transform: none;
+[dir='rtl'] .headlineAccent {
+  font-weight: 200;
+  font-family: var(--font-accent);
+  font-style: normal;
+  font-size: clamp(1.5rem, 5.5vw, 3.5rem);
+  letter-spacing: 0;
+  line-height: 1.5;
+}
+
+/* ---------- Corner mark ---------- */
+.corner {
+  position: absolute;
+  bottom: var(--space-8);
+  inset-inline-end: var(--space-8);
+  display: none;
+  align-items: center;
+}
+
+@media (min-width: 900px) {
+  .corner {
+    display: flex;
+    bottom: var(--space-12);
+    inset-inline-end: var(--space-12);
   }
+}
+
+.cornerText {
+  font-size: var(--text-xs);
+  font-weight: var(--font-medium);
+  letter-spacing: var(--track-eyebrow);
+  text-transform: uppercase;
+  color: var(--color-on-dark);
 }

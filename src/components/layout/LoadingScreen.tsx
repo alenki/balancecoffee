@@ -4,7 +4,7 @@ import { usePreloadProgress } from '../../hooks/usePreloadProgress';
 import { useLenisInstance } from '../../hooks/useLenis';
 import { useLanguage } from '../../context/LanguageContext';
 import { images, type ImageName } from '../../generated/image-manifest';
-import { HERO_SIZES } from '../common/imageSizes';
+import { HERO_SIZES, LOGO_SIZES } from '../common/imageSizes';
 import styles from './LoadingScreen.module.css';
 
 const EASE = [0.16, 1, 0.3, 1] as const;
@@ -47,13 +47,16 @@ function warm(name: ImageName, sizes: string): () => Promise<void> {
 
 /** Warmed before the site is revealed, so nothing pops in behind us. */
 const ASSETS = [
-  warm('cafe/image', HERO_SIZES), // hero LCP image
-  // Both marks are live text, not files: the header wordmark and the hero
-  // one are set in Nunito, so the face is what has to land before the
-  // reveal. Warming it here keeps them from reflowing out of the fallback.
-  () => document.fonts.load('800 2rem Nunito')
-    .then(() => document.fonts.load('300 1rem Nunito'))
-    .catch(() => {}),
+  warm('brand/cover', HERO_SIZES), // hero LCP image
+  warm('logos/bloom-mark', LOGO_SIZES), // the monogram, in the header and hero
+  // The wordmark beside the monogram is live text, so its face has to land
+  // before the reveal or the lockup reflows out of the fallback. Both scripts
+  // are warmed: the visitor can switch language without a second flash.
+  () =>
+    document.fonts
+      .load('400 2rem "Bodoni Moda"')
+      .then(() => document.fonts.load('300 1rem "Readex Pro"'))
+      .catch(() => {}),
 ] as const;
 
 /**
@@ -65,7 +68,7 @@ const ASSETS = [
 const FACE_CAP = 1200;
 const facePainted: Promise<unknown> = Promise.race([
   document.fonts
-    .load('200 8rem Onest')
+    .load('200 8rem Outfit')
     .catch(() => {})
     .then(() => document.fonts.ready),
   new Promise((r) => setTimeout(r, FACE_CAP)),
@@ -209,7 +212,7 @@ export function LoadingScreen({ onDone }: LoadingScreenProps) {
       transition={{ duration: 0.45, ease: 'linear' }}
     >
       <span className={styles.srOnly} role="status">
-        {lang === 'ru' ? 'Загрузка' : 'Loading'}
+        {lang === 'ar' ? 'جارٍ التحميل' : 'Loading'}
       </span>
 
       {/* The field, split from the start so it can part on the centre line */}

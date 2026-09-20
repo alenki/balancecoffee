@@ -6,8 +6,9 @@ import { Footer } from './components/layout/Footer';
 import { LoadingScreen } from './components/layout/LoadingScreen';
 import { HomePage } from './pages/HomePage';
 import { MenuPage } from './pages/MenuPage';
-import { DailyPage } from './pages/DailyPage';
-import { ReviewsPage } from './pages/ReviewsPage';
+import { RoasteryPage } from './pages/RoasteryPage';
+import { BranchesPage } from './pages/BranchesPage';
+import { ContactPage } from './pages/ContactPage';
 import { NotFoundPage } from './pages/NotFoundPage';
 import { LanguageProvider, useLanguage } from './context/LanguageContext';
 import { useLenis, LenisContext } from './hooks/useLenis';
@@ -43,8 +44,9 @@ function AppContent() {
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/menu" element={<MenuPage />} />
-            <Route path="/daily" element={<DailyPage />} />
-            <Route path="/reviews" element={<ReviewsPage />} />
+            <Route path="/roastery" element={<RoasteryPage />} />
+            <Route path="/branches" element={<BranchesPage />} />
+            <Route path="/contact" element={<ContactPage />} />
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
           <Footer />

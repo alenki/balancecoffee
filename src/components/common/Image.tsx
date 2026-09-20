@@ -42,7 +42,7 @@ interface ImageProps {
 
 /**
  * Manifest bases are relative to the deploy base, so that the same build works
- * at a domain root and in a subdirectory (lumako.ru/harmonycoffee). BASE_URL
+ * at a domain root and in a subdirectory (lumako.net/bloomroastery). BASE_URL
  * always ends in a slash.
  */
 const urlFor = (base: string) => `${import.meta.env.BASE_URL}${base}`;

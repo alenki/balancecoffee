@@ -1,56 +1,49 @@
 /**
- * `sizes` strings, measured against the real layouts.
+ * `sizes` strings, derived from the grids these images actually render in.
  *
- * These tell the browser how wide an image will render before any CSS has
- * been applied, which is what lets it pick the right rung off the width
- * ladder. A wrong value silently wastes the whole pipeline: too small and the
- * image is soft, too large and the saving evaporates. So every value here was
- * measured in a browser rather than estimated, and the measurements are kept
- * alongside it. If a grid changes, re-measure and update the matching entry.
+ * These tell the browser how wide an image will be before any CSS has been
+ * applied, which is what lets it pick the right rung off the width ladder. A
+ * wrong value silently wastes the whole pipeline: too small and the image is
+ * soft, too large and the saving evaporates.
+ *
+ * Every value below is computed from the grid declared in the matching CSS
+ * module, and the derivation is written out beside it so it can be checked.
+ * The shared geometry is the page container: `max-width: 1320px` with an
+ * inline padding that steps 24px, then 40px at 768, then 64px at 1280. So the
+ * content width is `min(1320px, 100vw) - 2 * padding`, which settles at
+ * 1192px once the viewport passes 1320px.
+ *
+ * If a grid changes, redo the arithmetic here or the browser will keep
+ * choosing against the old layout.
  */
 
 /**
- * Hero card: the viewport minus the page gutter, which steps at 768 and 1200.
- * Measured: 390 -> 334px, 768 -> 664px, 1024 -> 920px, 1440 -> 1304px,
- * 1920 -> 1784px.
+ * Hero card: the full content width of the container.
+ * 1320+ -> 1192px, 1280 -> 100vw-128, 768 -> 100vw-80, below -> 100vw-48.
  */
 export const HERO_SIZES =
-  '(min-width: 1200px) calc(100vw - 136px), (min-width: 768px) calc(100vw - 104px), calc(100vw - 56px)';
+  '(min-width: 1320px) 1192px, (min-width: 1280px) calc(100vw - 128px), (min-width: 768px) calc(100vw - 80px), calc(100vw - 48px)';
 
 /**
- * Menu grids (MenuPreview and MenuCategory share the same rules): two columns
- * below 1024px and three above, full-bleed with a gutter that grows.
- * Measured: 390 -> 167px, 768 -> 316px, 1024 -> 290px, 1440 -> 411px,
- * 1920 -> 568px.
+ * Menu grids. MenuPreview and MenuCategory share one grid definition, so they
+ * share this value.
+ *
+ * Columns and gap: 2 up with a 12px gap below 768, 3 up with 20px to 1280,
+ * 4 up with 24px above.
+ * 1320+ -> (1192 - 3*24)/4 = 280px
+ * 1280  -> (100vw - 128 - 72)/4 = 25vw - 50px
+ * 768   -> (100vw - 80 - 40)/3  = 33.33vw - 40px
+ * below -> (100vw - 48 - 12)/2  = 50vw - 30px
  */
 export const MENU_CARD_SIZES =
-  '(min-width: 1024px) calc(33vw - 48px), (min-width: 640px) calc(50vw - 48px), calc(50vw - 24px)';
+  '(min-width: 1320px) 280px, (min-width: 1280px) calc(25vw - 50px), (min-width: 768px) calc(33.33vw - 40px), calc(50vw - 30px)';
 
 /**
- * Gallery side columns, hidden below 1000px.
- * Measured: 1024 -> 21.7vw, 1440 -> 21.8vw, 1920 -> 22.9vw.
+ * Roastery section portrait: half the content width above 900, full below.
+ * 1320+ -> (1192 - 64)/2 = 564px
  */
-export const GALLERY_SIDE_SIZES = '(min-width: 1000px) 23vw, 92vw';
+export const ROASTERY_SIZES =
+  '(min-width: 1320px) 564px, (min-width: 900px) calc(50vw - 80px), calc(100vw - 48px)';
 
-/**
- * Gallery centre column is materially wider than the sides, so it needs its
- * own value or it loads a rung too small.
- * Measured: 1024 -> 35.4vw, 1440 -> 35.8vw, 1920 -> 38.9vw.
- */
-export const GALLERY_CENTER_SIZES = '(min-width: 1000px) 39vw, 92vw';
-
-/**
- * Gallery mosaic: a two-up grid, only rendered below 1000px.
- * Measured: 390 -> 42.1vw, 768 -> 46.0vw.
- */
-export const GALLERY_MOSAIC_SIZES = '46vw';
-
-/**
- * Daily masonry: three columns above 1024px, two below.
- * Measured: 390 -> 47.1vw, 768 -> 44.1vw, 1024 -> 46.8vw, 1440 -> 29.9vw,
- * 1920 -> 31.6vw.
- */
-export const DAILY_MASONRY_SIZES = '(min-width: 1025px) 32vw, 48vw';
-
-/** Wordmark renders 28px to 56px tall at a 400x176 aspect, so ~128px wide. */
-export const LOGO_SIZES = '128px';
+/** The monogram renders 22px to 54px tall at a 331x331 square. */
+export const LOGO_SIZES = '72px';

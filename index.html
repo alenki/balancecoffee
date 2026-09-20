@@ -1,32 +1,40 @@
 <!doctype html>
-<html lang="ru">
+<html lang="ar" dir="rtl">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/logos/harmony_icon.svg" />
+    <link rel="icon" type="image/png" href="/logos/bloom-mark-64.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="robots" content="noindex, nofollow, noarchive" />
-    <meta name="theme-color" content="#1a1a1a" />
-    <meta name="description" content="Harmony Coffee - уютные кофейни в Москве, Санкт-Петербурге, Казани, Екатеринбурге, Нижнем Новгороде и Краснодаре. Кофе, завтраки, десерты." />
-    <title>Harmony Coffee</title>
+    <meta name="theme-color" content="#ffffff" />
+    <meta name="description" content="بلوم روستري: محمصة ومقهى قهوة مختصة في المدينة المنورة. ثلاثة فروع، تحميص على لورينغ S15 فالكون، وقريبًا في جدة." />
+    <title>بلوم روستري | Bloom Roastery</title>
 
-    <!-- Link previews (Telegram, WhatsApp, iMessage) -->
+    <!-- Link previews (WhatsApp, Telegram, iMessage, X) -->
     <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="Harmony Coffee" />
-    <meta property="og:title" content="Harmony Coffee" />
-    <meta property="og:description" content="Кофе, созданный с намерением. 16 кофеен в 6 городах России." />
-    <meta property="og:url" content="https://lumako.ru/harmonycoffee/" />
+    <meta property="og:site_name" content="Bloom Roastery" />
+    <meta property="og:title" content="بلوم روستري | Bloom Roastery" />
+    <meta property="og:description" content="قهوة مختصة وُلدت في المدينة المنورة. Specialty coffee roastery born in Madinah." />
+    <meta property="og:url" content="https://lumako.net/bloomroastery/" />
     <!-- A fixed rung, not a srcset: link unfurlers fetch one plain URL, and it
-         has to be absolute: they do not resolve a site relative path. -->
-    <meta property="og:image" content="https://lumako.ru/harmonycoffee/img/cafe/image-1280.webp" />
+         has to be absolute, because they do not resolve a site relative path.
+         Vite does not rewrite meta content, so this carries the host in full. -->
+    <meta property="og:image" content="https://lumako.net/bloomroastery/img/brand/cover-1280.webp" />
     <meta property="og:image:width" content="1280" />
-    <meta property="og:image:height" content="509" />
-    <meta property="og:locale" content="ru_RU" />
+    <meta property="og:image:height" content="505" />
+    <meta property="og:locale" content="ar_SA" />
+    <meta property="og:locale:alternate" content="en_US" />
     <meta name="twitter:card" content="summary_large_image" />
 
-    <!-- Onest: display + UI. Playfair Display: editorial italics. Nunito: Harmony wordmark. Inter: Lumako wordmark only. -->
+    <!--
+      Outfit: Latin display, UI and body, the geometric sans Bloom sets all
+      of its own material in. Readex Pro: all Arabic, and the fallback that
+      catches Arabic characters Outfit has no glyphs for. Bodoni Moda: the
+      Didone of the logo wordmark, and the one editorial accent line a section
+      is allowed. Inter: the Lumako wordmark in the footer and nothing else.
+    -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Onest:wght@100..900&family=Playfair+Display:ital,wght@0,400..600;1,400..600&family=Nunito:wght@300;700;800&family=Inter:wght@500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..500;1,6..96,400..500&family=Inter:wght@500;600&family=Outfit:wght@100..900&family=Readex+Pro:wght@160..700&display=swap" rel="stylesheet">
   </head>
   <body>
     <div id="root"></div>

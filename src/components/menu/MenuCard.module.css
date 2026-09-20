@@ -1,0 +1,115 @@
+/**
+ * Column counts and gaps here are the source of MENU_CARD_SIZES in
+ * imageSizes.ts. Change one and redo the other.
+ *
+ * 2 up / 12px below 768, 3 up / 20px to 1280, 4 up / 24px above.
+ */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-8) var(--space-3);
+}
+
+@media (min-width: 768px) {
+  .grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-10) var(--space-5);
+  }
+}
+
+@media (min-width: 1280px) {
+  .grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-12) var(--space-6);
+  }
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.link {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  color: inherit;
+}
+
+/* ---------- Image ---------- */
+.frame {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-sunk);
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: scale var(--transition-slow);
+}
+
+.card:hover .image {
+  scale: 1.04;
+}
+
+/* ---------- Copy ---------- */
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  flex: 1;
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  flex: 1;
+}
+
+.name {
+  font-family: var(--font-primary);
+  font-size: var(--text-base);
+  font-weight: var(--font-medium);
+  line-height: 1.35;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--color-ink);
+}
+
+[dir='rtl'] .name {
+  font-family: var(--font-arabic);
+  font-weight: var(--font-normal);
+  font-size: var(--text-lg);
+}
+
+.description {
+  font-size: var(--text-sm);
+  line-height: 1.6;
+  color: var(--color-ink-muted);
+  max-width: none;
+}
+
+[dir='rtl'] .description {
+  line-height: 1.85;
+}
+
+/* ---------- Price row ---------- */
+.meta {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.calories {
+  font-size: var(--text-xs);
+  color: var(--color-ink-faint);
+  font-variant-numeric: tabular-nums;
+  unicode-bidi: isolate;
+}

@@ -1,0 +1,36 @@
+/**
+ * The number and its currency word are one unit.
+ *
+ * `unicode-bidi: isolate` matters: a Western numeral sitting inside an Arabic
+ * paragraph is neutral-adjacent, and without isolation the bidi algorithm can
+ * reorder it against the currency word beside it.
+ */
+.price {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.3em;
+  unicode-bidi: isolate;
+  font-family: var(--font-primary);
+  font-weight: var(--font-medium);
+  font-variant-numeric: tabular-nums;
+  color: var(--color-ink);
+  white-space: nowrap;
+}
+
+.value {
+  font-size: 1em;
+  letter-spacing: 0.01em;
+}
+
+.currency {
+  font-size: 0.72em;
+  font-weight: var(--font-normal);
+  letter-spacing: 0.08em;
+  color: var(--color-ink-muted);
+  text-transform: uppercase;
+}
+
+[dir='rtl'] .currency {
+  letter-spacing: 0;
+  text-transform: none;
+}

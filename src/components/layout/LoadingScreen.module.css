@@ -31,12 +31,11 @@
    ============================================ */
 .half {
   position: absolute;
-  left: 0;
-  right: 0;
+  inset-inline: 0;
   /* Half a pixel of overlap kills the hairline seam on fractional DPR. */
   height: calc(50% + 0.5px);
   overflow: hidden;
-  background-color: var(--color-bg-white);
+  background-color: var(--color-canvas);
   will-change: transform;
 }
 
@@ -81,11 +80,12 @@
 /* ============================================
    THE COUNTER
 
-   The site's own geometric sans. Onest's zero is
-   the same circle the wordmark's a, c and e
-   counters are built from, so the figure reads
-   as the brand at display scale and hands off
-   into the hero with no change of voice.
+   The site's own geometric sans. Outfit's zero
+   is a true circle, drawn from the same skeleton
+   as the caps Bloom sets its own headlines in,
+   so the figure reads as the brand at display
+   scale and hands off into the hero with no
+   change of voice.
 
    Fixed-width digits so a centred figure never
    wobbles as it climbs.
@@ -108,7 +108,7 @@
   font-size: clamp(3rem, 9.5vw, 8rem);
   line-height: 1;
   letter-spacing: 0;
-  color: var(--color-text-dark);
+  color: var(--color-ink);
 }
 
 .digit {

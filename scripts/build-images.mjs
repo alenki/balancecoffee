@@ -19,7 +19,7 @@ import { join, extname, dirname, relative, sep } from 'node:path';
 const SRC_DIR = 'assets-src';
 const OUT_DIR = join('public', 'img');
 const GEN_DIR = join('src', 'generated');
-const CACHE_FILE = join('node_modules', '.cache', 'balance-images.json');
+const CACHE_FILE = join('node_modules', '.cache', 'bloom-images.json');
 
 /** Bump when encoder settings change, to force a full re-encode. */
 const ENCODER_VERSION = 1;
@@ -42,12 +42,12 @@ const LOGO_ENCODE = {
  */
 const ROLES = [
   // Full-bleed hero card.
-  { match: (k) => k === 'cafe/image', widths: [640, 960, 1280, 1680] },
-  // Gallery grid + Daily masonry: ~440 CSS px at most.
-  { match: (k) => k.startsWith('cafe/'), widths: [320, 480, 640, 960] },
+  { match: (k) => k === 'brand/cover', widths: [640, 960, 1280, 1680] },
+  // Any other brand photography: section accents, ~640 CSS px at most.
+  { match: (k) => k.startsWith('brand/'), widths: [320, 480, 640, 960] },
   // Menu cards: 156-587 CSS px depending on breakpoint.
   { match: (k) => k.startsWith('menu/'), widths: [320, 480, 640, 900] },
-  // Wordmark, rendered at 28-56px tall.
+  // Wordmark and monogram, rendered at 24-72px tall.
   { match: (k) => k.startsWith('logos/'), widths: [200, 400], logo: true },
 ];
 

@@ -1,99 +1,82 @@
-/* ============================================
-   HEADER: Editorial Atelier
-   Three-zone: Nav (left) | Logo (center) | Actions (right)
-   Inspired by White, Wake Up Coffee, Taylors'
-   ============================================ */
-
 .header {
   position: fixed;
   top: 0;
-  left: 0;
-  right: 0;
-  z-index: calc(var(--z-overlay) + 1);
-  background: #ffffff;
-  border-bottom: 1px solid var(--color-bg-dark);
-
-  /* Hidden by default */
-  transform: translateY(-100%);
-  opacity: 0;
-  transition:
-    transform 0.55s cubic-bezier(0.16, 1, 0.3, 1),
-    opacity 0.4s ease,
-    background 0.3s ease;
-}
-
-.header.visible {
+  inset-inline: 0;
+  z-index: var(--z-sticky);
+  /*
+   * Plain white, the same value as the canvas, so the bar does not read as a
+   * separate plate. The one full width ink rule below is what divides it from
+   * the page. An opaque background also leaves a backdrop blur nothing to
+   * blur, so the filter is gone with it.
+   */
+  background: var(--color-canvas);
+  border-block-end: 1px solid var(--color-ink);
   transform: translateY(0);
-  opacity: 1;
+  transition:
+    transform var(--transition-slow),
+    border-color var(--transition-base);
+  /*
+   * The entrance is an animation rather than a mount-effect toggling a class.
+   * `backwards` and not `both`: a forwards fill would keep applying the
+   * animation's end transform after it finishes, which would then block the
+   * scroll-hide transition on the same property.
+   */
+  animation: headerIn 0.7s cubic-bezier(0.16, 1, 0.3, 1) backwards;
 }
 
-/* Hidden on scroll-down */
+@keyframes headerIn {
+  from {
+    opacity: 0;
+    transform: translateY(-100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .header.scrollHidden {
   transform: translateY(-100%);
-  pointer-events: none;
-  transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* When mobile menu is open, keep header solid */
 .header.menuActive {
-  background: #ffffff;
+  /* The overlay behind it is one unbroken sheet of canvas, and the rule would
+     draw a seam across it. */
+  border-block-end-color: transparent;
 }
 
-/* ============================================
-   ACCENT LINE: Thin gold thread at very top
-   ============================================ */
-.accentLine {
-  display: none;
-}
-
-/* ============================================
-   CONTAINER: Three-zone grid
-   ============================================ */
 .container {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  justify-content: space-between;
-  padding: var(--space-4) var(--space-6);
-  min-height: 64px;
+  gap: var(--space-4);
+  max-width: 1320px;
+  margin-inline: auto;
+  padding: var(--space-5) var(--space-6);
 }
 
-@media (min-width: 1180px) {
+@media (min-width: 768px) {
   .container {
-    display: grid;
-    grid-template-columns: 1fr auto 1fr;
-    padding: var(--space-5) var(--space-8);
-    min-height: 72px;
+    padding-inline: var(--space-10);
   }
 }
 
 @media (min-width: 1280px) {
   .container {
-    padding: var(--space-5) var(--space-12);
+    padding-inline: var(--space-16);
   }
 }
 
-/* Desktop-only utility */
-.desktopOnly {
-  display: none !important;
-}
-
-@media (min-width: 1180px) {
-  .desktopOnly {
-    display: flex !important;
-  }
-}
-
-/* ============================================
-   ZONE 1: DESKTOP NAVIGATION (left)
-   ============================================ */
+/* ---------- Desktop nav ---------- */
 .desktopNav {
   display: none;
   align-items: center;
-  gap: var(--space-10);
-  justify-self: start;
+  gap: var(--space-6);
+  /* `start` rather than `left`: this is the reading-order edge. */
+  justify-content: start;
 }
 
-@media (min-width: 1180px) {
+@media (min-width: 1100px) {
   .desktopNav {
     display: flex;
   }
@@ -101,146 +84,150 @@
 
 .navLink {
   position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.8125rem;
-  font-weight: var(--font-medium);
-  color: var(--color-text-muted);
-  text-decoration: none;
-  text-transform: uppercase;
-  letter-spacing: 0.14em;
-  padding: var(--space-1) 0;
-  transition: color 0.3s ease;
+  display: inline-flex;
+  flex-direction: column;
+  gap: 5px;
+  padding-block: var(--space-1);
+  color: var(--color-ink-soft);
 }
 
 .navText {
-  position: relative;
+  font-size: var(--text-xs);
+  font-weight: var(--font-medium);
+  letter-spacing: var(--track-eyebrow);
+  text-transform: uppercase;
+  transition: color var(--transition-fast);
 }
 
-/* Active indicator: underline beneath the text, out of flow so the
-   label itself stays on the header's vertical centre line */
-.navDot {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: -4px;
-  height: 2px;
-  border-radius: 1px;
-  background: var(--color-primary);
-  opacity: 0;
+[dir='rtl'] .navText {
+  text-transform: none;
+  font-size: var(--text-sm);
+}
+
+/* A rule that grows from the reading-start edge, not a dot. */
+.navRule {
+  display: block;
+  height: 1px;
+  width: 100%;
+  background: var(--color-chartreuse);
   transform: scaleX(0);
-  transition:
-    opacity 0.3s ease,
-    transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transform-origin: inline-start;
+  transition: transform var(--transition-base);
 }
 
-.navLink:hover {
-  color: var(--color-text-dark);
+.navLink:hover .navText,
+.navLink.active .navText {
+  color: var(--color-ink);
 }
 
-.navLink:hover .navDot {
-  opacity: 0.35;
+.navLink:hover .navRule,
+.navLink.active .navRule {
   transform: scaleX(1);
 }
 
-.navLink.active {
-  color: var(--color-text-dark);
-}
-
-.navLink.active .navDot {
-  opacity: 1;
-  transform: scaleX(1);
-}
-
-/* ============================================
-   ZONE 2: LOGO (absolute center)
-   ============================================ */
+/* ---------- Logo ---------- */
 .logoZone {
   display: flex;
-  align-items: center;
-  justify-content: flex-start;
+  justify-content: center;
+  grid-column: 2;
 }
 
-@media (min-width: 1180px) {
-  .logoZone {
-    justify-content: center;
-    justify-self: center;
-  }
-}
-
-/* ============================================
-   ZONE 3: ACTIONS (right)
-   ============================================ */
+/* ---------- Actions ---------- */
 .actions {
   display: flex;
   align-items: center;
+  justify-content: end;
   gap: var(--space-4);
-  justify-self: end;
+  grid-column: 3;
 }
 
-/* ============================================
-   LANGUAGE SWITCH: Typographic toggle
-   Inspired by White Coffee's FR / EN selector
-   ============================================ */
+.desktopOnly {
+  display: none;
+}
+
+@media (min-width: 1100px) {
+  .desktopOnly {
+    display: flex;
+  }
+}
+
+.shopLink {
+  font-size: var(--text-xs);
+  font-weight: var(--font-medium);
+  letter-spacing: var(--track-eyebrow);
+  text-transform: uppercase;
+  color: var(--color-ink);
+  align-items: center;
+  justify-content: center;
+  padding-block: var(--space-2);
+  /* Tracking adds a trailing space after the last letter, so the label sits
+     off centre. Give the start edge that much back. */
+  padding-inline: calc(var(--space-4) + var(--track-eyebrow)) var(--space-4);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-full);
+  transition:
+    background var(--transition-fast),
+    border-color var(--transition-fast);
+}
+
+[dir='rtl'] .shopLink {
+  text-transform: none;
+  font-size: var(--text-sm);
+}
+
+.shopLink:hover {
+  background: var(--color-chartreuse);
+  border-color: var(--color-chartreuse);
+  color: var(--color-ink);
+}
+
+/* ---------- Language ---------- */
 .langSwitch {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: var(--space-2);
 }
 
 .langOption {
   font-family: var(--font-primary);
-  font-size: 0.8125rem;
+  font-size: var(--text-xs);
   font-weight: var(--font-medium);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--color-text-light);
-  background: none;
-  border: none;
-  padding: var(--space-1) var(--space-1);
-  cursor: pointer;
-  position: relative;
-  transition: color 0.3s ease;
+  letter-spacing: 0.1em;
+  color: var(--color-ink-faint);
+  padding: var(--space-1);
+  transition: color var(--transition-fast);
 }
 
 .langOption:hover {
-  color: var(--color-text-body);
+  color: var(--color-ink-soft);
 }
 
-.langOption.langActive {
-  color: var(--color-text-dark);
+.langActive {
+  color: var(--color-ink);
+  text-decoration: underline;
+  text-decoration-color: var(--color-chartreuse);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
 }
 
 .langDivider {
-  display: block;
   width: 1px;
-  height: 14px;
-  background: var(--color-text-light);
-  opacity: 0.4;
+  height: 11px;
+  background: var(--color-border-strong);
 }
 
-/* ============================================
-   HAMBURGER: Refined two-line toggle
-   Reduces to two thin lines that rotate into X
-   ============================================ */
+/* ---------- Burger ---------- */
 .menuButton {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: flex-end;
-  gap: 7px;
-  width: 36px;
-  height: 36px;
-  padding: 6px 2px;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  position: relative;
-  z-index: calc(var(--z-overlay) + 2);
+  gap: 5px;
+  width: 38px;
+  height: 38px;
+  padding: var(--space-2);
 }
 
-@media (min-width: 1180px) {
+@media (min-width: 1100px) {
   .menuButton {
     display: none;
   }
@@ -248,100 +235,65 @@
 
 .menuLine {
   display: block;
+  width: 100%;
   height: 1.5px;
-  background: var(--color-text-dark);
-  border-radius: 1px;
+  background: var(--color-ink);
   transition:
-    transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
-    width 0.3s cubic-bezier(0.16, 1, 0.3, 1),
-    opacity 0.25s ease;
-  transform-origin: center;
+    transform var(--transition-base),
+    opacity var(--transition-base);
 }
 
-.menuLine:nth-child(1) {
-  width: 100%;
+.menuButton.open .menuLine:first-child {
+  transform: translateY(3.25px) rotate(45deg);
 }
 
-.menuLine:nth-child(2) {
-  width: 65%;
+.menuButton.open .menuLine:last-child {
+  transform: translateY(-3.25px) rotate(-45deg);
 }
 
-.menuButton:hover .menuLine:nth-child(2) {
-  width: 100%;
-}
-
-/* X state */
-.menuButton.open .menuLine:nth-child(1) {
-  transform: translateY(4.25px) rotate(45deg);
-  width: 100%;
-}
-
-.menuButton.open .menuLine:nth-child(2) {
-  transform: translateY(-4.25px) rotate(-45deg);
-  width: 100%;
-}
-
-/* ============================================
-   MOBILE MENU OVERLAY: Full-screen takeover
-   Cream background, editorial typography
-   ============================================ */
+/* ---------- Mobile overlay ---------- */
 .mobileOverlay {
   position: fixed;
   inset: 0;
   z-index: var(--z-overlay);
-  background: #ffffff;
-  display: flex;
-  flex-direction: column;
-
-  /* Clip-path reveal from top-right */
-  clip-path: circle(0% at calc(100% - 36px) 32px);
-  transition: clip-path 0.6s cubic-bezier(0.65, 0, 0.35, 1);
-  pointer-events: none;
+  background: var(--color-canvas);
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity var(--transition-base),
+    visibility var(--transition-base);
 }
 
 .mobileOverlay.open {
-  clip-path: circle(150% at calc(100% - 36px) 32px);
-  pointer-events: auto;
-}
-
-@media (min-width: 1180px) {
-  .mobileOverlay {
-    display: none;
-  }
+  opacity: 1;
+  visibility: visible;
 }
 
 .mobileInner {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  flex: 1;
-  padding: 100px var(--space-8) var(--space-10);
+  justify-content: space-between;
+  height: 100%;
+  padding: calc(var(--space-24) + var(--space-4)) var(--space-6) var(--space-12);
 }
 
-/* Mobile Navigation Links */
 .mobileNav {
   display: flex;
   flex-direction: column;
-  gap: 0;
 }
 
 .mobileNavLink {
   display: flex;
   align-items: center;
-  gap: var(--space-5);
-  text-decoration: none;
-  padding: var(--space-6) 0;
-  border-bottom: 1px solid var(--color-border);
-  color: var(--color-text-body);
-
-  /* Staggered entrance */
+  gap: var(--space-4);
+  padding-block: var(--space-5);
+  border-block-end: 1px solid var(--color-border);
+  color: var(--color-ink);
   opacity: 0;
-  transform: translateY(20px);
+  transform: translateY(14px);
   transition:
-    opacity 0.45s ease,
-    transform 0.45s cubic-bezier(0.16, 1, 0.3, 1),
-    color 0.2s ease,
-    padding-left 0.3s ease;
+    opacity var(--transition-slow),
+    transform var(--transition-slow);
 }
 
 .mobileOverlay.open .mobileNavLink {
@@ -353,98 +305,57 @@
   font-family: var(--font-primary);
   font-size: var(--text-xs);
   font-weight: var(--font-medium);
-  color: var(--color-primary-light);
-  letter-spacing: 0.08em;
-  min-width: 28px;
+  color: var(--color-ink-faint);
+  font-variant-numeric: tabular-nums;
 }
 
 .mobileNavLabel {
-  font-family: var(--font-serif);
-  font-size: clamp(2rem, 8vw, 3rem);
-  font-weight: 400;
-  font-style: italic;
-  letter-spacing: -0.01em;
-  line-height: 1.1;
   flex: 1;
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  font-weight: var(--font-semibold);
+  text-transform: uppercase;
+  letter-spacing: var(--track-display);
 }
 
-.mobileNavArrow {
-  color: var(--color-primary-light);
-  opacity: 0;
-  transform: translateX(-8px);
-  transition:
-    opacity 0.25s ease,
-    transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+[dir='rtl'] .mobileNavLabel {
+  font-family: var(--font-arabic);
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: var(--text-xl);
 }
 
-.mobileNavLink:hover {
-  color: var(--color-text-dark);
-  padding-left: var(--space-2);
+.mobileNavLink.active .mobileNavLabel {
+  color: var(--color-chartreuse-deep);
 }
 
-.mobileNavLink:hover .mobileNavArrow {
-  opacity: 1;
-  transform: translateX(0);
+/**
+ * The arrow points along the reading direction.
+ *
+ * `transform` has no logical equivalent, so RTL does not mirror it for free.
+ * This is the explicit flip.
+ */
+.arrow {
+  flex: none;
+  color: var(--color-ink-faint);
 }
 
-.mobileNavLink.active {
-  color: var(--color-text-dark);
+[dir='rtl'] .arrow {
+  transform: scaleX(-1);
 }
 
-.mobileNavLink.active .mobileNavIndex {
-  color: var(--color-primary);
-}
-
-.mobileNavLink.active .mobileNavArrow {
-  opacity: 0.5;
-  transform: translateX(0);
-}
-
-/* Mobile Footer */
 .mobileFooter {
-  margin-top: auto;
-  padding-top: var(--space-8);
   display: flex;
-  flex-direction: column;
-  gap: var(--space-6);
-
-  /* Staggered entrance */
+  align-items: center;
+  justify-content: space-between;
   opacity: 0;
-  transform: translateY(12px);
+  transform: translateY(14px);
   transition:
-    opacity 0.4s ease,
-    transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    opacity var(--transition-slow),
+    transform var(--transition-slow);
 }
 
 .mobileOverlay.open .mobileFooter {
   opacity: 1;
   transform: translateY(0);
-}
-
-.mobileFooterRow {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.mobileTagline {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-}
-
-.mobileTaglineText {
-  font-size: var(--text-xs);
-  font-weight: var(--font-medium);
-  text-transform: uppercase;
-  letter-spacing: 0.15em;
-  color: var(--color-text-muted);
-}
-
-.mobileTaglineSeparator {
-  display: block;
-  width: 24px;
-  height: 1px;
-  background: var(--color-primary-light);
-  opacity: 0.5;
 }

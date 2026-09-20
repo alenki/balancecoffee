@@ -2,43 +2,69 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { Logo } from '../common/Logo';
 import { useLanguage } from '../../context/LanguageContext';
-import { contactInfo } from '../../data/locations';
+import { contactInfo } from '../../data/contact';
 import styles from './Header.module.css';
 
-/** Minimum scroll distance before triggering hide (prevents jitter) */
+/** Minimum scroll distance before triggering hide (prevents jitter). */
 const SCROLL_THRESHOLD = 8;
-/** How long (ms) user must keep scrolling down before header hides */
+/** How long (ms) the user must keep scrolling down before the header hides. */
 const HIDE_DELAY = 600;
 
+const NAV = [
+  { to: '/', key: 'nav.home' },
+  { to: '/menu', key: 'nav.menu' },
+  { to: '/roastery', key: 'nav.roastery' },
+  { to: '/branches', key: 'nav.branches' },
+  { to: '/contact', key: 'nav.contact' },
+] as const;
+
+/** Points along the reading direction: mirrored in RTL by the stylesheet. */
+function Arrow() {
+  return (
+    <svg className={styles.arrow} width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+      <path
+        d="M4 10H16M16 10L11 5M16 10L11 15"
+        stroke="currentColor"
+        strokeWidth="1.1"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
 export function Header() {
-  const [isVisible, setIsVisible] = useState(false);
   const [isHiddenByScroll, setIsHiddenByScroll] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { lang, setLang, t } = useLanguage();
   const location = useLocation();
 
+  const headerRef = useRef<HTMLElement>(null);
   const lastScrollY = useRef(0);
   const hideTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const scrollingDown = useRef(false);
 
-  useEffect(() => {
-    setIsVisible(true);
-  }, []);
-
   const isMenuPage = location.pathname === '/menu';
 
-  // Scroll-based hide/show (disabled on menu page)
+  // Closing the menu on navigation is a reset, not a synchronisation, so it
+  // adjusts state during render rather than in an effect. An effect would
+  // paint the overlay once over the new route before closing it.
+  const [menuPath, setMenuPath] = useState(location.pathname);
+  if (menuPath !== location.pathname) {
+    setMenuPath(location.pathname);
+    setIsMobileMenuOpen(false);
+  }
+
+  // Scroll-based hide/show, disabled on the menu page where the category rail
+  // needs the header to hold still. The menu page does not reset the flag: it
+  // simply stops applying it, which keeps this effect free of setState.
   useEffect(() => {
-    if (isMenuPage) {
-      setIsHiddenByScroll(false);
-      return;
-    }
+    if (isMenuPage) return;
 
     const onScroll = () => {
       const currentY = window.scrollY;
       const delta = currentY - lastScrollY.current;
 
-      // Near top of page: always show
       if (currentY < 80) {
         setIsHiddenByScroll(false);
         scrollingDown.current = false;
@@ -51,19 +77,14 @@ export function Header() {
       }
 
       if (delta > SCROLL_THRESHOLD) {
-        // Scrolling down
         if (!scrollingDown.current) {
           scrollingDown.current = true;
-          // Start a timer: hide only if user keeps scrolling down
           if (hideTimer.current) clearTimeout(hideTimer.current);
           hideTimer.current = setTimeout(() => {
-            if (scrollingDown.current) {
-              setIsHiddenByScroll(true);
-            }
+            if (scrollingDown.current) setIsHiddenByScroll(true);
           }, HIDE_DELAY);
         }
       } else if (delta < -SCROLL_THRESHOLD) {
-        // Scrolling up: show immediately
         scrollingDown.current = false;
         if (hideTimer.current) {
           clearTimeout(hideTimer.current);
@@ -82,107 +103,106 @@ export function Header() {
     };
   }, [isMenuPage]);
 
+  // Publishes the measured header height as a custom property so anything
+  // that has to sit directly beneath it, such as the menu page category rail,
+  // can pin itself without repeating the padding arithmetic per breakpoint.
   useEffect(() => {
-    if (isMobileMenuOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
+    const header = headerRef.current;
+    if (!header) return;
+
+    // Measured from the border box, and rounded down: half a pixel of overlap
+    // hides behind the header, where half a pixel of gap would show a sliver
+    // of the page scrolling through.
+    const observer = new ResizeObserver(() => {
+      document.documentElement.style.setProperty(
+        '--header-height',
+        `${Math.floor(header.getBoundingClientRect().height)}px`
+      );
+    });
+
+    observer.observe(header);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    document.body.style.overflow = isMobileMenuOpen ? 'hidden' : '';
     return () => {
       document.body.style.overflow = '';
     };
   }, [isMobileMenuOpen]);
 
-  // Close mobile menu on route change
-  useEffect(() => {
-    setIsMobileMenuOpen(false);
-  }, [location.pathname]);
+  const closeMobileMenu = useCallback(() => setIsMobileMenuOpen(false), []);
 
-  const closeMobileMenu = useCallback(() => {
-    setIsMobileMenuOpen(false);
-  }, []);
-
-  const navItems = [
-    { to: '/', label: t('nav.home') },
-    { to: '/menu', label: t('nav.menu') },
-    { to: '/daily', label: t('nav.daily') },
-  ];
-
-  const langUpper = lang.toUpperCase();
+  const langSwitch = (
+    <div className={styles.langSwitch} role="radiogroup" aria-label={t('a11y.language')}>
+      <button
+        type="button"
+        className={`${styles.langOption} ${lang === 'ar' ? styles.langActive : ''}`}
+        onClick={() => setLang('ar')}
+        role="radio"
+        aria-checked={lang === 'ar'}
+      >
+        عربي
+      </button>
+      <span className={styles.langDivider} aria-hidden="true" />
+      <button
+        type="button"
+        className={`${styles.langOption} ${lang === 'en' ? styles.langActive : ''}`}
+        onClick={() => setLang('en')}
+        role="radio"
+        aria-checked={lang === 'en'}
+      >
+        EN
+      </button>
+    </div>
+  );
 
   return (
     <>
       <header
-        className={`${styles.header} ${isVisible ? styles.visible : ''} ${isHiddenByScroll && !isMobileMenuOpen ? styles.scrollHidden : ''} ${isMobileMenuOpen ? styles.menuActive : ''}`}
+        ref={headerRef}
+        className={[
+          styles.header,
+          isHiddenByScroll && !isMenuPage && !isMobileMenuOpen ? styles.scrollHidden : '',
+          isMobileMenuOpen ? styles.menuActive : '',
+        ]
+          .filter(Boolean)
+          .join(' ')}
       >
-        {/* Thin accent line at top */}
-        <div className={styles.accentLine} aria-hidden="true" />
-
         <div className={styles.container}>
-          {/* Zone 1: Navigation (left) */}
           <nav className={styles.desktopNav}>
-            {navItems.map(({ to, label }) => (
+            {NAV.map(({ to, key }) => (
               <NavLink
                 key={to}
                 to={to}
-                className={({ isActive }) =>
-                  `${styles.navLink} ${isActive ? styles.active : ''}`
-                }
+                end={to === '/'}
+                className={({ isActive }) => `${styles.navLink} ${isActive ? styles.active : ''}`}
               >
-                <span className={styles.navText}>{label}</span>
-                <span className={styles.navDot} aria-hidden="true" />
+                <span className={styles.navText}>{t(key)}</span>
+                <span className={styles.navRule} aria-hidden="true" />
               </NavLink>
             ))}
-            <a
-              href={contactInfo.telegram}
-              className={styles.navLink}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <span className={styles.navText}>{t('nav.vacancies')}</span>
-              <span className={styles.navDot} aria-hidden="true" />
-            </a>
-            <NavLink
-              to="/reviews"
-              className={({ isActive }) =>
-                `${styles.navLink} ${isActive ? styles.active : ''}`
-              }
-            >
-              <span className={styles.navText}>{t('nav.feedback')}</span>
-              <span className={styles.navDot} aria-hidden="true" />
-            </NavLink>
           </nav>
 
-          {/* Zone 2: Logo (center) */}
           <div className={styles.logoZone}>
             <Logo size="md" variant="default" />
           </div>
 
-          {/* Zone 3: Actions (right) */}
           <div className={styles.actions}>
-            <div className={`${styles.langSwitch} ${styles.desktopOnly}`} role="radiogroup" aria-label="Language">
-              <button
-                className={`${styles.langOption} ${langUpper === 'RU' ? styles.langActive : ''}`}
-                onClick={() => setLang('ru')}
-                role="radio"
-                aria-checked={langUpper === 'RU'}
-              >
-                RU
-              </button>
-              <span className={styles.langDivider} aria-hidden="true" />
-              <button
-                className={`${styles.langOption} ${langUpper === 'EN' ? styles.langActive : ''}`}
-                onClick={() => setLang('en')}
-                role="radio"
-                aria-checked={langUpper === 'EN'}
-              >
-                EN
-              </button>
-            </div>
+            <a
+              className={`${styles.shopLink} ${styles.desktopOnly}`}
+              href={contactInfo.shop}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {t('nav.shop')}
+            </a>
+            <div className={styles.desktopOnly}>{langSwitch}</div>
 
             <button
+              type="button"
               className={`${styles.menuButton} ${isMobileMenuOpen ? styles.open : ''}`}
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              onClick={() => setIsMobileMenuOpen((v) => !v)}
               aria-label={isMobileMenuOpen ? t('nav.closeMenu') : t('nav.openMenu')}
               aria-expanded={isMobileMenuOpen}
             >
@@ -193,18 +213,17 @@ export function Header() {
         </div>
       </header>
 
-      {/* Full-screen Mobile Menu Overlay */}
       <div
         className={`${styles.mobileOverlay} ${isMobileMenuOpen ? styles.open : ''}`}
         aria-hidden={!isMobileMenuOpen}
       >
         <div className={styles.mobileInner}>
-          {/* Mobile nav links */}
           <nav className={styles.mobileNav}>
-            {navItems.map(({ to, label }, index) => (
+            {NAV.map(({ to, key }, index) => (
               <NavLink
                 key={to}
                 to={to}
+                end={to === '/'}
                 className={({ isActive }) =>
                   `${styles.mobileNavLink} ${isActive ? styles.active : ''}`
                 }
@@ -214,111 +233,31 @@ export function Header() {
                 <span className={styles.mobileNavIndex}>
                   {String(index + 1).padStart(2, '0')}
                 </span>
-                <span className={styles.mobileNavLabel}>{label}</span>
-                <svg
-                  className={styles.mobileNavArrow}
-                  width="20"
-                  height="20"
-                  viewBox="0 0 20 20"
-                  fill="none"
-                  aria-hidden="true"
-                >
-                  <path
-                    d="M4 10H16M16 10L11 5M16 10L11 15"
-                    stroke="currentColor"
-                    strokeWidth="1.25"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
+                <span className={styles.mobileNavLabel}>{t(key)}</span>
+                <Arrow />
               </NavLink>
             ))}
             <a
-              href={contactInfo.telegram}
+              href={contactInfo.shop}
               className={styles.mobileNavLink}
               target="_blank"
               rel="noopener noreferrer"
               onClick={closeMobileMenu}
-              style={{ transitionDelay: isMobileMenuOpen ? `${0.08 + navItems.length * 0.06}s` : '0s' }}
+              style={{ transitionDelay: isMobileMenuOpen ? `${0.08 + NAV.length * 0.06}s` : '0s' }}
             >
               <span className={styles.mobileNavIndex}>
-                {String(navItems.length + 1).padStart(2, '0')}
+                {String(NAV.length + 1).padStart(2, '0')}
               </span>
-              <span className={styles.mobileNavLabel}>{t('nav.vacancies')}</span>
-              <svg
-                className={styles.mobileNavArrow}
-                width="20"
-                height="20"
-                viewBox="0 0 20 20"
-                fill="none"
-                aria-hidden="true"
-              >
-                <path
-                  d="M4 10H16M16 10L11 5M16 10L11 15"
-                  stroke="currentColor"
-                  strokeWidth="1.25"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
+              <span className={styles.mobileNavLabel}>{t('nav.shop')}</span>
+              <Arrow />
             </a>
-            <NavLink
-              to="/reviews"
-              className={({ isActive }) =>
-                `${styles.mobileNavLink} ${isActive ? styles.active : ''}`
-              }
-              onClick={closeMobileMenu}
-              style={{ transitionDelay: isMobileMenuOpen ? `${0.08 + (navItems.length + 1) * 0.06}s` : '0s' }}
-            >
-              <span className={styles.mobileNavIndex}>
-                {String(navItems.length + 2).padStart(2, '0')}
-              </span>
-              <span className={styles.mobileNavLabel}>{t('nav.feedback')}</span>
-              <svg
-                className={styles.mobileNavArrow}
-                width="20"
-                height="20"
-                viewBox="0 0 20 20"
-                fill="none"
-                aria-hidden="true"
-              >
-                <path
-                  d="M4 10H16M16 10L11 5M16 10L11 15"
-                  stroke="currentColor"
-                  strokeWidth="1.25"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </NavLink>
           </nav>
 
-          {/* Mobile footer area */}
           <div
             className={styles.mobileFooter}
             style={{ transitionDelay: isMobileMenuOpen ? '0.3s' : '0s' }}
           >
-            <div className={styles.mobileFooterRow}>
-              <div className={styles.langSwitch} role="radiogroup" aria-label="Language">
-                <button
-                  className={`${styles.langOption} ${langUpper === 'RU' ? styles.langActive : ''}`}
-                  onClick={() => setLang('ru')}
-                  role="radio"
-                  aria-checked={langUpper === 'RU'}
-                >
-                  RU
-                </button>
-                <span className={styles.langDivider} aria-hidden="true" />
-                <button
-                  className={`${styles.langOption} ${langUpper === 'EN' ? styles.langActive : ''}`}
-                  onClick={() => setLang('en')}
-                  role="radio"
-                  aria-checked={langUpper === 'EN'}
-                >
-                  EN
-                </button>
-              </div>
-            </div>
+            {langSwitch}
           </div>
         </div>
       </div>

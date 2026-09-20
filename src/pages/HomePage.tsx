@@ -1,17 +1,17 @@
 import { HeroSection } from '../components/home/HeroSection';
-import { AboutSection } from '../components/home/AboutSection';
-import { GallerySection } from '../components/home/GallerySection';
+import { StorySection } from '../components/home/StorySection';
 import { MenuPreview } from '../components/home/MenuPreview';
-import { CafesSection } from '../components/home/CafesSection';
+import { RoasterySection } from '../components/home/RoasterySection';
+import { BranchesSection } from '../components/home/BranchesSection';
 
 export function HomePage() {
   return (
     <main id="main">
       <HeroSection />
-      <AboutSection />
+      <StorySection />
       <MenuPreview />
-      <GallerySection />
-      <CafesSection />
+      <RoasterySection />
+      <BranchesSection />
     </main>
   );
 }

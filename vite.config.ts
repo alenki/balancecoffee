@@ -2,14 +2,14 @@ import { readFileSync } from 'node:fs'
 import { defineConfig, type Plugin } from 'vite'
 import react from '@vitejs/plugin-react'
 
-const HERO = 'cafe/image'
+const HERO = 'brand/cover'
 
 /**
- * Deploy base. The site is hosted in a subdirectory (lumako.ru/harmonycoffee),
+ * Deploy base. The site is hosted in a subdirectory (lumako.net/bloomroastery),
  * so every generated URL has to carry that prefix. Override with VITE_BASE to
  * build for a different path, or with '/' for a domain root.
  */
-const BASE = process.env.VITE_BASE ?? '/harmonycoffee/'
+const BASE = process.env.VITE_BASE ?? '/bloomroastery/'
 
 interface ManifestEntry {
   base: string
@@ -27,7 +27,7 @@ interface ManifestEntry {
  */
 function heroPreload(): Plugin {
   return {
-    name: 'harmony-hero-preload',
+    name: 'bloom-hero-preload',
     transformIndexHtml(html) {
       let hero: ManifestEntry | undefined
       try {

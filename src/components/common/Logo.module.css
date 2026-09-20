@@ -1,73 +1,82 @@
 .logo {
   display: inline-flex;
   align-items: center;
+  gap: 0.6em;
   text-decoration: none;
   transition: opacity var(--transition-base);
 }
 
 .logo:hover {
-  opacity: 0.85;
+  opacity: 0.78;
 }
 
-/* Two-line wordmark: bold lowercase name over thin, wide-tracked "COFFEE" */
+/* The monogram is chartreuse on transparent, so it reads on bone and on the
+   near black alike and needs no per-variant treatment. */
+.mark {
+  display: block;
+  flex: none;
+}
+
+.mark img {
+  display: block;
+  width: auto;
+  height: var(--mark-size);
+}
+
 .wordmark {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  display: block;
   line-height: 1;
+  white-space: nowrap;
 }
 
-.name {
-  font-family: var(--font-logo);
-  font-weight: 800;
-  text-transform: lowercase;
-  letter-spacing: -0.01em;
-  line-height: 0.92;
-  color: var(--color-text-dark);
-  transition: color 0.3s ease;
-}
-
-.sub {
-  font-family: var(--font-logo);
-  font-weight: 300;
+/* Latin: the Didone of their logo file, caps, tracked to match it.
+   The only place on the site this face is set upright. */
+.wordLatin {
+  font-family: var(--font-wordmark);
+  font-weight: var(--font-normal);
   text-transform: uppercase;
-  letter-spacing: 0.34em;
-  /* Compensate trailing letter-spacing so "COFFEE" stays optically centered */
-  text-indent: 0.34em;
-  margin-top: 0.14em;
-  color: var(--color-text-dark);
-  transition: color 0.3s ease;
+  letter-spacing: 0.24em;
+  /* Trailing tracking pushes the optical centre left; claw it back. */
+  padding-inline-end: 0.24em;
+  font-size: var(--word-size);
+}
+
+/* Arabic: no tracking, because the script connects. */
+.wordArabic {
+  font-family: var(--font-arabic);
+  font-weight: 200;
+  letter-spacing: 0;
+  font-size: calc(var(--word-size) * 0.92);
 }
 
 /* Variants */
-.default .name,
-.default .sub {
-  color: var(--color-text-dark);
+.default {
+  color: var(--color-ink);
 }
 
-.light .name,
-.light .sub {
-  color: var(--color-white);
+.light {
+  color: var(--color-on-dark);
 }
 
-/* Sizes: scale the wordmark to match the original logo heights (sm 28 / md 36 / lg 56) */
-.sm .name {
-  font-size: 17px;
-}
-.sm .sub {
-  font-size: 7.5px;
+/* Sizes */
+.sm {
+  --mark-size: 22px;
+  --word-size: 13px;
 }
 
-.md .name {
-  font-size: 23px;
-}
-.md .sub {
-  font-size: 9.5px;
+.md {
+  --mark-size: 30px;
+  --word-size: 16px;
 }
 
-.lg .name {
-  font-size: 36px;
+.lg {
+  --mark-size: 54px;
+  --word-size: 26px;
 }
-.lg .sub {
-  font-size: 14px;
+
+@media (max-width: 600px) {
+  .lg {
+    --mark-size: 40px;
+    --word-size: 19px;
+  }
 }
