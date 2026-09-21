@@ -9,6 +9,8 @@ interface LogoProps {
   size?: 'sm' | 'md' | 'lg';
   /** Drops the wordmark and shows the monogram alone. */
   markOnly?: boolean;
+  /** Drops the monogram and shows the wordmark alone. */
+  wordOnly?: boolean;
 }
 
 /**
@@ -20,7 +22,12 @@ interface LogoProps {
  * Arabic and English lockups can each use their own face instead of scaling
  * one bitmap of both.
  */
-export function Logo({ variant = 'default', size = 'md', markOnly = false }: LogoProps) {
+export function Logo({
+  variant = 'default',
+  size = 'md',
+  markOnly = false,
+  wordOnly = false,
+}: LogoProps) {
   const lenis = useLenisInstance();
   const { lang } = useLanguage();
 
@@ -35,9 +42,11 @@ export function Logo({ variant = 'default', size = 'md', markOnly = false }: Log
       className={`${styles.logo} ${styles[variant]} ${styles[size]}`}
       aria-label="Bloom Roastery"
     >
-      <span className={styles.mark} aria-hidden="true">
-        <Image name="logos/bloom-mark" alt="" fit="bare" sizes="72px" />
-      </span>
+      {!wordOnly && (
+        <span className={styles.mark} aria-hidden="true">
+          <Image name="logos/bloom-mark" alt="" fit="bare" sizes="72px" />
+        </span>
+      )}
       {!markOnly && (
         <span className={styles.wordmark} aria-hidden="true">
           {lang === 'ar' ? (

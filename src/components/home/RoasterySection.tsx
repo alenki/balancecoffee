@@ -48,19 +48,6 @@ export function RoasterySection() {
               {t('roastery.body')}
             </motion.p>
 
-            {/* The roaster is named beside the sentence that describes it, and
-                deliberately not under the photograph: that picture is a pour
-                over from the menu shoot, not the Loring. */}
-            <motion.span
-              className={styles.machine}
-              initial={{ opacity: 0, y: 16 }}
-              animate={inView ? { opacity: 1, y: 0 } : undefined}
-              transition={{ duration: 0.7, delay: 0.3, ease: EASE }}
-            >
-              <span className={styles.machineDiamond} aria-hidden="true" />
-              <span className={styles.machineName}>{t('roastery.machine')}</span>
-            </motion.span>
-
             <motion.div
               className={styles.shop}
               initial={{ opacity: 0, y: 16 }}

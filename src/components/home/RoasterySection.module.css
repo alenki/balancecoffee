@@ -116,46 +116,6 @@
   line-height: 1.95;
 }
 
-/**
- * The roaster, named where the sentence above it already names it.
- *
- * This is deliberately NOT a caption under the photograph. The picture is
- * `menu/hot/v60`, a pour over from the menu shoot, and there is no photograph
- * of the Loring anywhere in `assets-src`. Putting this string under that frame
- * would read as a label for what is in it, which would be false. Anyone
- * tempted to move it there later should read the brand spec first.
- */
-.machine {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-3);
-  align-self: start;
-  padding: var(--space-2) var(--space-5);
-  border: 1px solid var(--color-border-strong);
-  border-radius: var(--radius-full);
-}
-
-.machineDiamond {
-  width: 7px;
-  height: 7px;
-  rotate: 45deg;
-  background: var(--color-chartreuse);
-  flex: none;
-}
-
-.machineName {
-  font-size: var(--text-xs);
-  font-weight: var(--font-medium);
-  letter-spacing: var(--track-eyebrow);
-  text-transform: uppercase;
-  color: var(--color-ink);
-}
-
-[dir='rtl'] .machineName {
-  text-transform: none;
-  font-size: var(--text-sm);
-}
-
 /* ---------- Shop ---------- */
 .shop {
   display: flex;

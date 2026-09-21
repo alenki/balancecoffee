@@ -184,7 +184,7 @@ export function Header() {
           </nav>
 
           <div className={styles.logoZone}>
-            <Logo size="md" variant="default" />
+            <Logo size="md" variant="default" wordOnly />
           </div>
 
           <div className={styles.actions}>
