@@ -101,6 +101,11 @@
 .counter {
   display: flex;
   align-items: baseline;
+  /* The figure is a Western number, so it is always read left to right.
+     The digits are separate elements laid out by flex, which takes its main
+     axis from the inherited direction: in Arabic that mirrors the number and
+     047 arrives as 740, with the ghosted leading zeros on the wrong side. */
+  direction: ltr;
   font-family: var(--font-primary);
   /* 200 is the optical weight at this size: 100 goes wiry, 300 starts to
      read as body copy set large. */

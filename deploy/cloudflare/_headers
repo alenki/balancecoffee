@@ -1,0 +1,33 @@
+# Cloudflare Pages header rules for the Bloom Roastery build.
+#
+# This file belongs at the ROOT of the lumako.net project, alongside that
+# site's own index.html, not inside bloomroastery/. Cloudflare only reads
+# _headers from the deployment root, so a copy nested in the subfolder is
+# ignored. If lumako.net already ships a _headers file, append these blocks
+# to it rather than replacing it.
+#
+# Cloudflare handles on the fly compression and the AVIF and WebP media types
+# itself, so the only thing left from the Apache config is caching. Cloudflare
+# Pages defaults every response to must-revalidate, which would make the
+# hashed bundles and the image derivatives pay a round trip they do not need.
+
+# Bundle filenames carry a content hash, so their contents can never change
+# under the same name.
+/bloomroastery/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# The image derivatives and the favicon are written by the image pipeline and
+# are likewise stable under a given name.
+/bloomroastery/img/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/bloomroastery/logos/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# index.html points at the hashed filenames, so it must never be cached.
+# Both spellings are listed: the bare directory path is what a visitor types.
+/bloomroastery/
+  Cache-Control: no-cache, must-revalidate
+
+/bloomroastery/index.html
+  Cache-Control: no-cache, must-revalidate

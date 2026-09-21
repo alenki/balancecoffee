@@ -206,13 +206,30 @@ Every asset URL has to carry that prefix:
   unfurlers fetch a plain URL and do not resolve a site relative path, and Vite
   does not touch `meta` content.
 
-`public/.htaccess` ships with the build: it serves `index.html` for anything
+### Cloudflare
+
+lumako.net is a Cloudflare project and `bloomroastery/` is a folder inside it.
+Run `npm run build` and copy the **contents** of `dist/` into `bloomroastery/`
+at the deployment root.
+
+Cloudflare compresses responses and serves the AVIF and WebP media types on
+its own, so the only part of the Apache config that still has to be restated
+is caching, and Cloudflare Pages defaults everything to `must-revalidate`.
+`deploy/cloudflare/_headers` holds the rules; they belong in the lumako.net
+project's **root** `_headers`, appended if one already exists. A copy nested
+inside `bloomroastery/` is read by nothing, which is why that file is not in
+`public/`.
+
+No SPA fallback rule is needed. The app is a `HashRouter`, so every route is
+`/bloomroastery/#/...` and the server is only ever asked for `index.html`.
+
+### Apache
+
+`public/.htaccess` still ships with the build and is inert on Cloudflare,
+which does not serve dotfiles. On Apache it serves `index.html` for anything
 that is not a real file, enables gzip, declares the AVIF and WebP types, and
 caches hashed assets for a year while keeping `index.html` uncached. Its
 `RewriteBase` repeats the deploy path, so change it alongside `base`.
-
-To deploy: `npm run build`, then upload the **contents** of `dist/` (including
-the dotfile `.htaccess`) into `bloomroastery/` under the site root.
 
 ## TypeScript Configuration
 
