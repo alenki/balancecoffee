@@ -1,503 +1,261 @@
-import type { MenuCategory } from '../types';
+import type { MenuCategory, MenuItem } from '../types';
 import type { Lang } from '../context/LanguageContext';
 import { menuDataEn } from './menu.en';
 
+/**
+ * The menu as printed on the board at the counter (October 2026), plus the
+ * display case as listed on Yandex Maps. Display case items carry no fixed
+ * price: the case changes daily and the barista quotes it.
+ */
 export const menuData: MenuCategory[] = [
   {
-    id: 'beverages',
-    name: 'Напитки',
-    slug: 'napitki',
-    description: 'Авторские напитки и классика',
+    id: 'coffee',
+    name: 'Кофе',
+    description: 'Классика на эспрессо',
     items: [
-      {
-        id: 'espresso',
-        name: 'Эспрессо',
-        description: 'Плотный, насыщенный, с бархатной крема',
-        price: 120,
-        image: 'menu/espresso',
-        isPopular: true,
-      },
-      {
-        id: 'americano',
-        name: 'Американо',
-        priceVariants: [
-          { size: '250 мл', price: 150 },
-          { size: '350 мл', price: 180 },
-        ],
-        image: 'menu/drinks/image',
-      },
+      { id: 'espresso', name: 'Эспрессо', size: 'от 36 до 40 мл', price: 190 },
+      { id: 'americano', name: 'Американо', size: '250 мл', price: 190 },
       {
         id: 'cappuccino',
         name: 'Капучино',
-        description: 'Мягкий, сливочный, идеальный баланс',
         priceVariants: [
-          { size: '250 мл', price: 180 },
-          { size: '350 мл', price: 220 },
+          { size: '250 мл', price: 230 },
+          { size: '350 мл', price: 250 },
         ],
-        image: 'menu/cappuccino',
         isPopular: true,
       },
+      { id: 'latte', name: 'Латте', size: '350 мл', price: 260, image: 'menu/latte-croissant' },
+      { id: 'flat-white', name: 'Флэт уайт', size: '250 мл', price: 250 },
       {
-        id: 'latte',
-        name: 'Латте',
+        id: 'mocha',
+        name: 'Мокко',
+        description: 'Эспрессо, молоко и шоколад',
         priceVariants: [
-          { size: '300 мл', price: 200 },
-          { size: '400 мл', price: 250 },
+          { size: '250 мл', price: 250 },
+          { size: '350 мл', price: 270 },
         ],
-        image: 'menu/drinks/image-copy',
-      },
-      {
-        id: 'flat-white',
-        name: 'Флэт Уайт',
-        price: 220,
-        image: 'menu/drinks/image-copy-2',
       },
       {
         id: 'raf',
         name: 'Раф',
-        description: 'Сливочный, ванильный, с нежной пеной',
+        description: 'Эспрессо, взбитый со сливками и ванильным сахаром',
         priceVariants: [
-          { size: '300 мл', price: 250 },
-          { size: '400 мл', price: 300 },
+          { size: '250 мл', price: 280 },
+          { size: '350 мл', price: 310 },
         ],
-        image: 'menu/raf',
         isPopular: true,
       },
       {
-        id: 'matcha-latte',
-        name: 'Матча Латте',
-        priceVariants: [
-          { size: '300 мл', price: 280 },
-          { size: '400 мл', price: 340 },
-        ],
-        image: 'menu/drinks/image-copy-3',
-        isNew: true,
-      },
-      {
-        id: 'sencha',
-        name: 'Сенча',
-        priceVariants: [
-          { size: '300 мл', price: 200 },
-          { size: '500 мл', price: 240 },
-        ],
-        image: 'menu/drinks/image-copy-4',
-      },
-      {
-        id: 'puer',
-        name: 'Пуэр',
-        priceVariants: [
-          { size: '300 мл', price: 200 },
-          { size: '500 мл', price: 240 },
-        ],
-        image: 'menu/drinks/image-copy-5',
-      },
-      {
-        id: 'spicy-mango',
-        name: 'Пряный Манго',
-        priceVariants: [
-          { size: '300 мл', price: 250 },
-          { size: '500 мл', price: 300 },
-        ],
-        image: 'menu/drinks/image-copy-6',
-      },
-      {
-        id: 'geisha-kiss',
-        name: 'Поцелуй Гейши',
-        priceVariants: [
-          { size: '300 мл', price: 200 },
-          { size: '500 мл', price: 240 },
-        ],
-        image: 'menu/drinks/image-copy-7',
-      },
-      {
-        id: 'sea-buckthorn',
-        name: 'Облепиховый',
-        priceVariants: [
-          { size: '300 мл', price: 250 },
-          { size: '500 мл', price: 300 },
-        ],
-        image: 'menu/drinks/image-copy-8',
-      },
-      {
-        id: 'ginger-lemon',
-        name: 'Имбирно-лимонный',
-        priceVariants: [
-          { size: '300 мл', price: 250 },
-          { size: '500 мл', price: 300 },
-        ],
-        image: 'menu/drinks/image-copy-9',
-      },
-      {
-        id: 'golden-brows',
-        name: 'Золотые Брови',
-        priceVariants: [
-          { size: '300 мл', price: 200 },
-          { size: '500 мл', price: 240 },
-        ],
-        image: 'menu/desserts/image',
-      },
-      {
-        id: 'strawberry-rooibos',
-        name: 'Земляничный Ройбуш',
-        priceVariants: [
-          { size: '300 мл', price: 200 },
-          { size: '500 мл', price: 240 },
-        ],
-        image: 'menu/desserts/image-copy',
-      },
-    ],
-  },
-  {
-    id: 'breakfasts',
-    name: 'Завтраки',
-    slug: 'zavtraki',
-    description: 'Идеальное начало дня',
-    items: [
-      {
-        id: 'eggs-benedict',
-        name: 'Яйца Бенедикт',
-        description: 'Пашот, голландский соус, бекон, английский маффин',
-        price: 380,
-        image: 'menu/desserts/image-copy-2',
-      },
-      {
-        id: 'scrambled-eggs',
-        name: 'Скрэмбл с лососем',
-        description: 'Нежный скрэмбл, слабосолёный лосось, тост',
-        price: 420,
-        image: 'menu/desserts/image-copy-3',
-      },
-      {
-        id: 'avocado-toast',
-        name: 'Авокадо тост',
-        description: 'Авокадо, яйцо пашот, микрозелень, зерновой хлеб',
+        id: 'raf-urbech',
+        name: 'Раф урбеч',
+        description: 'Раф с урбечем, густой пастой из перетёртых орехов',
+        size: '350 мл',
         price: 350,
-        image: 'menu/desserts/image-copy-4',
+      },
+    ],
+  },
+  {
+    id: 'iced',
+    name: 'Холодный кофе',
+    description: 'Со льдом, для жарких дней',
+    items: [
+      { id: 'iced-latte', name: 'Айс латте', price: 260, image: 'menu/iced-latte' },
+      {
+        id: 'bumble-orange',
+        name: 'Бамбл апельсин',
+        description: 'Эспрессо и апельсиновый сок со льдом',
+        price: 250,
       },
       {
-        id: 'cheese-pancakes',
-        name: 'Сырники',
-        description: 'Со сметаной и домашним вареньем',
-        price: 290,
-        image: 'menu/lunches/image',
+        id: 'bumble-pomegranate',
+        name: 'Бамбл гранат',
+        description: 'Эспрессо и гранатовый сок со льдом',
+        price: 250,
       },
       {
-        id: 'granola',
-        name: 'Гранола',
-        description: 'Йогурт, мёд, сезонные ягоды',
+        id: 'espresso-tonic',
+        name: 'Эспрессо тоник лайм',
+        description: 'Эспрессо, тоник и лайм',
+        price: 270,
+      },
+      { id: 'frappe', name: 'Фраппе', description: 'Холодный кофе, взбитый со льдом', price: 350 },
+    ],
+  },
+  {
+    id: 'tea',
+    name: 'Домашние чаи',
+    description: 'На ягодах, фруктах и травах. Чайник на 900 мл берут на компанию.',
+    items: [
+      {
+        id: 'vitamin',
+        name: 'Витаминный взрыв',
+        priceVariants: [
+          { size: '350 мл', price: 250 },
+          { size: 'чайник 900 мл', price: 450 },
+        ],
+      },
+      {
+        id: 'multifruit',
+        name: 'Мультифрукт',
+        priceVariants: [
+          { size: '350 мл', price: 250 },
+          { size: 'чайник 900 мл', price: 450 },
+        ],
+      },
+      {
+        id: 'sea-buckthorn-mango',
+        name: 'Облепиха и манго',
+        priceVariants: [
+          { size: '350 мл', price: 250 },
+          { size: 'чайник 900 мл', price: 450 },
+        ],
+      },
+      {
+        id: 'northern-berries',
+        name: 'Северные ягоды',
+        priceVariants: [
+          { size: '350 мл', price: 250 },
+          { size: 'чайник 900 мл', price: 450 },
+        ],
+      },
+      {
+        id: 'citrus-classic',
+        name: 'Цитрусовый классик',
+        priceVariants: [
+          { size: '350 мл', price: 250 },
+          { size: 'чайник 900 мл', price: 450 },
+        ],
+      },
+      {
+        id: 'cherry-grog',
+        name: 'Вишнёвый грог',
+        description: 'Горячий вишнёвый напиток без алкоголя',
+        priceVariants: [
+          { size: '350 мл', price: 300 },
+          { size: 'чайник 900 мл', price: 500 },
+        ],
+      },
+      { id: 'mulled', name: 'Глинтвейн', description: 'Без алкоголя', size: '350 мл', price: 350 },
+      { id: 'tea-classic', name: 'Чай чёрный или зелёный', price: 100 },
+    ],
+  },
+  {
+    id: 'not-coffee',
+    name: 'Не кофе',
+    description: 'Для тех, кто пришёл за книгой, а не за кофеином',
+    items: [
+      {
+        id: 'cocoa',
+        image: 'menu/cocoa-cream',
+        name: 'Какао',
+        priceVariants: [
+          { size: '250 мл', price: 200 },
+          { size: '350 мл', price: 230 },
+        ],
+      },
+      {
+        id: 'hot-chocolate',
+        name: 'Горячий шоколад',
+        priceVariants: [
+          { size: '250 мл', price: 250 },
+          { size: '350 мл', price: 280 },
+        ],
+      },
+      {
+        id: 'babyccino',
+        name: 'Какао бэйбичино',
+        description: 'Для детей: молочная пена с какао, без кофе',
+        size: '350 мл',
+        price: 300,
+      },
+      { id: 'matcha', name: 'Матча латте', size: '350 мл', price: 300 },
+    ],
+  },
+  {
+    id: 'lemonades',
+    name: 'Лимонады',
+    description: 'Холодные, со льдом и фруктами',
+    items: [
+      { id: 'watermelon-mint', name: 'Арбуз и мята', price: 270 },
+      { id: 'pomegranate-basil', name: 'Гранат и базилик', price: 270 },
+      { id: 'citrus-mix', name: 'Цитрусовый микс', price: 270 },
+      { id: 'berry', name: 'Ягодный', description: 'Малина и клубника', price: 270 },
+      {
+        id: 'mojito',
+        name: 'Мохито',
+        description: 'Лайм, лимон, мята и лёгкий газ',
         price: 280,
-        image: 'menu/lunches/image-copy',
+        image: 'menu/lemonades',
       },
-      {
-        id: 'oatmeal',
-        name: 'Овсянка',
-        description: 'На молоке с ягодами и орехами',
-        price: 220,
-        image: 'menu/drinks/image',
-      },
-      {
-        id: 'omelette',
-        name: 'Омлет с овощами',
-        description: 'Томаты, перец, зелень, тост',
-        price: 280,
-        image: 'menu/drinks/image-copy',
-      },
+      { id: 'mojito-passionfruit', name: 'Мохито с маракуйей', price: 290 },
+      { id: 'mojito-strawberry', name: 'Мохито клубничный', price: 290 },
     ],
   },
   {
-    id: 'lunches',
-    name: 'Ланчи',
-    slug: 'lanchi',
-    description: 'Сытные обеды',
+    id: 'milkshakes',
+    name: 'Милкшейки',
     items: [
-      {
-        id: 'chicken-bowl',
-        name: 'Боул с курицей',
-        description: 'Киноа, курица гриль, авокадо, овощи',
-        price: 420,
-        image: 'menu/chicken-bowl',
-        isPopular: true,
-      },
-      {
-        id: 'salmon-bowl',
-        name: 'Боул с лососем',
-        description: 'Рис, лосось, эдамаме, имбирь',
-        price: 520,
-        image: 'menu/drinks/image-copy-2',
-      },
-      {
-        id: 'pasta-carbonara',
-        name: 'Паста Карбонара',
-        description: 'Спагетти, бекон, пармезан, желток',
-        price: 380,
-        image: 'menu/drinks/image-copy-3',
-      },
-      {
-        id: 'tom-yum',
-        name: 'Том Ям',
-        description: 'С креветками и рисовой лапшой',
-        price: 450,
-        image: 'menu/drinks/image-copy-4',
-        isNew: true,
-      },
-      {
-        id: 'risotto',
-        name: 'Ризотто с грибами',
-        description: 'Арборио, белые грибы, пармезан',
-        price: 420,
-        image: 'menu/drinks/image-copy-5',
-      },
+      { id: 'shake-vanilla', name: 'Ванильный', price: 290 },
+      { id: 'shake-chocolate', name: 'Шоколадный', price: 290 },
+      { id: 'shake-banana', name: 'Банановый', price: 290 },
+      { id: 'shake-strawberry', name: 'Клубничный', price: 290 },
     ],
   },
   {
-    id: 'salads',
-    name: 'Салаты',
-    slug: 'salaty',
-    description: 'Свежие и лёгкие',
+    id: 'smoothies',
+    name: 'Смузи',
     items: [
-      {
-        id: 'caesar',
-        name: 'Цезарь с курицей',
-        description: 'Романо, курица-гриль, пармезан, гренки',
-        price: 380,
-        image: 'menu/drinks/image-copy-6',
-      },
-      {
-        id: 'greek',
-        name: 'Греческий',
-        description: 'Томаты, огурцы, фета, оливки, перец',
-        price: 320,
-        image: 'menu/drinks/image-copy-7',
-      },
-      {
-        id: 'warm-salad',
-        name: 'Тёплый салат с говядиной',
-        description: 'Говядина, микс салатов, томаты черри',
-        price: 450,
-        image: 'menu/drinks/image-copy-8',
-      },
-      {
-        id: 'tuna-salad',
-        name: 'Салат с тунцом',
-        description: 'Тунец, яйцо, стручковая фасоль, оливки',
-        price: 420,
-        image: 'menu/drinks/image-copy-9',
-      },
-    ],
-  },
-  {
-    id: 'sandwiches',
-    name: 'Сэндвичи',
-    slug: 'sendvichi',
-    description: 'На свежем хлебе',
-    items: [
-      {
-        id: 'club-sandwich',
-        name: 'Клаб сэндвич',
-        description: 'Курица, бекон, томат, салат, яйцо',
-        price: 380,
-        image: 'menu/desserts/image',
-      },
-      {
-        id: 'salmon-sandwich',
-        name: 'Сэндвич с лососем',
-        description: 'Слабосолёный лосось, сливочный сыр, огурец',
-        price: 420,
-        image: 'menu/desserts/image-copy',
-      },
-      {
-        id: 'croissant-ham',
-        name: 'Круассан с ветчиной',
-        description: 'Ветчина, сыр, томат, руккола',
-        price: 290,
-        image: 'menu/desserts/image-copy-2',
-      },
-      {
-        id: 'panini',
-        name: 'Панини с моцареллой',
-        description: 'Моцарелла, томаты, базилик, песто',
-        price: 340,
-        image: 'menu/desserts/image-copy-3',
-      },
+      { id: 'pineapple-banana', name: 'Ананас и банан', price: 320 },
+      { id: 'kiwi-spinach', name: 'Киви и шпинат', price: 320 },
+      { id: 'mango-strawberry', name: 'Манго и клубника', price: 320 },
+      { id: 'berry-mix', name: 'Ягодный микс', price: 320 },
     ],
   },
   {
     id: 'desserts',
-    name: 'Десерты',
-    slug: 'deserty',
-    description: 'Сладкие удовольствия',
+    name: 'Десерты и выпечка',
+    description: 'Витрина обновляется каждый день, цены подскажет бариста',
     items: [
+      { id: 'croissants', name: 'Круассаны', isPopular: true, image: 'menu/croissants' },
+      { id: 'waffle-tubes', name: 'Вафельные трубочки', isPopular: true, image: 'menu/waffle-tube' },
       {
-        id: 'cheesecake',
-        name: 'Чизкейк',
-        description: 'Классический нью-йоркский',
-        price: 280,
-        image: 'menu/cheesecake',
-        isPopular: true,
-      },
-      {
-        id: 'tiramisu',
-        name: 'Тирамису',
-        description: 'С маскарпоне и савоярди',
-        price: 320,
-        image: 'menu/desserts/image-copy-4',
-      },
-      {
-        id: 'carrot-cake',
-        name: 'Морковный торт',
-        description: 'С кремом из сливочного сыра',
-        price: 260,
-        image: 'menu/lunches/image',
-      },
-      {
-        id: 'brownie',
-        name: 'Брауни',
-        description: 'Шоколадный с орехами',
-        price: 220,
-        image: 'menu/lunches/image-copy',
-      },
-      {
-        id: 'croissant',
-        name: 'Круассан',
-        description: 'Классический французский',
-        price: 150,
-        image: 'menu/drinks/image',
-      },
-      {
-        id: 'pain-au-chocolat',
-        name: 'Пэн о шоколя',
-        description: 'С бельгийским шоколадом',
-        price: 180,
-        image: 'menu/drinks/image-copy',
+        id: 'frambini',
+        name: 'Фрамбини',
+        description: 'Свежая малина в белом и тёмном шоколаде',
         isNew: true,
       },
+      { id: 'macarons', name: 'Макаруны' },
+      { id: 'mochi', name: 'Моти', size: '2 шт.', image: 'menu/mochi' },
+      { id: 'syrniki', name: 'Сырники с клубникой', size: '2 шт.' },
       {
-        id: 'eclair',
-        name: 'Эклер',
-        description: 'С заварным кремом',
-        price: 190,
-        image: 'menu/drinks/image-copy-2',
+        id: 'syrniki-gf',
+        name: 'Сырники без глютена',
+        description: 'С черникой и клубникой',
+        size: '2 шт.',
       },
-      {
-        id: 'macarons',
-        name: 'Макарон',
-        description: 'Ассорти вкусов (3 шт)',
-        price: 250,
-        image: 'menu/macarons',
-        isPopular: true,
-      },
+      { id: 'fitkit', name: 'Протеиновые пирожные FitKit' },
+      { id: 'snaq', name: 'Протеиновые батончики Snaq Fabriq' },
+      { id: 'nuts', name: 'Орешки со сгущёнкой', size: '150 г' },
+      { id: 'marmalade', name: 'Мармеладки', size: '180 г' },
+      { id: 'sandwiches', name: 'Сэндвичи' },
     ],
   },
   {
-    id: 'snacks',
-    name: 'Снеки',
-    slug: 'sneki',
-    description: 'Перекусить быстро',
+    id: 'extras',
+    name: 'Дополнения',
+    description: 'К любому напитку',
     items: [
-      {
-        id: 'croissant-plain',
-        name: 'Круассан',
-        price: 150,
-        image: 'menu/drinks/image-copy-3',
-      },
-      {
-        id: 'cookie',
-        name: 'Печенье',
-        description: 'Шоколадное / овсяное',
-        price: 120,
-        image: 'menu/drinks/image-copy-4',
-      },
-      {
-        id: 'muffin',
-        name: 'Маффин',
-        description: 'Черника / шоколад',
-        price: 180,
-        image: 'menu/drinks/image-copy-5',
-      },
-      {
-        id: 'energy-bar',
-        name: 'Энергетический батончик',
-        description: 'Орехи, мёд, сухофрукты',
-        price: 150,
-        image: 'menu/drinks/image-copy-6',
-      },
-    ],
-  },
-  {
-    id: 'additions',
-    name: 'Добавки',
-    slug: 'dobavki',
-    description: 'Дополнительно к напиткам',
-    items: [
-      {
-        id: 'milk-alt',
-        name: 'Альтернативное молоко',
-        description: 'Овсяное / миндальное / кокосовое',
-        price: 50,
-        image: 'menu/drinks/image-copy-7',
-      },
-      {
-        id: 'syrup',
-        name: 'Сироп',
-        description: 'Карамель / ваниль / лесной орех',
-        price: 40,
-        image: 'menu/drinks/image-copy-8',
-      },
-      {
-        id: 'extra-shot',
-        name: 'Дополнительный шот',
-        price: 50,
-        image: 'menu/drinks/image-copy-9',
-      },
-      {
-        id: 'whipped-cream',
-        name: 'Взбитые сливки',
-        price: 40,
-        image: 'menu/desserts/image',
-      },
-    ],
-  },
-  {
-    id: 'merch',
-    name: 'Мерч',
-    slug: 'merch',
-    description: 'Стиль Balance',
-    items: [
-      {
-        id: 'tshirt',
-        name: 'Футболка Balance',
-        description: 'Хлопок, унисекс',
-        price: 1500,
-        image: 'menu/desserts/image-copy',
-      },
-      {
-        id: 'tote',
-        name: 'Шоппер',
-        description: 'Холщовая сумка с логотипом',
-        price: 600,
-        image: 'menu/desserts/image-copy-2',
-      },
-      {
-        id: 'cup',
-        name: 'Кружка Balance',
-        description: 'Керамика, 350 мл',
-        price: 800,
-        image: 'menu/desserts/image-copy-3',
-      },
-      {
-        id: 'tumbler',
-        name: 'Термокружка',
-        description: 'Нержавеющая сталь, 450 мл',
-        price: 1200,
-        image: 'menu/desserts/image-copy-4',
-      },
-      {
-        id: 'coffee-beans',
-        name: 'Кофе в зёрнах',
-        description: 'Авторская смесь, 250 г',
-        price: 900,
-        image: 'menu/lunches/image',
-      },
+      { id: 'alt-milk', name: 'Альтернативное молоко', price: 70 },
+      { id: 'honey', name: 'Мёд', price: 30 },
+      { id: 'marshmallow', name: 'Маршмеллоу', price: 30 },
+      { id: 'citrus-slice', name: 'Лимон, лайм или апельсин', price: 20 },
+      { id: 'mint', name: 'Мята', price: 30 },
+      { id: 'peanut', name: 'Арахисовая паста', price: 40 },
+      { id: 'urbech', name: 'Урбеч', price: 40 },
+      { id: 'ginger', name: 'Имбирь', price: 30 },
+      { id: 'raspberry-jam', name: 'Малиновое варенье', price: 30 },
+      { id: 'juiceballs', name: 'Джусболы', description: 'Шарики с соком', price: 60 },
+      { id: 'syrup', name: 'Сироп', price: 20 },
     ],
   },
 ];
@@ -506,11 +264,20 @@ export function getMenuData(lang: Lang): MenuCategory[] {
   return lang === 'en' ? menuDataEn : menuData;
 }
 
-export const getPopularItems = (lang: Lang = 'ru') =>
-  getMenuData(lang).flatMap(category => category.items.filter(item => item.isPopular));
+/**
+ * The six the home page shows: photographed items from across the menu.
+ * Chosen by id, so both editions show the same six.
+ */
+const FEATURED_IDS = ['latte', 'iced-latte', 'cocoa', 'mojito', 'croissants', 'waffle-tubes'];
 
-export const getNewItems = (lang: Lang = 'ru') =>
-  getMenuData(lang).flatMap(category => category.items.filter(item => item.isNew));
+/** The featured items in menu order, each with the chapter it opens. */
+export function getFeaturedItems(lang: Lang): { item: MenuItem; chapter: string }[] {
+  return getMenuData(lang).flatMap((category) =>
+    category.items
+      .filter((item) => FEATURED_IDS.includes(item.id))
+      .map((item) => ({ item, chapter: category.id })),
+  );
+}
 
-export const getCategoryBySlug = (slug: string, lang: Lang = 'ru') =>
-  getMenuData(lang).find(category => category.slug === slug);
+export const countItems = (menu: MenuCategory[]) =>
+  menu.reduce((sum, category) => sum + category.items.length, 0);

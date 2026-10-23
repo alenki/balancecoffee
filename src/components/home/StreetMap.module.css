@@ -1,0 +1,196 @@
+/* ============================================
+   STREET MAP
+   The blocks around the door, in ink on the page.
+   Lines keep their weight at any width, and the
+   names are type laid over the drawing, so they
+   stay one size while the drawing stretches.
+   ============================================ */
+.map {
+  position: relative;
+}
+
+/* One crop per width: phones get a taller, closer one */
+.crop {
+  position: relative;
+  display: none;
+  width: 100%;
+  overflow: hidden;
+}
+
+.tall {
+  display: block;
+}
+
+@media (min-width: 600px) {
+  .tall {
+    display: none;
+  }
+
+  .medium {
+    display: block;
+  }
+}
+
+@media (min-width: 1024px) {
+  .medium {
+    display: none;
+  }
+
+  .wide {
+    display: block;
+  }
+}
+
+.streets {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.streets path {
+  fill: none;
+  stroke: var(--c-ink);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.minor {
+  stroke-width: 0.9;
+}
+
+.major {
+  stroke-width: 1.9;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+}
+
+/* Street names: centred on their point, turned with the street, then
+   lifted off the line (above a level street, left of an upright one) */
+.label {
+  position: absolute;
+  padding-left: 0.2em;
+  font-family: var(--font-sans);
+  font-size: 0.625rem;
+  font-weight: 650;
+  line-height: 1;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--c-ink-muted);
+  transform: translate(-50%, -50%) rotate(var(--angle)) translateY(calc(-0.5em - 5px));
+}
+
+.after {
+  transform: translate(-50%, -50%) rotate(var(--angle)) translateY(calc(0.5em + 5px));
+}
+
+.stop {
+  position: absolute;
+  width: 7px;
+  height: 7px;
+  margin: -3.5px 0 0 -3.5px;
+  border: 1px solid var(--c-ink);
+  border-radius: 50%;
+  background: var(--c-paper);
+}
+
+.stopName {
+  position: absolute;
+  margin: 7px 0 0 9px;
+  font-family: var(--font-serif);
+  font-size: 0.6875rem;
+  font-style: italic;
+  line-height: 1.3;
+  white-space: nowrap;
+  color: var(--c-ink-soft);
+}
+
+/* Phones: the stop's name takes two lines rather than run off the edge */
+.tall .stopName {
+  width: 9em;
+  white-space: normal;
+}
+
+.north {
+  position: absolute;
+  right: 18px;
+  bottom: 18px;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+}
+
+.north svg {
+  width: 24px;
+  height: 24px;
+  fill: none;
+  stroke: var(--c-ink);
+  stroke-width: 1;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.north span {
+  position: absolute;
+  font-family: var(--font-sans);
+  font-size: 0.625rem;
+  font-weight: 650;
+  line-height: 1;
+  color: var(--c-ink-muted);
+}
+
+/* The café: a red dot, and the name from its sign up and to the right.
+   Margins, not transforms, centre the dot, so its scale can animate. */
+.door {
+  position: absolute;
+  width: 9px;
+  height: 9px;
+  margin: -4.5px 0 0 -4.5px;
+  border-radius: 50%;
+  background: var(--c-stamp);
+  box-shadow: 0 0 0 6px rgba(191, 1, 29, 0.14);
+}
+
+.cafeName {
+  position: absolute;
+  margin: -21px 0 0 11px;
+  color: var(--c-stamp);
+}
+
+/* The name has to clear the side street 84m east of the door, so it
+   steps down where a crop shows those metres narrowest */
+.cafeName svg {
+  width: auto;
+  height: 8px;
+}
+
+.medium .cafeName svg {
+  height: 7px;
+}
+
+@media (max-width: 1199px) {
+  .wide .cafeName svg {
+    height: 7px;
+  }
+}
+
+.credit {
+  padding-top: var(--space-2);
+  font-family: var(--font-sans);
+  font-size: 0.6875rem;
+  text-align: right;
+  color: var(--c-ink-muted);
+}
+
+.credit a {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}

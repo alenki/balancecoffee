@@ -1,0 +1,504 @@
+/* ============================================
+   FIRST LINE: the home page's game
+
+   Set on the cover's cloth, just before the
+   book's last page, so everything is foil on red: the line as it types, the
+   answers, the rubber stamp and a shelf whose
+   spines are the reader's streak.
+   ============================================ */
+
+.game {
+  position: relative;
+  overflow: hidden;
+  /* The same weave as the footer's cloth, which it runs straight into. */
+  background:
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.02) 0 1px, transparent 1px 3px),
+    repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.06) 0 1px, transparent 1px 3px),
+    var(--c-binding);
+  color: var(--c-on-binding);
+  display: grid;
+  grid-template-areas:
+    'intro'
+    'stage'
+    'tally';
+  gap: var(--space-10);
+  padding: var(--space-16) var(--gutter) var(--space-8);
+}
+
+@media (min-width: 1024px) {
+  .game {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    grid-template-rows: auto 1fr;
+    grid-template-areas:
+      'intro stage'
+      'tally stage';
+    column-gap: var(--space-16);
+    row-gap: var(--space-10);
+    padding: var(--space-20) var(--gutter) var(--space-12);
+  }
+}
+
+/* The global ring is the cloth's own red; on the cloth it turns to foil. */
+.game :focus-visible {
+  outline-color: var(--c-foil);
+}
+
+/* ============================================
+   INTRO
+   ============================================ */
+.intro {
+  grid-area: intro;
+}
+
+.eyebrow,
+.roundNo,
+.stats dt {
+  font-family: var(--font-sans);
+  font-size: 0.6875rem;
+  font-weight: 650;
+  letter-spacing: 0.26em;
+  line-height: 1.4;
+  text-transform: uppercase;
+  color: var(--c-foil);
+}
+
+.title {
+  margin-top: var(--space-4);
+  font-size: clamp(2rem, 1.35rem + 2.6vw, 3.25rem);
+  font-weight: 300;
+  line-height: 1.05;
+  color: var(--c-foil-bright);
+}
+
+.title em {
+  font-style: italic;
+}
+
+.lede {
+  margin-top: var(--space-5);
+  max-width: 34rem;
+  font-family: var(--font-serif);
+  font-size: var(--text-base);
+  line-height: 1.65;
+  color: var(--c-on-binding-muted);
+}
+
+/* ============================================
+   TALLY: score, streak, record, and the shelf
+   ============================================ */
+.tally {
+  grid-area: tally;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+@media (min-width: 1024px) {
+  .tally {
+    align-self: end;
+  }
+}
+
+.stats {
+  display: flex;
+  gap: var(--space-8);
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.stats dd {
+  font-family: var(--font-serif);
+  font-size: 1.75rem;
+  font-weight: 300;
+  font-variant-numeric: lining-nums tabular-nums;
+  line-height: 1;
+  color: var(--c-foil-bright);
+}
+
+.scoreValue {
+  position: relative;
+}
+
+.gain {
+  position: absolute;
+  left: 100%;
+  top: -0.1em;
+  margin-left: 0.3em;
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  font-weight: 700;
+  white-space: nowrap;
+  color: var(--c-foil-bright);
+  pointer-events: none;
+}
+
+/* The plank is a foil rule; spines stand on it. Clipped sideways only, so
+   a long streak runs off the end but toppling spines still fall in view. */
+.shelf {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 56px;
+  max-width: 360px;
+  padding: 0 2px;
+  border-bottom: 1px solid var(--c-foil);
+  overflow-x: clip;
+  overflow-y: visible;
+}
+
+.shelfEmpty {
+  /* Out of the flow, so the first spine lands at the start of the shelf
+     while this is still fading */
+  position: absolute;
+  left: 0;
+  bottom: var(--space-2);
+  font-family: var(--font-serif);
+  font-size: var(--text-sm);
+  font-style: italic;
+  color: var(--c-on-binding-muted);
+}
+
+.spineSlot {
+  display: flex;
+  align-items: flex-end;
+  height: 100%;
+  flex: none;
+  transform-origin: 100% 100%;
+}
+
+/* Bands cut through the foil to the cloth, as on a stamped spine */
+.spine {
+  display: block;
+  border-radius: 1px 1px 0 0;
+  background-color: var(--c-foil);
+}
+
+.spine[data-band='0'] {
+  background-image: linear-gradient(
+    to bottom,
+    transparent 12%, var(--c-binding) 12% 15%, transparent 15% 82%,
+    var(--c-binding) 82% 85%, transparent 85%
+  );
+}
+
+.spine[data-band='1'] {
+  background-image: linear-gradient(
+    to bottom,
+    transparent 9%, var(--c-binding) 9% 11%, transparent 11% 14%,
+    var(--c-binding) 14% 16%, transparent 16%
+  );
+}
+
+.spine[data-band='2'] {
+  background-image: linear-gradient(
+    to bottom,
+    transparent 26%, var(--c-binding) 26% 44%, transparent 44%
+  );
+}
+
+/* ============================================
+   STAGE
+   ============================================ */
+.stage {
+  grid-area: stage;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.stage:focus {
+  outline: none;
+}
+
+.stageHead {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  min-height: 40px;
+}
+
+.roundNo {
+  white-space: nowrap;
+}
+
+/* The points still on offer, burning down: a hairline that shortens
+   while the worth beside it counts three, two, one. */
+.meter {
+  position: relative;
+  flex: 1;
+  height: 1px;
+  background: var(--rule-on-binding);
+}
+
+.meterFill {
+  position: absolute;
+  inset: 0;
+  background: var(--c-foil);
+  transform-origin: 0 50%;
+}
+
+.worthSlot {
+  position: relative;
+  display: flex;
+  justify-content: flex-end;
+  min-width: 3rem;
+}
+
+.worth {
+  display: inline-block;
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  font-weight: 650;
+  font-variant-numeric: lining-nums tabular-nums;
+  color: var(--c-foil-bright);
+}
+
+/* The guest book's rubber stamp, inked in foil for the cloth. It sits on
+   the cloth's own red so it stays legible over the line. */
+.stamp {
+  position: absolute;
+  right: -4px;
+  top: -26px;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  padding: 10px 16px 8px;
+  border: 3px double var(--c-foil-bright);
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--c-binding) 90%, transparent);
+  color: var(--c-foil-bright);
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.stampMiss {
+  border-style: solid;
+  border-width: 2px;
+}
+
+.stampWord {
+  font-family: var(--font-sans);
+  font-size: 1.25rem;
+  font-weight: 750;
+  letter-spacing: 0.22em;
+  line-height: 1;
+  text-transform: uppercase;
+  /* Tracking trails the last letter; hand it back so the word centres */
+  margin-right: -0.22em;
+}
+
+.stampPoints {
+  font-family: var(--font-sans);
+  font-size: var(--text-xs);
+  font-weight: 650;
+  font-variant-numeric: lining-nums tabular-nums;
+  letter-spacing: 0.08em;
+}
+
+.spark {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 12px;
+  height: 12px;
+  margin: -6px 0 0 -6px;
+  color: var(--c-foil-bright);
+  overflow: visible;
+}
+
+/* The line is set in full from the start and uncovered as it types, so
+   nothing reflows under the reader. The opening quote mark hangs. */
+.line {
+  position: relative;
+  max-width: 34ch;
+  min-height: calc(1.32em * 3);
+  font-family: var(--font-serif);
+  font-size: clamp(1.375rem, 1.05rem + 1.4vw, 2.25rem);
+  font-weight: 300;
+  line-height: 1.32;
+  text-indent: -0.42em;
+  color: var(--c-foil-bright);
+}
+
+.lineIdle {
+  text-indent: 0;
+  font-style: italic;
+  color: var(--c-on-binding-muted);
+}
+
+.ghost {
+  color: transparent;
+}
+
+/* An empty inline, not an inline-block: it adds no break opportunity, so
+   the caret never nudges the wrap. */
+.caret {
+  position: relative;
+}
+
+.caret::after {
+  content: '';
+  position: absolute;
+  left: 1px;
+  top: 0.12em;
+  width: 2px;
+  height: 1.05em;
+  background: currentColor;
+  animation: caret-blink 1.05s steps(1) infinite;
+}
+
+@keyframes caret-blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+/* ============================================
+   ANSWERS: set as type on the cloth, no boxes.
+   The numeral is the key that answers it.
+   ============================================ */
+.options {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-1) var(--space-6);
+  /* The rows' padding would push the type off the line's edge; pull it back */
+  margin-inline: -12px;
+}
+
+@media (min-width: 640px) {
+  .options {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.option {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-4);
+  padding: 12px;
+  text-align: left;
+  border-radius: var(--radius-md);
+  color: var(--c-foil-bright);
+  transition:
+    background-color var(--transition-base),
+    color var(--transition-base);
+}
+
+@media (hover: hover) {
+  .option:not([aria-disabled='true']):hover {
+    background-color: rgba(236, 236, 228, 0.08);
+  }
+}
+
+.option:not([aria-disabled='true']):active {
+  background-color: rgba(236, 236, 228, 0.12);
+}
+
+.option:focus-visible {
+  outline-color: var(--c-foil);
+}
+
+.option[aria-disabled='true'] {
+  cursor: default;
+}
+
+.option[data-state='right'] {
+  background-color: var(--c-foil);
+  color: var(--c-binding-deep);
+}
+
+.option[data-state='wrong'] .optionTitle {
+  text-decoration: line-through;
+  text-decoration-thickness: 1px;
+}
+
+.key {
+  flex: none;
+  min-width: 0.75em;
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  font-weight: 650;
+  font-variant-numeric: lining-nums tabular-nums;
+  line-height: 1;
+  color: var(--c-on-binding-muted);
+}
+
+.option[data-state='right'] .key {
+  color: var(--c-binding-deep);
+}
+
+.optionText {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.optionTitle {
+  font-family: var(--font-serif);
+  font-size: 1.125rem;
+  font-weight: 400;
+  line-height: 1.25;
+}
+
+.optionAuthor {
+  font-family: var(--font-sans);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--c-on-binding-muted);
+}
+
+.option[data-state='right'] .optionAuthor {
+  color: var(--c-binding-deep);
+}
+
+/* Holds Next's place, so the answers never jump when it arrives */
+.nextRow {
+  display: flex;
+  min-height: 48px;
+}
+
+.cta {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  gap: 10px;
+  min-height: 48px;
+  padding: 0 var(--space-6);
+  border: 1px solid var(--c-foil);
+  border-radius: var(--radius-full);
+  font-family: var(--font-sans);
+  font-size: 0.8125rem;
+  font-weight: 650;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--c-foil);
+  transition:
+    background-color var(--transition-base),
+    color var(--transition-base);
+}
+
+@media (hover: hover) {
+  .cta:hover {
+    background: var(--c-foil);
+    color: var(--c-binding-deep);
+  }
+}
+
+.cta:active {
+  background: var(--c-foil);
+  color: var(--c-binding-deep);
+}
+
+.cta:focus-visible {
+  outline-color: var(--c-foil);
+}

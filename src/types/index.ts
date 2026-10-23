@@ -10,10 +10,16 @@ export interface MenuItem {
   id: string;
   name: string;
   description?: string;
+  /** Serving size, shown beside a single price. */
+  size?: string;
   price?: number;
   priceVariants?: PriceVariant[];
-  /** Key into the generated image manifest, not a URL. */
-  image: ImageName;
+  /**
+   * A photograph of this item, when the café has published one. Items
+   * without one are set as a type tile instead. Key into the generated
+   * image manifest, not a URL.
+   */
+  image?: ImageName;
   isPopular?: boolean;
   isNew?: boolean;
 }
@@ -21,31 +27,25 @@ export interface MenuItem {
 export interface MenuCategory {
   id: string;
   name: string;
-  slug: string;
   description?: string;
   items: MenuItem[];
 }
 
-// Location Types
-export interface CafeLocation {
-  address: string;
-  coordinates: [number, number];
-  isComingSoon?: boolean;
-}
-
-export interface City {
+// Guest quotes, excerpted from public reviews on Yandex Maps
+export interface GuestQuote {
   id: string;
-  name: string;
-  locations: CafeLocation[];
+  text: string;
+  author: string;
+  year: number;
 }
 
-// Contact Types
-export interface ContactInfo {
-  phone: string;
-  phoneHref: string;
-  telegram: string;
-  deliveryHours: {
-    start: string;
-    end: string;
-  };
+// The footer's first-line game
+export interface FirstLine {
+  id: string;
+  /** Which shelf it sits on; wrong answers are drawn from the same one. */
+  shelf: 'russian' | 'world';
+  /** The book's opening, quoted without its surrounding quote marks. */
+  line: string;
+  title: string;
+  author: string;
 }

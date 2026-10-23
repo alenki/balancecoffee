@@ -1,49 +1,39 @@
 /* ============================================
-   MENU ITEM: Editorial Product Card
-   Flat design, 4:5 image, warm tint overlays,
-   matching the homepage MenuPreview aesthetic
+   MENU ITEM: a card
+   A 4:5 photograph, or a red tile stamped with
+   the name; name, description and price under it.
    ============================================ */
 
 .card {
-  cursor: default;
+  min-width: 0;
 }
 
-/* Image Container: 4:5 aspect with tint */
-.imageWrapper {
+/* On the home page the whole card is a link into its chapter */
+.link {
+  display: block;
+}
+
+.media {
   position: relative;
   aspect-ratio: 4 / 5;
   overflow: hidden;
-  background: #c8bfb8;
   margin-bottom: var(--space-3);
   border-radius: 2px;
+  container-type: inline-size;
 }
 
 @media (max-width: 639px) {
-  .imageWrapper {
+  .media {
     aspect-ratio: 3 / 4;
     margin-bottom: var(--space-2);
   }
 }
 
-/* Warm neutral tone tint overlays: each card gets a distinct warm tone */
-.card:nth-child(1) .imageWrapper::before { background: rgba(139, 120, 106, 0.08); }
-.card:nth-child(2) .imageWrapper::before { background: rgba(168, 148, 130, 0.10); }
-.card:nth-child(3) .imageWrapper::before { background: rgba(180, 160, 140, 0.07); }
-.card:nth-child(4) .imageWrapper::before { background: rgba(150, 130, 115, 0.09); }
-.card:nth-child(5) .imageWrapper::before { background: rgba(160, 140, 125, 0.08); }
-.card:nth-child(6) .imageWrapper::before { background: rgba(170, 150, 135, 0.10); }
-.card:nth-child(7) .imageWrapper::before { background: rgba(145, 125, 110, 0.07); }
-.card:nth-child(8) .imageWrapper::before { background: rgba(155, 135, 120, 0.09); }
-.card:nth-child(9) .imageWrapper::before { background: rgba(165, 145, 130, 0.08); }
-
-.imageWrapper::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-  mix-blend-mode: multiply;
-  border-radius: 2px;
+/* ============================================
+   PHOTOGRAPH
+   ============================================ */
+.photo {
+  background: var(--c-paper-deep);
 }
 
 .image {
@@ -52,31 +42,137 @@
   object-fit: cover;
 }
 
-/* Subtle inner shadow for depth */
-.imageWrapper::after {
+/* The zoom goes on the frame: the image's own transition is its fade in */
+.frame {
+  transition: transform 0.7s var(--ease-out);
+}
+
+.link:hover .frame {
+  transform: scale(1.04);
+}
+
+/* A faint inner shadow, so the print sits into the page */
+.photo::after {
   content: '';
   position: absolute;
   inset: 0;
+  z-index: 1;
   box-shadow: inset 0 0 60px rgba(0, 0, 0, 0.06);
   pointer-events: none;
-  border-radius: 2px;
 }
 
-/* Badges */
+/* ============================================
+   TILE
+   The cover's cloth and its two stamped rules,
+   with the name set where a title would be.
+   ============================================ */
+.tile {
+  --frame: 6px;
+  background-color: var(--c-binding);
+  background-image:
+    radial-gradient(ellipse at 50% 45%, transparent 55%, rgba(0, 0, 0, 0.16) 100%),
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.02) 0 1px, transparent 1px 3px),
+    repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.06) 0 1px, transparent 1px 3px);
+  color: var(--c-foil);
+}
+
+@media (min-width: 640px) {
+  .tile {
+    --frame: 10px;
+  }
+}
+
+.tile::before,
+.tile::after {
+  content: '';
+  position: absolute;
+  pointer-events: none;
+}
+
+.tile::before {
+  inset: var(--frame);
+  border: 1px solid rgba(236, 236, 228, 0.5);
+}
+
+.tile::after {
+  inset: calc(var(--frame) + 5px);
+  border: 1px solid rgba(236, 236, 228, 0.24);
+}
+
+.label {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6cqi;
+  padding: 14cqi 12cqi;
+  text-align: center;
+}
+
+.labelName {
+  font-family: var(--font-serif);
+  font-size: clamp(0.95rem, 9cqi, 2.5rem);
+  font-weight: 300;
+  line-height: 1.12;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+  overflow-wrap: break-word;
+}
+
+/* Sizes under a short rule, like the imprint under a title */
+.labelMeta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4cqi;
+  font-family: var(--font-sans);
+  font-size: clamp(0.5625rem, 3.4cqi, 0.8125rem);
+  font-weight: 650;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--c-on-binding-muted);
+}
+
+.labelMeta::before {
+  content: '';
+  width: 24px;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.6;
+}
+
+/* ============================================
+   BADGES
+   ============================================ */
 .badge {
   position: absolute;
   top: var(--space-4);
   left: var(--space-4);
   z-index: 2;
   padding: var(--space-1) var(--space-3);
-  background: var(--color-bg-dark);
-  color: var(--color-text-on-dark);
-  font-family: var(--font-primary);
-  font-size: 0.65rem;
-  font-weight: var(--font-semibold);
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
   border-radius: 1px;
+  background: var(--c-ink);
+  color: var(--c-paper);
+  font-family: var(--font-sans);
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.badgeNew {
+  background: var(--c-binding);
+  color: var(--c-on-binding);
+}
+
+/* On the cloth: cream, held inside the stamped rules */
+.tile .badge {
+  top: calc(var(--frame) + 14px);
+  left: calc(var(--frame) + 14px);
+  background: var(--c-foil);
+  color: var(--c-binding);
 }
 
 @media (max-width: 639px) {
@@ -86,13 +182,16 @@
     padding: 2px var(--space-2);
     font-size: 0.55rem;
   }
+
+  .tile .badge {
+    top: calc(var(--frame) + 9px);
+    left: calc(var(--frame) + 9px);
+  }
 }
 
-.badgeNew {
-  background: var(--color-primary);
-}
-
-/* Card Info Row */
+/* ============================================
+   INFO ROW
+   ============================================ */
 .info {
   display: flex;
   justify-content: space-between;
@@ -113,59 +212,58 @@
 }
 
 .name {
-  font-family: var(--font-primary);
-  font-size: clamp(0.85rem, 1.2vw, 1rem);
-  font-weight: var(--font-bold);
-  color: var(--color-text-dark);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  line-height: 1.3;
   margin-bottom: var(--space-1);
+  font-family: var(--font-sans);
+  font-size: clamp(0.85rem, 1.2vw, 1rem);
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--c-ink);
+}
+
+.description {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  font-size: clamp(0.8rem, 1vw, 0.9rem);
+  line-height: 1.45;
+  color: var(--c-ink-muted);
 }
 
 @media (max-width: 639px) {
   .name {
-    font-size: 0.72rem;
-    letter-spacing: 0.02em;
     margin-bottom: 0;
+    font-size: 0.75rem;
+    letter-spacing: 0.02em;
   }
-}
 
-/* Sans, matching the home page preview cards. Playfair italic is the site's
-   editorial accent; spending it on 56 product descriptions diluted the device
-   and cost legibility at this size. */
-.description {
-  font-family: var(--font-primary);
-  font-size: clamp(0.78rem, 1vw, 0.9rem);
-  font-weight: var(--font-normal);
-  color: var(--color-text-muted);
-  line-height: 1.45;
-  letter-spacing: 0.01em;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-@media (max-width: 639px) {
   .description {
-    font-size: 0.7rem;
-    -webkit-line-clamp: 2;
+    font-size: 0.75rem;
     line-height: 1.35;
   }
 }
 
-/* Single Price */
-.price {
+/* ============================================
+   PRICES
+   ============================================ */
+.price,
+.variants,
+.unpriced {
   flex-shrink: 0;
-  font-family: var(--font-primary);
-  font-size: clamp(0.8rem, 1.1vw, 0.95rem);
-  font-weight: var(--font-medium);
-  color: var(--color-text-body);
-  white-space: nowrap;
+  max-width: none;
   padding-top: 1px;
+  white-space: nowrap;
+}
+
+.price {
   position: relative;
+  font-size: clamp(0.85rem, 1.1vw, 1rem);
+  font-weight: 600;
+  font-variant-numeric: lining-nums tabular-nums;
+  color: var(--c-ink);
 }
 
 .price::after {
@@ -175,71 +273,71 @@
   left: 0;
   width: 100%;
   height: 1px;
-  background: var(--color-border-strong);
+  background: var(--c-stamp);
 }
 
-/* Price Variants: Inline row */
 .variants {
-  flex-shrink: 0;
   display: flex;
   align-items: baseline;
-  gap: 0;
-  padding-top: 1px;
 }
 
 .variantItem {
   display: flex;
   align-items: baseline;
   gap: var(--space-1);
-  font-family: var(--font-primary);
-  white-space: nowrap;
 }
 
 .variantSize {
-  font-size: clamp(0.7rem, 0.9vw, 0.8rem);
-  font-weight: var(--font-normal);
-  color: var(--color-text-light);
+  font-size: clamp(0.72rem, 0.9vw, 0.8rem);
+  color: var(--c-ink-muted);
   letter-spacing: 0.02em;
 }
 
 .variantPrice {
-  font-size: clamp(0.8rem, 1vw, 0.9rem);
-  font-weight: var(--font-medium);
-  color: var(--color-text-body);
+  font-size: clamp(0.85rem, 1vw, 0.95rem);
+  font-weight: 600;
+  font-variant-numeric: lining-nums tabular-nums;
+  color: var(--c-ink);
 }
 
 .variantDot {
-  display: inline-block;
+  flex-shrink: 0;
+  align-self: center;
   width: 3px;
   height: 3px;
-  border-radius: 50%;
-  background: var(--color-text-light);
   margin: 0 var(--space-2);
-  align-self: center;
-  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--rule-strong);
+}
+
+/* The display case has no fixed price: the barista quotes it */
+.unpriced {
+  font-family: var(--font-serif);
+  font-size: clamp(0.8rem, 1vw, 0.9rem);
+  font-style: italic;
+  color: var(--c-ink-muted);
 }
 
 @media (max-width: 639px) {
   .price {
-    font-size: 0.72rem;
+    font-size: 0.8rem;
+  }
+
+  /* Stacked: a narrow card has no room for two prices on one line */
+  .variants {
+    flex-direction: column;
+    gap: 2px;
   }
 
   .variantSize {
-    font-size: 0.62rem;
+    font-size: 0.68rem;
   }
 
   .variantPrice {
-    font-size: 0.7rem;
+    font-size: 0.78rem;
   }
 
   .variantDot {
-    width: 2px;
-    height: 2px;
-    margin: 0 var(--space-1);
-  }
-
-  .variants {
-    flex-wrap: wrap;
+    display: none;
   }
 }
-

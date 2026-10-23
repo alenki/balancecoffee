@@ -1,0 +1,103 @@
+.section {
+  background: var(--c-paper);
+  padding: var(--space-20) var(--gutter);
+}
+
+@media (min-width: 1024px) {
+  .section {
+    padding: var(--space-32) var(--gutter);
+  }
+}
+
+/* ============================================
+   CAPTION
+   One line under the plate on wide screens:
+   address, the way in, the hours, the route. Two
+   by two on tablets and laptops, stacked on phones.
+   ============================================ */
+.caption {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-5);
+  padding-top: var(--space-6);
+}
+
+@media (min-width: 600px) {
+  .caption {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-6) var(--space-10);
+    align-items: baseline;
+  }
+}
+
+@media (min-width: 1200px) {
+  .caption {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr) minmax(0, 1fr) auto;
+    gap: var(--space-10);
+    padding-top: var(--space-8);
+  }
+}
+
+.title {
+  font-size: clamp(1.875rem, 2.8vw, 2.5rem);
+  font-weight: 300;
+  line-height: 1.05;
+}
+
+.text {
+  max-width: 52ch;
+  font-family: var(--font-serif);
+  font-size: var(--text-base);
+  font-style: italic;
+  line-height: 1.6;
+  color: var(--c-ink-soft);
+}
+
+.hours {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.hoursValue {
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  font-weight: 600;
+  white-space: nowrap;
+  font-variant-numeric: lining-nums;
+  color: var(--c-ink);
+}
+
+.ramadan {
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  color: var(--c-ink-muted);
+}
+
+/* During Ramadan the note is the schedule that applies, so it steps up */
+.ramadanNow {
+  font-weight: 650;
+  color: var(--c-ink);
+}
+
+.route {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 48px;
+  font-family: var(--font-sans);
+  font-size: 0.8125rem;
+  font-weight: 650;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--c-stamp);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 6px;
+  transition: text-underline-offset var(--transition-base);
+}
+
+.route:hover {
+  text-underline-offset: 9px;
+}

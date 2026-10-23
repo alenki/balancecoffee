@@ -1,0 +1,239 @@
+/* ============================================
+   NIGHT BAND
+
+   The motto says a world without books is night,
+   so this is the one band on the page set in the
+   cover's cloth: red, foil type, and the room's
+   photographs tipped in like plates.
+   ============================================ */
+
+.section {
+  position: relative;
+  overflow: hidden;
+  background: var(--c-binding);
+  color: var(--c-on-binding);
+  padding: var(--space-20) var(--gutter) var(--space-24);
+}
+
+@media (min-width: 1000px) {
+  .section {
+    padding: var(--space-24) var(--gutter) var(--space-32);
+  }
+}
+
+.cloth {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    radial-gradient(ellipse at 50% 30%, rgba(255, 255, 255, 0.04), transparent 60%),
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.02) 0 1px, transparent 1px 3px),
+    repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.06) 0 1px, transparent 1px 3px);
+}
+
+.inner {
+  position: relative;
+}
+
+.eyebrow {
+  max-width: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  font-family: var(--font-sans);
+  font-size: 0.6875rem;
+  font-weight: 650;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--c-foil);
+}
+
+.eyebrowMark {
+  width: auto;
+  height: 26px;
+}
+
+/* ============================================
+   PLATES
+   ============================================ */
+.frame,
+.cell {
+  position: relative;
+  overflow: hidden;
+  border-radius: 2px;
+  background: var(--c-binding-deep);
+}
+
+/* A hairline of foil held off the photograph, as a plate is framed */
+.frame {
+  aspect-ratio: 4 / 5;
+  outline: 1px solid var(--rule-on-binding);
+  outline-offset: 7px;
+}
+
+.frameTall {
+  aspect-ratio: 3 / 4;
+}
+
+.img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Phones */
+.mosaic {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto;
+  gap: 10px;
+  margin-top: var(--space-10);
+}
+
+.cell {
+  aspect-ratio: 4 / 5;
+}
+
+.cellTall {
+  grid-row: span 2;
+  aspect-ratio: auto;
+}
+
+.frameCenter {
+  display: none;
+}
+
+/* Phones: the side columns go, the centre column keeps only the motto */
+.columnSide {
+  display: none;
+}
+
+@media (min-width: 1000px) {
+  .mosaic {
+    display: none;
+  }
+
+  .grid {
+    /* One gap for the whole spread: between stacked plates, and between
+       the side plates and the centre one */
+    --plate-gap: clamp(28px, 4vw, 56px);
+    /* The centre plate's inset within its column, as a share of a side
+       column: (1 - 76%) / 2 of 36fr, over 22fr */
+    --center-inset: calc(100% * 36 / 22 * (1 - 0.76) / 2);
+    display: grid;
+    grid-template-columns: 22fr 36fr 22fr;
+    gap: var(--plate-gap);
+    align-items: start;
+    margin-top: var(--space-16);
+  }
+
+  /* Plates sit short of their columns, drawn in across the inset so they
+     stand one plate gap from the centre plate, as they do from each other */
+  .columnSide {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: var(--plate-gap);
+  }
+
+  .columnSide .frame {
+    width: 80%;
+    margin-inline-end: calc(-1 * var(--center-inset));
+  }
+
+  .columnRight {
+    align-items: flex-start;
+    padding-top: var(--space-24);
+  }
+
+  .columnRight .frame {
+    margin-inline-end: 0;
+    margin-inline-start: calc(-1 * var(--center-inset));
+  }
+
+  .columnCenter {
+    padding-top: var(--space-8);
+  }
+
+  .frameCenter {
+    display: block;
+    width: 76%;
+    margin-inline: auto;
+    aspect-ratio: 4 / 5;
+  }
+}
+
+/* ============================================
+   MOTTO
+   ============================================ */
+.text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-top: var(--space-12);
+}
+
+@media (min-width: 1000px) {
+  .text {
+    margin-top: var(--space-12);
+  }
+}
+
+.motto {
+  display: flex;
+  flex-direction: column;
+  color: var(--c-foil);
+  font-size: clamp(2rem, 3vw, 3rem);
+  font-weight: 300;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+}
+
+.mottoLine {
+  display: block;
+}
+
+.mottoLineItalic {
+  display: block;
+  font-style: italic;
+  color: var(--c-foil-bright);
+}
+
+.body {
+  margin-top: var(--space-6);
+  max-width: 34rem;
+  font-family: var(--font-serif);
+  font-size: var(--text-lg);
+  line-height: 1.65;
+  color: var(--c-on-binding-muted);
+}
+
+.cta {
+  display: inline-flex;
+  align-items: center;
+  min-height: 48px;
+  margin-top: var(--space-8);
+  padding: 0 var(--space-6);
+  border: 1px solid var(--c-foil);
+  border-radius: var(--radius-full);
+  font-family: var(--font-sans);
+  font-size: 0.8125rem;
+  font-weight: 650;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--c-foil);
+  transition:
+    background-color var(--transition-base),
+    color var(--transition-base);
+}
+
+.cta:hover {
+  background: var(--c-foil);
+  color: var(--c-binding-deep);
+}
+
+.cta:focus-visible {
+  outline-color: var(--c-foil);
+}

@@ -9,9 +9,10 @@ interface CategoryNavProps {
   onScrollStart: () => void;
   onScrollComplete: () => void;
   menuData: MenuCategory[];
+  label: string;
 }
 
-export function CategoryNav({ activeCategory, onCategoryChange, onScrollStart, onScrollComplete, menuData }: CategoryNavProps) {
+export function CategoryNav({ activeCategory, onCategoryChange, onScrollStart, onScrollComplete, menuData, label }: CategoryNavProps) {
   const [isSticky, setIsSticky] = useState(false);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
@@ -92,7 +93,7 @@ export function CategoryNav({ activeCategory, onCategoryChange, onScrollStart, o
   return (
     <>
       <div ref={navRef} className={styles.sentinel} />
-      <nav className={`${styles.nav} ${isSticky ? styles.sticky : ''}`}>
+      <nav className={`${styles.nav} ${isSticky ? styles.sticky : ''}`} aria-label={label}>
         <div className={styles.container}>
           <div className={wrapperClasses}>
             <div ref={scrollRef} className={styles.scrollContainer}>
@@ -101,8 +102,10 @@ export function CategoryNav({ activeCategory, onCategoryChange, onScrollStart, o
                   {index > 0 && <span className={styles.divider} />}
                   <button
                     ref={activeCategory === category.id ? activeButtonRef : null}
+                    type="button"
                     className={`${styles.tab} ${activeCategory === category.id ? styles.active : ''}`}
                     onClick={() => handleClick(category.id)}
+                    aria-current={activeCategory === category.id ? 'true' : undefined}
                   >
                     {category.name}
                   </button>

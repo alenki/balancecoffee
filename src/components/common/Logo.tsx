@@ -1,37 +1,40 @@
 import { Link } from 'react-router-dom';
 import { useLenisInstance } from '../../hooks/useLenis';
-import { Image } from './Image';
-import { LOGO_SIZES } from './imageSizes';
+import { useLanguage } from '../../context/LanguageContext';
+import { WORDMARK, WORDMARK_VIEWBOX } from './brandMarks';
 import styles from './Logo.module.css';
 
-interface LogoProps {
-  variant?: 'default' | 'light';
-  size?: 'sm' | 'md' | 'lg';
-  /** Set on the header logo, which is above the fold. */
-  priority?: boolean;
+/** BIBΛIOTEKA in the logo's own capitals. Takes `currentColor`. */
+export function Wordmark({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox={WORDMARK_VIEWBOX}
+      className={[styles.wordmark, className].filter(Boolean).join(' ')}
+      aria-hidden="true"
+      focusable="false"
+    >
+      <path d={WORDMARK} fill="currentColor" fillRule="evenodd" />
+    </svg>
+  );
 }
 
-export function Logo({ variant = 'default', size = 'md', priority = false }: LogoProps) {
-  const lenis = useLenisInstance();
+interface LogoProps {
+  className?: string;
+}
 
-  const handleClick = () => {
-    lenis?.scrollTo(0, { duration: 1.2 });
-  };
+/** The wordmark as the home link. */
+export function Logo({ className }: LogoProps) {
+  const lenis = useLenisInstance();
+  const { t } = useLanguage();
 
   return (
     <Link
       to="/"
-      onClick={handleClick}
-      className={`${styles.logo} ${styles[variant]} ${styles[size]}`}
+      onClick={() => lenis?.scrollTo(0, { duration: 1.2 })}
+      className={[styles.logo, className].filter(Boolean).join(' ')}
+      aria-label={t('nav.homeAria')}
     >
-      <Image
-        name="logos/balance_5"
-        alt="Balance Coffee"
-        fit="bare"
-        className={styles.logoImage}
-        sizes={LOGO_SIZES}
-        priority={priority}
-      />
+      <Wordmark />
     </Link>
   );
 }

@@ -5,17 +5,20 @@ import {
   useState,
   useCallback,
   useEffect,
+  useMemo,
   type ReactNode,
 } from 'react';
 
 export type Lang = 'ru' | 'en';
 
-const STORAGE_KEY = 'balance-lang';
+const STORAGE_KEY = 'biblioteka-lang';
 
 interface LanguageContextValue {
   lang: Lang;
   setLang: (lang: Lang) => void;
   t: (key: string) => string;
+  /** A count with its noun in the right plural form: "63 позиции". */
+  tn: (key: string, n: number) => string;
 }
 
 const LanguageContext = createContext<LanguageContextValue | null>(null);
@@ -55,8 +58,14 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     return value;
   }, [lang]);
 
+  const plurals = useMemo(() => new Intl.PluralRules(lang), [lang]);
+  const tn = useCallback(
+    (key: string, n: number) => `${n} ${t(`${key}.${plurals.select(n)}`)}`,
+    [t, plurals]
+  );
+
   return (
-    <LanguageContext.Provider value={{ lang, setLang, t }}>
+    <LanguageContext.Provider value={{ lang, setLang, t, tn }}>
       {children}
     </LanguageContext.Provider>
   );
@@ -74,121 +83,200 @@ const translations: Record<Lang, Record<string, string>> = {
   ru: {
     // Shared
     'common.timeRange': 'до',
+    'common.from': 'от',
+    'common.newTab': 'откроется в новой вкладке',
+
+    // Plural forms (Intl.PluralRules categories)
+    'unit.items.one': 'позиция',
+    'unit.items.few': 'позиции',
+    'unit.items.many': 'позиций',
+    'unit.items.other': 'позиции',
+
+    // Brand
+    'brand.motto': 'Без книги в мире ночь, без книги мрак кругом',
+    'brand.descriptor': 'Кофе и книги',
+    'brand.city': 'Нальчик',
+    'brand.address': 'Пушкина, 35',
+    'brand.addressNote': 'Первый этаж бизнес-центра',
 
     // Nav
     'nav.home': 'Главная',
     'nav.menu': 'Меню',
-    'nav.daily': 'Daily',
-    'nav.vacancies': 'Вакансии',
-    'nav.feedback': 'Обратная связь',
+    'nav.readingRoom': 'Читальный зал',
+    'nav.guestBook': 'Книга отзывов',
+    'nav.game': 'Игра',
+    'nav.delivery': 'Доставка',
+    'nav.deliveryAria': 'Заказать доставку в WhatsApp, откроется в новой вкладке',
     'nav.openMenu': 'Открыть меню',
     'nav.closeMenu': 'Закрыть меню',
+    'nav.homeAria': 'Biblioteka, на главную',
+    'nav.language': 'Язык',
+    'nav.mainAria': 'Основная навигация',
+
+    // Opening hours, live
+    'status.openUntil': 'Открыто до',
+    'status.opensAt': 'Закрыто, откроемся в',
+    'status.opensTomorrow': 'Закрыто, откроемся завтра в',
+    'status.ramadan': 'часы на Рамадан',
+    'status.daily': 'Ежедневно',
+
+    // Loader
+    'loader.status': 'Загрузка',
 
     // Hero
-    'hero.line1': 'Кофе,',
-    'hero.line2': 'созданный',
-    'hero.line3': 'с намерением',
+    'hero.coffee': 'Кофе',
+    'hero.and': 'и',
+    'hero.books': 'книги',
+    'hero.ctaMenu': 'Открыть меню',
+    'hero.openBook': 'Открыть книгу',
+    'hero.readOn': 'Читать дальше',
+    'hero.plateAlt': 'Зал Библиотеки: мраморная стойка, вывеска BIBΛIOTEKA и лестница с книжными полками',
 
-    // About
-    'about.label': 'О нас',
-    'about.manifesto1': '5 лет назад мы открыли Balance Coffee с одной простой идеей: создать пространство,',
-    'about.manifesto1em': 'где современные, прогрессивные и деятельные люди',
-    'about.manifesto1end': 'могли бы собираться вместе, обмениваться идеями и вдохновляться друг другом.',
-    'about.manifesto2': 'Сегодня наши кофейни посещает более 6000 таких удивительных людей каждый день. Мы мечтаем объединить таких людей по всей территории',
-    'about.manifesto2em': 'России и за её пределами.',
-    'about.statCities': 'городов',
-    'about.statCafes': 'кофеен',
-    'about.statItems': 'позиций',
+    // Foreword
+    'foreword.title': 'Предисловие',
+    'foreword.line1': 'Библиотека живёт на первом этаже бизнес-центра: под лестницей полки с книгами, у окна широкий подоконник с подушками, а за мраморной стойкой',
+    'foreword.line1em': 'варят кофе.',
+    'foreword.line2': 'Книгу можно снять с полки и читать здесь же,',
+    'foreword.line2em': 'пока остывает раф.',
+    'foreword.statOpen': 'открываемся',
+    'foreword.statClose': 'закрываемся',
+    'foreword.statStreet': 'Пушкина',
 
-    // Menu Preview
-    'menuPreview.label': 'Меню',
-    'menuPreview.itemCount': '50+ позиций',
-    'menuPreview.headerItalic': 'Каждая позиция в нашем меню',
-    'menuPreview.headerBold1': 'Продумана',
-    'menuPreview.headerBold2': 'до деталей',
-    'menuPreview.cta': 'Смотреть меню',
-    'menuPreview.from': 'от',
-    'badge.new': 'Новинка',
-    'badge.hit': 'Хит',
+    // Menu preview
+    'menuPreview.lead': 'Каждая позиция в нашем меню',
+    'menuPreview.title': 'Продумана',
+    'menuPreview.titleAccent': 'до деталей',
+    'menuPreview.cta': 'Открыть всё меню',
 
-    // Gallery
-    'gallery.manifesto1': 'Мы за',
-    'gallery.manifesto2': 'уникальную',
-    'gallery.manifesto3': 'эстетику',
-    'gallery.text': 'Мы за красивое и хорошее, творить и делиться.\nМы за уникальную эстетику.',
-    'gallery.cta': 'Смотреть Daily',
-    'gallery.altCafe': 'Интерьер кофейни Balance Coffee',
-    'gallery.altGuests': 'Гости в кофейне Balance Coffee',
-    'gallery.altStreet': 'Кофейня Balance Coffee снаружи',
+    // Menu, shared
+    'menu.inDisplay': 'в витрине',
+    'menu.popular': 'любимое',
+    'menu.new': 'новинка',
 
-    // Cafes
-    'cafes.label': 'Кофейни',
-    'cafes.cityCount': 'городов',
-    'cafes.headerItalic': 'Мы по всей России',
-    'cafes.headerBold1': 'Наши',
-    'cafes.headerBold2': 'кофейни',
-    'cafes.cafe1': 'кофейня',
-    'cafes.cafe2to4': 'кофейни',
-    'cafes.cafe5plus': 'кофеен',
-    'cafes.soonLabel': 'Скоро открытие',
-    'cafes.soon': 'скоро',
-    'cafes.statCities': 'городов',
-    'cafes.statCafes': 'кофеен',
-    'cafes.cta': 'Связаться с нами',
+    // Night band
+    'night.eyebrow': 'Читальный зал',
+    'night.line1': 'Без книги в мире ночь,',
+    'night.line2': 'без книги мрак кругом.',
+    'night.text': 'Это девиз с нашего логотипа. Поэтому под лестницей стоят полки: берите любую книгу и читайте за чашкой кофе.',
+    'night.cta': 'Заглянуть в читальный зал',
+    'night.altShelf': 'Книжная полка в Библиотеке',
+    'night.altSofa': 'Гостья читает на диване под лестницей',
+    'night.altEvening': 'Стакан кофе с логотипом на фоне вечерней витрины',
+    'night.altChoosing': 'Гостья выбирает книгу с полки',
+    'night.altWindow': 'Подоконник с подушками у большого окна',
+
+    // Visit
+    'visit.text': 'Угол здания с бордовыми вывесками и чёрными маркизами, в 50 метрах от остановки «Городская администрация».',
+    'visit.ramadanNote': 'В Рамадан работаем с 8:00 до 20:00',
+    'visit.route': 'Маршрут в Яндекс Картах',
+    'visit.mapAlt': 'Схема улиц вокруг кофейни: Библиотека на улице Пушкина у перекрёстка с улицей Чехова, рядом с остановкой «Городская администрация», между проспектами Ленина и Шогенцукова',
+    'visit.mapCredit': '© участники OpenStreetMap',
+    'visit.stop': 'ост. «Городская администрация»',
+    'visit.north': 'С',
+    'visit.street.pushkina': 'ул. Пушкина',
+    'visit.street.chekhova': 'ул. Чехова',
+    'visit.street.keshokova': 'ул. Кешокова',
+    'visit.street.lenina': 'пр. Ленина',
+    'visit.street.shogentsukova': 'пр. Шогенцукова',
+    'visit.street.nogmova': 'ул. Ногмова',
 
     // Footer
-    'footer.tagline': 'Кофе, созданный с намерением',
-    'footer.geography': 'География',
-    'footer.ourCafes': 'Наши\nкофейни',
-    'footer.navigation': 'Навигация',
-    'footer.ourPages': 'Наши\nстраницы',
-    'footer.contacts': 'Контакты',
-    'footer.contactUs': 'Свяжитесь\nс нами',
-    'footer.home': 'Главная',
-    'footer.menu': 'Меню',
-    'footer.daily': 'Daily',
-    'footer.reviews': 'Отзывы',
-    'footer.descriptor': 'Кофе, выпечка, свежевыжатые соки',
+    'footer.contents': 'Содержание',
+    'footer.route': 'Маршрут в Яндекс Картах',
+    'footer.entrepreneur': 'ИП Курданова Алена Альбертовна',
+    'footer.inn': 'ИНН',
+    'footer.ogrnip': 'ОГРНИП',
     'footer.creditAria': 'Сайт сделали Lumako, откроется в новой вкладке',
 
-    // Menu Page
+    // Footer game: first lines
+    'game.eyebrow': 'Игра для читателей',
+    'game.title1': 'Угадайте книгу',
+    'game.title2': 'по первой строке',
+    'game.lede': 'Строка печатается на глазах. Узнали раньше, получили больше: до трёх очков за ответ и ещё пять за каждые пять верных подряд.',
+    'game.teaser': 'Первая строка уже заправлена в машинку.',
+    'game.start': 'Начать',
+    'game.next': 'Следующая строка',
+    'game.round': 'Строка',
+    'game.stageLabel': 'Первая строка и варианты ответа',
+    'game.options': 'Из какой это книги',
+    'game.score': 'Очки',
+    'game.streak': 'Подряд',
+    'game.best': 'Рекорд',
+    'game.shelf': 'Книг на полке',
+    'game.shelfEmpty': 'Каждый верный ответ ставит сюда книгу',
+    'game.right': 'Зачтено',
+    'game.wrong': 'Мимо',
+    'game.bonus': 'за серию',
+    'game.answerWas': 'Правильный ответ',
+    'game.points.one': 'очко',
+    'game.points.few': 'очка',
+    'game.points.many': 'очков',
+    'game.points.other': 'очка',
+
+    // Menu page
     'menuPage.title': 'Меню',
-    'menuPage.items': 'позиций',
     'menuPage.delivery': 'Доставка',
     'menuPage.call': 'Позвонить',
-    'menuPage.ctaItalic': 'Свяжитесь любым удобным способом',
-    'menuPage.ctaTitle': 'Готовы сделать заказ?',
+    'menuPage.chaptersAria': 'Разделы меню',
+    'menuPage.ctaTitle': 'Заказать с доставкой',
 
-    // Daily Page
-    'daily.subtitle': 'Добро пожаловать в журнал Balance Coffee.\nЗдесь мы делимся вдохновением, моментами и атмосферой,\nкоторые делают каждый день особенным.',
-    'daily.quote1': 'Каждая чашка кофе становится маленьким путешествием. От Эфиопии до Бразилии, от зерна до аромата.',
-    'daily.quote2': 'Кофе не просто напиток. Это момент паузы в бесконечном ритме жизни.',
+    // Reading room
+    'reading.title': 'Читальный зал',
+    'reading.subtitle': 'Полки под лестницей, подоконник с подушками и кофе, который успевает остыть, пока дочитываешь главу. Так выглядит обычный день в Библиотеке.',
+    'reading.quoteSource': 'отзыв на Яндекс Картах',
+    'reading.moreTitle': 'Новые кадры каждый день',
+    'reading.moreText': 'Новинки витрины, гости и книги с полки: всё это мы показываем в Instagram.',
+    'reading.moreCta': 'Открыть Instagram',
 
-    // Reviews Page
-    'reviews.eyebrow': 'Ваше мнение важно',
-    'reviews.title1': 'Оставить',
-    'reviews.title2': 'отзыв',
-    'reviews.subtitle': 'Расскажите о вашем опыте. Каждый отзыв помогает нам становиться лучше и создавать для вас идеальный кофе',
-    'reviews.cafeLabel': 'Кофейня',
-    'reviews.cafePlaceholder': 'Выберите кофейню',
-    'reviews.contactLabel': 'Контакт для связи',
-    'reviews.contactPlaceholder': 'Телефон, email или Telegram',
+    // Guest book
+    'reviews.eyebrow': 'Обратная связь',
+    'reviews.title1': 'Книга',
+    'reviews.title2': 'отзывов',
+    'reviews.subtitle': 'Расскажите, как прошёл ваш визит. Запись придёт нам в WhatsApp, и её прочитает команда кофейни.',
+    'reviews.formLabel': 'Письмо в Библиотеку',
+    'reviews.salutation': 'Дорогая Библиотека!',
+    'reviews.ratingLabel': 'Оценка',
+    'reviews.markLead': 'Ставлю вам',
+    'reviews.ratingOf': 'из 5',
+    'reviews.grade1': 'ужасно',
+    'reviews.grade2': 'плохо',
+    'reviews.grade3': 'нормально',
+    'reviews.grade4': 'хорошо',
+    'reviews.grade5': 'отлично',
     'reviews.reviewLabel': 'Ваш отзыв',
-    'reviews.charCount': 'симв.',
-    'reviews.reviewPlaceholder': 'Поделитесь впечатлениями о кофейне, напитках, атмосфере...',
-    'reviews.submit': 'Отправить отзыв',
-    'reviews.hint': 'Выберите кофейню и напишите отзыв',
-    'reviews.altContact': 'или свяжитесь напрямую',
-    'reviews.phone': 'Телефон',
-    'reviews.successTitle1': 'Спасибо за',
-    'reviews.successTitle2': 'обратную связь',
-    'reviews.successText': 'Мы обязательно прочитаем ваш отзыв и постараемся стать ещё лучше. Ваше мнение задаёт нам ориентир.',
-    'reviews.another': 'Оставить ещё один отзыв',
+    'reviews.reviewPlaceholder': 'Что понравилось, что стоит исправить, какой книги не хватает на полке',
+    'reviews.prompt1': 'Что случилось?',
+    'reviews.prompt2': 'Что пошло не так?',
+    'reviews.prompt3': 'Что стоит исправить в первую очередь?',
+    'reviews.prompt4': 'Чего не хватило до пятёрки?',
+    'reviews.prompt5': 'Что понравилось больше всего?',
+    'reviews.signOff': 'С уважением,',
+    'reviews.nameLabel': 'Имя',
+    'reviews.namePlaceholder': 'ваше имя',
+    'reviews.postscript': 'P.S. Для ответа:',
+    'reviews.contactLabel': 'Контакт для ответа',
+    'reviews.contactPlaceholder': 'телефон или Telegram',
+    'reviews.optional': 'по желанию',
+    'reviews.submit': 'Отправить в WhatsApp',
+    'reviews.hint': 'Поставьте оценку и напишите отзыв',
+    'reviews.needMark': 'Поставьте оценку',
+    'reviews.needText': 'Напишите хотя бы пару слов',
+    'reviews.successTitle': 'Спасибо за письмо',
+    'reviews.successText': 'Мы открыли WhatsApp с вашим отзывом. Осталось нажать «Отправить» в чате.',
+    'reviews.successRetryLead': 'WhatsApp не открылся?',
+    'reviews.successRetry': 'Открыть ещё раз',
+    'reviews.successPublic': 'Хотите, чтобы отзыв увидели другие гости?',
+    'reviews.successPublicCta': 'Оставьте его и на Яндекс Картах',
+    'reviews.another': 'Написать ещё один отзыв',
+    'reviews.messageHeader': 'Отзыв с сайта Biblioteka',
+    'reviews.messageRating': 'Оценка',
+    'reviews.messageName': 'Имя',
+    'reviews.messageContact': 'Контакт',
 
     // 404
-    'notFound.eyebrow': 'Страница не найдена',
-    'notFound.title': 'Кажется, эта чашка уже допита',
-    'notFound.text': 'Страницы по этому адресу нет. Возможно, ссылка устарела или в ней опечатка.',
+    'notFound.eyebrow': 'Ошибка 404',
+    'notFound.title': 'Этой страницы нет в каталоге',
+    'notFound.text': 'Возможно, ссылка устарела или в адресе опечатка. Вернитесь на главную или загляните в меню.',
     'notFound.home': 'На главную',
 
     // Accessibility
@@ -198,121 +286,196 @@ const translations: Record<Lang, Record<string, string>> = {
   en: {
     // Shared
     'common.timeRange': 'to',
+    'common.from': 'from',
+    'common.newTab': 'opens in a new tab',
+
+    // Plural forms
+    'unit.items.one': 'item',
+    'unit.items.other': 'items',
+
+    // Brand
+    'brand.motto': 'Without a book the world is night, without a book all is dark',
+    'brand.descriptor': 'Coffee and books',
+    'brand.city': 'Nalchik',
+    'brand.address': '35 Pushkina Street',
+    'brand.addressNote': 'Ground floor of the business centre',
 
     // Nav
     'nav.home': 'Home',
     'nav.menu': 'Menu',
-    'nav.daily': 'Daily',
-    'nav.vacancies': 'Careers',
-    'nav.feedback': 'Feedback',
+    'nav.readingRoom': 'Reading room',
+    'nav.guestBook': 'Guest book',
+    'nav.game': 'Game',
+    'nav.delivery': 'Delivery',
+    'nav.deliveryAria': 'Order delivery on WhatsApp, opens in a new tab',
     'nav.openMenu': 'Open menu',
     'nav.closeMenu': 'Close menu',
+    'nav.homeAria': 'Biblioteka, home',
+    'nav.language': 'Language',
+    'nav.mainAria': 'Main navigation',
+
+    // Opening hours, live
+    'status.openUntil': 'Open until',
+    'status.opensAt': 'Closed, opens at',
+    'status.opensTomorrow': 'Closed, opens tomorrow at',
+    'status.ramadan': 'Ramadan hours',
+    'status.daily': 'Daily',
+
+    // Loader
+    'loader.status': 'Loading',
 
     // Hero
-    'hero.line1': 'Coffee,',
-    'hero.line2': 'crafted',
-    'hero.line3': 'with intention',
+    'hero.coffee': 'Coffee',
+    'hero.and': 'and',
+    'hero.books': 'books',
+    'hero.ctaMenu': 'Open the menu',
+    'hero.openBook': 'Open the book',
+    'hero.readOn': 'Read on',
+    'hero.plateAlt': 'Inside Biblioteka: the marble counter, the BIBΛIOTEKA sign and the staircase lined with bookshelves',
 
-    // About
-    'about.label': 'About us',
-    'about.manifesto1': '5 years ago we opened Balance Coffee with one simple idea: to create a space',
-    'about.manifesto1em': 'where modern, progressive and driven people',
-    'about.manifesto1end': 'could come together, exchange ideas and inspire each other.',
-    'about.manifesto2': 'Today our cafés welcome over 6,000 such amazing people every day. We dream of uniting these people across',
-    'about.manifesto2em': 'Russia and beyond.',
-    'about.statCities': 'cities',
-    'about.statCafes': 'cafés',
-    'about.statItems': 'items',
+    // Foreword
+    'foreword.title': 'Foreword',
+    'foreword.line1': 'Biblioteka lives on the ground floor of a business centre: bookshelves under the stairs, a wide window sill with cushions, and',
+    'foreword.line1em': 'coffee brewed at the marble counter.',
+    'foreword.line2': 'Take a book off the shelf and read it right here',
+    'foreword.line2em': 'while your raf cools.',
+    'foreword.statOpen': 'we open',
+    'foreword.statClose': 'we close',
+    'foreword.statStreet': 'Pushkina St',
 
-    // Menu Preview
-    'menuPreview.label': 'Menu',
-    'menuPreview.itemCount': '50+ items',
-    'menuPreview.headerItalic': 'Every item on our menu is',
-    'menuPreview.headerBold1': 'Crafted',
-    'menuPreview.headerBold2': 'to perfection',
-    'menuPreview.cta': 'View menu',
-    'menuPreview.from': 'from',
-    'badge.new': 'New',
-    'badge.hit': 'Popular',
+    // Menu preview
+    'menuPreview.lead': 'Every item on our menu is',
+    'menuPreview.title': 'Crafted',
+    'menuPreview.titleAccent': 'to perfection',
+    'menuPreview.cta': 'Open the full menu',
 
-    // Gallery
-    'gallery.manifesto1': 'We stand for',
-    'gallery.manifesto2': 'unique',
-    'gallery.manifesto3': 'aesthetics',
-    'gallery.text': 'We believe in beauty and craft, in creating and sharing.\nWe stand for unique aesthetics.',
-    'gallery.cta': 'Explore Daily',
-    'gallery.altCafe': 'Balance Coffee cafe interior',
-    'gallery.altGuests': 'Guests inside a Balance Coffee cafe',
-    'gallery.altStreet': 'A Balance Coffee cafe from the street',
+    // Menu, shared
+    'menu.inDisplay': 'in the case',
+    'menu.popular': 'favourite',
+    'menu.new': 'new',
 
-    // Cafes
-    'cafes.label': 'Cafés',
-    'cafes.cityCount': 'cities',
-    'cafes.headerItalic': 'Across Russia',
-    'cafes.headerBold1': 'Our',
-    'cafes.headerBold2': 'cafés',
-    'cafes.cafe1': 'café',
-    'cafes.cafe2to4': 'cafés',
-    'cafes.cafe5plus': 'cafés',
-    'cafes.soonLabel': 'Coming soon',
-    'cafes.soon': 'soon',
-    'cafes.statCities': 'cities',
-    'cafes.statCafes': 'cafés',
-    'cafes.cta': 'Contact us',
+    // Night band
+    'night.eyebrow': 'Reading room',
+    'night.line1': 'Without a book the world is night,',
+    'night.line2': 'without a book all is dark.',
+    'night.text': 'That is the motto on our logo, and the reason for the shelves under the stairs: take any book and read it over a cup of coffee.',
+    'night.cta': 'Step into the reading room',
+    'night.altShelf': 'A bookshelf at Biblioteka',
+    'night.altSofa': 'A guest reading on the sofa under the stairs',
+    'night.altEvening': 'A coffee cup with the logo against the lit windows at dusk',
+    'night.altChoosing': 'A guest choosing a book from the shelf',
+    'night.altWindow': 'The cushioned window sill by the tall window',
+
+    // Visit
+    'visit.text': 'The corner of the building with the maroon signs and black awnings, 50 metres from the Gorodskaya Administratsiya stop.',
+    'visit.ramadanNote': 'During Ramadan we are open 8:00 to 20:00',
+    'visit.route': 'Directions in Yandex Maps',
+    'visit.mapAlt': 'Map of the streets around the café: Biblioteka on Pushkina Street by its junction with Chekhova Street, near the Gorodskaya Administratsiya stop, between Lenina and Shogentsukova avenues',
+    'visit.mapCredit': '© OpenStreetMap contributors',
+    'visit.stop': 'Gorodskaya Administratsiya stop',
+    'visit.north': 'N',
+    'visit.street.pushkina': 'Pushkina St',
+    'visit.street.chekhova': 'Chekhova St',
+    'visit.street.keshokova': 'Keshokova St',
+    'visit.street.lenina': 'Lenina Ave',
+    'visit.street.shogentsukova': 'Shogentsukova Ave',
+    'visit.street.nogmova': 'Nogmova St',
 
     // Footer
-    'footer.tagline': 'Coffee, crafted with intention',
-    'footer.geography': 'Geography',
-    'footer.ourCafes': 'Our\ncafés',
-    'footer.navigation': 'Navigation',
-    'footer.ourPages': 'Our\npages',
-    'footer.contacts': 'Contacts',
-    'footer.contactUs': 'Get in\ntouch',
-    'footer.home': 'Home',
-    'footer.menu': 'Menu',
-    'footer.daily': 'Daily',
-    'footer.reviews': 'Reviews',
-    'footer.descriptor': 'Coffee, pastry, fresh juices',
+    'footer.contents': 'Contents',
+    'footer.route': 'Directions in Yandex Maps',
+    'footer.entrepreneur': 'Sole proprietor Alena A. Kurdanova',
+    'footer.inn': 'INN',
+    'footer.ogrnip': 'OGRNIP',
     'footer.creditAria': 'Site by Lumako, opens in a new tab',
 
-    // Menu Page
+    // Footer game: first lines
+    'game.eyebrow': 'A game for readers',
+    'game.title1': 'Name the book',
+    'game.title2': 'from its first line',
+    'game.lede': 'The line types itself out as you watch. Know it sooner, score more: up to three points an answer, and five more for every five in a row.',
+    'game.teaser': 'The first line is already in the typewriter.',
+    'game.start': 'Start',
+    'game.next': 'Next line',
+    'game.round': 'Line',
+    'game.stageLabel': 'The first line and the answers',
+    'game.options': 'Which book is it from',
+    'game.score': 'Score',
+    'game.streak': 'In a row',
+    'game.best': 'Best',
+    'game.shelf': 'Books on the shelf',
+    'game.shelfEmpty': 'Every right answer puts a book here',
+    'game.right': 'Well read',
+    'game.wrong': 'Missed',
+    'game.bonus': 'streak bonus',
+    'game.answerWas': 'The answer was',
+    'game.points.one': 'point',
+    'game.points.other': 'points',
+
+    // Menu page
     'menuPage.title': 'Menu',
-    'menuPage.items': 'items',
     'menuPage.delivery': 'Delivery',
-    'menuPage.call': 'Call us',
-    'menuPage.ctaItalic': 'Reach out any way you prefer',
-    'menuPage.ctaTitle': 'Ready to order?',
+    'menuPage.call': 'Call',
+    'menuPage.chaptersAria': 'Menu sections',
+    'menuPage.ctaTitle': 'Order for delivery',
 
-    // Daily Page
-    'daily.subtitle': 'Welcome to the Balance Coffee journal.\nHere we share inspiration, moments and the atmosphere\nthat make every day special.',
-    'daily.quote1': 'Every cup of coffee is a small journey. From Ethiopia to Brazil, from bean to aroma.',
-    'daily.quote2': 'Coffee is not just a drink. It is a moment of pause in the endless rhythm of life.',
+    // Reading room
+    'reading.title': 'Reading room',
+    'reading.subtitle': 'Shelves under the stairs, a cushioned window sill and coffee that has time to cool while you finish the chapter. An ordinary day at Biblioteka.',
+    'reading.quoteSource': 'review on Yandex Maps, translated from Russian',
+    'reading.moreTitle': 'New pictures every day',
+    'reading.moreText': 'New things in the display case, our guests and books from the shelf: we post them all on Instagram.',
+    'reading.moreCta': 'Open Instagram',
 
-    // Reviews Page
-    'reviews.eyebrow': 'Your opinion matters',
-    'reviews.title1': 'Leave',
-    'reviews.title2': 'feedback',
-    'reviews.subtitle': 'Tell us about your experience. Every review helps us improve and craft the perfect coffee for you',
-    'reviews.cafeLabel': 'Café',
-    'reviews.cafePlaceholder': 'Select a café',
-    'reviews.contactLabel': 'Contact info',
-    'reviews.contactPlaceholder': 'Phone, email or Telegram',
+    // Guest book
+    'reviews.eyebrow': 'Feedback',
+    'reviews.title1': 'Guest',
+    'reviews.title2': 'book',
+    'reviews.subtitle': 'Tell us how your visit went. Your note comes to us on WhatsApp, and the café team reads every one.',
+    'reviews.formLabel': 'Letter to Biblioteka',
+    'reviews.salutation': 'Dear Biblioteka,',
+    'reviews.ratingLabel': 'Rating',
+    'reviews.markLead': 'I give you',
+    'reviews.ratingOf': 'out of 5',
+    'reviews.grade1': 'terrible',
+    'reviews.grade2': 'poor',
+    'reviews.grade3': 'okay',
+    'reviews.grade4': 'good',
+    'reviews.grade5': 'excellent',
     'reviews.reviewLabel': 'Your review',
-    'reviews.charCount': 'chars',
-    'reviews.reviewPlaceholder': 'Share your impressions about the café, drinks, atmosphere...',
-    'reviews.submit': 'Submit review',
-    'reviews.hint': 'Pick a cafe and write your review',
-    'reviews.altContact': 'or contact us directly',
-    'reviews.phone': 'Phone',
-    'reviews.successTitle1': 'Thank you for',
-    'reviews.successTitle2': 'your feedback',
-    'reviews.successText': 'We will carefully read your review and strive to get even better. Your opinion is our compass.',
-    'reviews.another': 'Leave another review',
+    'reviews.reviewPlaceholder': 'What you liked, what we should fix, which book is missing from the shelf',
+    'reviews.prompt1': 'What happened?',
+    'reviews.prompt2': 'What went wrong?',
+    'reviews.prompt3': 'What should we fix first?',
+    'reviews.prompt4': 'What kept it from a five?',
+    'reviews.prompt5': 'What did you like most?',
+    'reviews.signOff': 'Yours,',
+    'reviews.nameLabel': 'Name',
+    'reviews.namePlaceholder': 'your name',
+    'reviews.postscript': 'P.S. Reply to me at',
+    'reviews.contactLabel': 'Where to reply',
+    'reviews.contactPlaceholder': 'phone or Telegram',
+    'reviews.optional': 'optional',
+    'reviews.submit': 'Send on WhatsApp',
+    'reviews.hint': 'Choose a rating and write your review',
+    'reviews.needMark': 'Choose a rating',
+    'reviews.needText': 'Write a few words',
+    'reviews.successTitle': 'Thank you for writing',
+    'reviews.successText': 'We opened WhatsApp with your review. All that is left is to press Send in the chat.',
+    'reviews.successRetryLead': 'WhatsApp did not open?',
+    'reviews.successRetry': 'Open it again',
+    'reviews.successPublic': 'Want other guests to see it?',
+    'reviews.successPublicCta': 'Leave it on Yandex Maps too',
+    'reviews.another': 'Write another review',
+    'reviews.messageHeader': 'Review from the Biblioteka website',
+    'reviews.messageRating': 'Rating',
+    'reviews.messageName': 'Name',
+    'reviews.messageContact': 'Contact',
 
     // 404
-    'notFound.eyebrow': 'Page not found',
-    'notFound.title': 'Looks like this cup is already empty',
-    'notFound.text': 'There is no page at this address. The link may be out of date or contain a typo.',
+    'notFound.eyebrow': 'Error 404',
+    'notFound.title': 'This page is not in the catalogue',
+    'notFound.text': 'The link may be out of date or the address may contain a typo. Head back home or take a look at the menu.',
     'notFound.home': 'Back home',
 
     // Accessibility

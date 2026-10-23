@@ -1,6 +1,7 @@
 /* ============================================
-   CATEGORY NAV: Editorial Horizontal Text Nav
-   Clean text links with underline active state
+   CATEGORY NAV
+   A centred row of text tabs that sticks under
+   the header; the current one is underlined.
    ============================================ */
 
 .sentinel {
@@ -10,79 +11,84 @@
 
 .nav {
   position: sticky;
-  top: 69px;
-  background: var(--color-bg-white);
-  padding: var(--space-5) 0;
+  top: var(--header-h);
   z-index: var(--z-sticky);
-  transition: background var(--transition-base),
-              box-shadow var(--transition-base),
-              backdrop-filter var(--transition-base);
-  border-bottom: 1px solid var(--color-border);
+  padding: var(--space-5) 0;
+  background: var(--c-paper);
+  border-bottom: 1px solid var(--rule);
+  transition: box-shadow var(--transition-base);
 }
 
 .nav.sticky {
-  background: rgba(255, 255, 255, 0.92);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  box-shadow: 0 1px 0 var(--color-border);
+  box-shadow: 0 10px 24px -18px rgba(28, 27, 25, 0.35);
 }
 
 .container {
-  width: 100%;
-  padding: 0 var(--space-6);
+  padding: 0 var(--gutter);
 }
 
-@media (min-width: 768px) {
-  .container {
-    padding: 0 var(--space-12);
-  }
+.scrollWrapper {
+  position: relative;
 }
 
-@media (min-width: 1200px) {
-  .container {
-    padding: 0 var(--space-16);
-  }
+/* Fades at whichever edge has more tabs hidden behind it */
+.scrollWrapper::before,
+.scrollWrapper::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  z-index: 1;
+  width: 40px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--transition-base);
+}
+
+.scrollWrapper::before {
+  left: 0;
+  background: linear-gradient(to right, var(--c-paper), transparent);
+}
+
+.scrollWrapper::after {
+  right: 0;
+  background: linear-gradient(to left, var(--c-paper), transparent);
+}
+
+.canScrollLeft::before,
+.canScrollRight::after {
+  opacity: 1;
 }
 
 .scrollContainer {
   display: flex;
   align-items: center;
-  gap: 0;
-  overflow-x: auto;
-  scroll-behavior: smooth;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
   width: fit-content;
   max-width: 100%;
   margin: 0 auto;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
 .scrollContainer::-webkit-scrollbar {
   display: none;
 }
 
-/* Scroll wrapper */
-.scrollWrapper {
-  position: relative;
-}
-
-/* Tab: Text link with underline */
 .tab {
   position: relative;
   display: inline-flex;
   align-items: center;
+  flex: none;
   padding: var(--space-2) var(--space-5);
-  background: transparent;
-  border: none;
-  font-family: var(--font-primary);
+  font-family: var(--font-sans);
   font-size: var(--text-xs);
-  font-weight: var(--font-medium);
-  color: var(--color-text-muted);
+  font-weight: 600;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   white-space: nowrap;
-  cursor: pointer;
+  color: var(--c-ink-muted);
   transition: color var(--transition-base);
 }
 
@@ -93,47 +99,49 @@
   left: var(--space-5);
   right: var(--space-5);
   height: 1.5px;
-  background: var(--color-text-dark);
+  background: var(--c-stamp);
   transform: scaleX(0);
   transform-origin: center;
-  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.35s var(--ease-out);
 }
 
 .tab:hover {
-  color: var(--color-text-body);
+  color: var(--c-ink-soft);
 }
 
 .tab.active {
-  color: var(--color-text-dark);
-  font-weight: var(--font-semibold);
+  color: var(--c-ink);
+  font-weight: 700;
 }
 
 .tab.active::after {
   transform: scaleX(1);
 }
 
-/* Divider between tabs */
+.tab:focus-visible {
+  outline-offset: -2px;
+}
+
 .divider {
+  flex-shrink: 0;
   width: 1px;
   height: 12px;
-  background: var(--color-border);
-  flex-shrink: 0;
+  background: var(--rule);
 }
 
 @media (min-width: 768px) {
   .tab {
-    padding: var(--space-2) var(--space-6);
     font-size: 0.8rem;
+  }
+}
+
+@media (min-width: 1600px) {
+  .tab {
+    padding: var(--space-2) var(--space-6);
   }
 
   .tab::after {
     left: var(--space-6);
     right: var(--space-6);
-  }
-}
-
-@media (min-width: 1280px) {
-  .nav {
-    top: 77px;
   }
 }

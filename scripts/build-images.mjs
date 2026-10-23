@@ -19,7 +19,7 @@ import { join, extname, dirname, relative, sep } from 'node:path';
 const SRC_DIR = 'assets-src';
 const OUT_DIR = join('public', 'img');
 const GEN_DIR = join('src', 'generated');
-const CACHE_FILE = join('node_modules', '.cache', 'balance-images.json');
+const CACHE_FILE = join('node_modules', '.cache', 'site-images.json');
 
 /** Bump when encoder settings change, to force a full re-encode. */
 const ENCODER_VERSION = 1;
@@ -29,31 +29,23 @@ const PHOTO_ENCODE = {
   webp: { quality: 78, effort: 5 },
 };
 
-/** Flat wordmarks with alpha need higher quality and no blur placeholder. */
-const LOGO_ENCODE = {
-  avif: { quality: 70, effort: 4, chromaSubsampling: '4:4:4' },
-  webp: { quality: 92, effort: 5, alphaQuality: 100 },
-};
-
 /**
  * Width ladders, derived from the sizes these images actually render at.
  * First match wins. Ladder entries above the source width are dropped, and the
  * source width itself becomes the top rung: nothing is ever upscaled.
  */
 const ROLES = [
-  // Full-bleed hero card.
-  { match: (k) => k === 'cafe/image', widths: [640, 960, 1280, 1680] },
-  // Gallery grid + Daily masonry: ~440 CSS px at most.
-  { match: (k) => k.startsWith('cafe/'), widths: [320, 480, 640, 960] },
-  // Menu cards: 156-587 CSS px depending on breakpoint.
-  { match: (k) => k.startsWith('menu/'), widths: [320, 480, 640, 900] },
-  // Wordmark, rendered at 28-56px tall.
-  { match: (k) => k.startsWith('logos/'), widths: [200, 400], logo: true },
+  // Hero plate: the right-hand page of the opening spread, about half the
+  // viewport on desktop and the full column on phones.
+  { match: (k) => k === 'hall/counter', widths: [640, 960, 1280, 1680] },
+  // Everything else: chapter plates, the night band, the reading room
+  // masonry and the storefront. ~600 CSS px at most.
+  { match: (k) => /^(hall|street|menu)\//.test(k), widths: [320, 480, 640, 960, 1280] },
 ];
 
 const roleFor = (key) => ROLES.find((r) => r.match(key)) ?? { widths: [480, 960] };
 
-/** assets-src/menu/drinks/image-copy-3.png -> menu/drinks/image-copy-3 */
+/** assets-src/menu/iced-latte.jpg -> menu/iced-latte */
 const keyFor = (file) =>
   relative(SRC_DIR, file).split(sep).join('/').replace(/\.[^.]+$/, '');
 
@@ -176,7 +168,7 @@ async function main() {
       reused++;
     } else {
       await mkdir(dirname(outputs[0]), { recursive: true });
-      const enc = role.logo ? LOGO_ENCODE : PHOTO_ENCODE;
+      const enc = PHOTO_ENCODE;
       const pipeline = sharp(buffer).rotate();
 
       for (const w of widths) {
@@ -186,7 +178,7 @@ async function main() {
           resized.clone().webp(enc.webp).toFile(`${OUT_DIR}/${key}-${w}.webp`),
         ]);
       }
-      lqip = role.logo ? '' : await makeLqip(buffer);
+      lqip = await makeLqip(buffer);
       encoded++;
       process.stdout.write(`  ${key}  ${widths.join('/')}\n`);
     }
@@ -226,7 +218,7 @@ export interface ImageMeta {
   h: number;
   /** Available widths, ascending. */
   widths: number[];
-  /** Blurred ~24px placeholder as a data URI. Empty for logos. */
+  /** Blurred ~24px placeholder as a data URI. */
   lqip: string;
 }
 

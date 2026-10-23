@@ -7,50 +7,69 @@
  * image is soft, too large and the saving evaporates. So every value here was
  * measured in a browser rather than estimated, and the measurements are kept
  * alongside it. If a grid changes, re-measure and update the matching entry.
+ *
+ * Shared steps: the page gutter is 20px per side below 768, 32px to 1199 and
+ * 56px above. Sections run the full width of the window, so every image keeps
+ * growing with it; each entry rounds its ratio up to the widest measured.
  */
 
 /**
- * Hero card: the viewport minus the page gutter, which steps at 768 and 1200.
- * Measured: 390 -> 334px, 768 -> 664px, 1024 -> 920px, 1440 -> 1304px,
- * 1920 -> 1784px.
+ * Hero: the room printed inside the book's front board, one page of the open
+ * spread. The page is three quarters as wide as it is tall, and the open
+ * book, each page with its boards' squares round it, fills what the window
+ * allows less the header, the gutters and the ribbon's room: one board
+ * beside the other in landscape, one over the other in portrait. Capped at
+ * 750px wide. It is only ever drawn smaller than this while the book opens,
+ * never larger.
+ * Measured: 390x844 -> 257px, 430x932 -> 290px, 768x1024 -> 320px,
+ * 1024x1366 -> 446px, 844x390 -> 167px, 1024x768 -> 445px, 1280x720 -> 386px,
+ * 1366x768 -> 421px, 1440x900 -> 518px, 1920x1080 -> 650px,
+ * 2000x874 -> 500px, 2560x1440 -> 750px.
  */
-export const HERO_SIZES =
-  '(min-width: 1200px) calc(100vw - 136px), (min-width: 768px) calc(100vw - 104px), calc(100vw - 56px)';
+export const HERO_SIZES = [
+  '(orientation: landscape) and (min-width: 1200px) min(calc(73.3vh - 140px), calc(49.3vw - 55px), 750px)',
+  '(orientation: landscape) and (min-width: 768px) min(calc(73.3vh - 117px), calc(49.3vw - 31px), 750px)',
+  '(orientation: landscape) min(calc(73.3vh - 108px), calc(49.3vw - 19px))',
+  '(min-width: 1200px) min(calc(37.1vh - 71px), calc(97vw - 108px), 750px)',
+  '(min-width: 768px) min(calc(37.1vh - 59px), calc(97vw - 62px), 750px)',
+  'min(calc(37.1vh - 54px), calc(97vw - 38px))',
+].join(', ');
 
 /**
- * Menu grids (MenuPreview and MenuCategory share the same rules): two columns
- * below 1024px and three above, full-bleed with a gutter that grows.
- * Measured: 390 -> 167px, 768 -> 316px, 1024 -> 290px, 1440 -> 411px,
- * 1920 -> 568px.
+ * Night band side columns, hidden below 1000px.
+ * Measured: 1024 -> 193px (18.8vw), 1280 -> 234px (18.3vw), 1440 -> 267px
+ * (18.5vw), 1920 -> 370px (19.3vw).
  */
-export const MENU_CARD_SIZES =
-  '(min-width: 1024px) calc(33vw - 48px), (min-width: 640px) calc(50vw - 48px), calc(50vw - 24px)';
+export const NIGHT_SIDE_SIZES = '(min-width: 1000px) 20vw, 92vw';
 
 /**
- * Gallery side columns, hidden below 1000px.
- * Measured: 1024 -> 21.7vw, 1440 -> 21.8vw, 1920 -> 22.9vw.
+ * Night band centre column, hidden below 1000px.
+ * Measured: 1024 -> 300px (29.3vw), 1280 -> 364px (28.4vw), 1440 -> 415px
+ * (28.8vw), 1920 -> 575px (29.9vw).
  */
-export const GALLERY_SIDE_SIZES = '(min-width: 1000px) 23vw, 92vw';
+export const NIGHT_CENTER_SIZES = '(min-width: 1000px) 30vw, 92vw';
 
 /**
- * Gallery centre column is materially wider than the sides, so it needs its
- * own value or it loads a rung too small.
- * Measured: 1024 -> 35.4vw, 1440 -> 35.8vw, 1920 -> 38.9vw.
+ * Night band mosaic: a two-up grid, only rendered below 1000px.
+ * Measured: 390 -> 166px (42.6vw), 768 -> 343px (44.7vw).
  */
-export const GALLERY_CENTER_SIZES = '(min-width: 1000px) 39vw, 92vw';
+export const NIGHT_MOSAIC_SIZES = '45vw';
 
 /**
- * Gallery mosaic: a two-up grid, only rendered below 1000px.
- * Measured: 390 -> 42.1vw, 768 -> 46.0vw.
+ * Menu cards, on the menu page and in the home page's preview, which shares
+ * its grid: three columns from 1024px, two below.
+ * Measured: 390 -> 163px (41.8vw), 768 -> 332px (43.2vw), 1024 -> 300px
+ * (29.3vw), 1280 -> 365px (28.5vw), 1440 -> 416px (28.9vw), 1920 -> 573px
+ * (29.8vw).
  */
-export const GALLERY_MOSAIC_SIZES = '46vw';
+export const MENU_CARD_SIZES = '(min-width: 1024px) 30vw, 44vw';
 
 /**
- * Daily masonry: three columns above 1024px, two below.
- * Measured: 390 -> 47.1vw, 768 -> 44.1vw, 1024 -> 46.8vw, 1440 -> 29.9vw,
- * 1920 -> 31.6vw.
+ * Reading room masonry: three columns above 1024px, two below, with wider
+ * margins from 641px. Includes the 1.1 scale the parallax applies, since that
+ * is the size actually painted.
+ * Measured: 390 -> 186px (47.7vw), 640 -> 323px (50.5vw), 768 -> 341px
+ * (44.4vw), 1024 -> 482px (47.1vw), 1280 -> 374px (29.2vw), 1440 -> 433px
+ * (30vw), 1920 -> 609px (31.7vw).
  */
-export const DAILY_MASONRY_SIZES = '(min-width: 1025px) 32vw, 48vw';
-
-/** Wordmark renders 28px to 56px tall at a 400x176 aspect, so ~128px wide. */
-export const LOGO_SIZES = '128px';
+export const READING_MASONRY_SIZES = '(min-width: 1025px) 31vw, (min-width: 641px) 46vw, 50vw';

@@ -1,40 +1,20 @@
+.wordmark {
+  display: block;
+  /* The traced wordmark is 1140 x 106.8: ~10.7:1. */
+  aspect-ratio: 1140 / 106.8;
+  height: auto;
+}
+
 .logo {
-  display: flex;
-  align-items: center;
-  text-decoration: none;
+  display: block;
+  color: inherit;
   transition: opacity var(--transition-base);
 }
 
 .logo:hover {
-  opacity: 0.85;
+  opacity: 0.72;
 }
 
-.logoImage {
-  display: block;
-  height: auto;
-  width: auto;
-  object-fit: contain;
-  transition: filter 0.3s ease;
-}
-
-/* Variants */
-.default .logoImage {
-  filter: none;
-}
-
-.light .logoImage {
-  filter: brightness(0) invert(1);
-}
-
-/* Sizes */
-.sm .logoImage {
-  height: 28px;
-}
-
-.md .logoImage {
-  height: 36px;
-}
-
-.lg .logoImage {
-  height: 56px;
+.logo .wordmark {
+  width: 100%;
 }

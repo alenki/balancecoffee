@@ -1,13 +1,13 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { motion, useMotionValueEvent, useReducedMotion } from 'motion/react';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { motion, useAnimate, useReducedMotion } from 'motion/react';
 import { usePreloadProgress } from '../../hooks/usePreloadProgress';
 import { useLenisInstance } from '../../hooks/useLenis';
 import { useLanguage } from '../../context/LanguageContext';
 import { images, type ImageName } from '../../generated/image-manifest';
-import { HERO_SIZES, LOGO_SIZES } from '../common/imageSizes';
+import { HERO_SIZES } from '../common/imageSizes';
+import { Wordmark } from '../common/Logo';
 import styles from './LoadingScreen.module.css';
 
-const EASE = [0.16, 1, 0.3, 1] as const;
 const EASE_PART = [0.76, 0, 0.24, 1] as const;
 
 const srcSet = (base: string, widths: readonly number[], ext: string) =>
@@ -42,108 +42,156 @@ function warm(name: ImageName, sizes: string): () => Promise<void> {
   };
 }
 
-/** Warmed before the site is revealed, so nothing pops in behind us. */
+/**
+ * The faces are declared by Google's stylesheet. Asking for one before that
+ * sheet has arrived finds nothing and resolves at once.
+ */
+function stylesheetsLoaded(): Promise<unknown> {
+  const links = [...document.querySelectorAll<HTMLLinkElement>('link[rel="stylesheet"]')];
+  return Promise.all(
+    links.map(
+      (link) =>
+        link.sheet ??
+        new Promise((resolve) => {
+          link.addEventListener('load', resolve, { once: true });
+          link.addEventListener('error', resolve, { once: true });
+        })
+    )
+  );
+}
+
+/**
+ * The first screen's faces. Google serves each script as its own subset and
+ * the browser fetches one only once text needs it, which is after the loader
+ * has gone: on a cold cache the title then paints in Georgia. Asking for a
+ * sample of both scripts warms them while the loader is still up.
+ */
+function warmFaces(): Promise<unknown> {
+  const sample = 'Кофе и книги Coffee and books';
+  return stylesheetsLoaded()
+    .then(() =>
+      Promise.all([
+        document.fonts.load('300 1em Literata', sample),
+        document.fonts.load('600 1em "Ysabeau Office"', sample),
+      ])
+    )
+    .catch(() => {});
+}
+
+/** Warmed before the page parts, so nothing pops in behind it. */
 const ASSETS = [
-  warm('cafe/image', HERO_SIZES), // hero LCP image
-  '/logos/balance_4.avif', // hero mark
-  warm('logos/balance_5', LOGO_SIZES), // header mark
+  warm('hall/counter', HERO_SIZES), // hero plate, the LCP image
+  '/cloth.webp', // the hero book's cloth grain
+  warmFaces, // title and running head
 ] as const;
 
+/** The traced wordmark is 1140 x 106.8. */
+const MARK_RATIO = 106.8 / 1140;
 /**
- * The counter is the only thing on screen and it is set in a webfont that is
- * itself still arriving. Resolving this before the figure appears means it is
- * never painted in the fallback and never snaps faces mid count. Capped, so a
- * slow font delays the loader by at most a beat rather than stalling it.
+ * In the header the wordmark sits 0.137 of its own width above the rule.
+ * The loader keeps that proportion, so it is the running head drawn large.
  */
-const FACE_CAP = 1200;
-const facePainted: Promise<unknown> = Promise.race([
-  document.fonts
-    .load('200 8rem Onest')
-    .catch(() => {})
-    .then(() => document.fonts.ready),
-  new Promise((r) => setTimeout(r, FACE_CAP)),
-]);
+const GAP_RATIO = 0.137;
 
-/**
- * The figure fades in, and counting starts a beat later, so it is nearly
- * solid by the time it holds a number worth reading. Without the head start
- * the fade races the climb and the first legible value is already past 20.
- */
-const HEAD_START = 220;
-const countGate: Promise<unknown> = facePainted.then(
-  () => new Promise((r) => setTimeout(r, HEAD_START))
-);
-
-/** Beats after the counter reaches 100 (ms). */
+/** Beats after the rule has been drawn the full width (ms). */
 const BEATS = {
   /** The site mounts behind the still frame, so its cost lands in silence. */
-  handoff: 520,
-  /** The counter lifts away. */
-  exit: 760,
-  /** Measured from `exiting`: 0.16s delay + 0.82s part + buffer. */
-  clear: 1080,
+  handoff: 380,
+  /** The page parts along the rule. */
+  exit: 600,
+  /** Measured from `exit`: the head has landed and given way to the header. */
+  clear: 1480,
 } as const;
 
 const BEATS_REDUCED = { handoff: 240, exit: 400, clear: 520 } as const;
 
+/** The part, then a beat for the head to settle into the real header. */
+const MOVE = { duration: 0.92, delay: 0.08, ease: EASE_PART };
+const SETTLE = { duration: 0.35, delay: 1.04, ease: 'linear' as const };
+
 type Phase = 'loading' | 'resolved' | 'exiting' | 'done';
 
+interface Frame {
+  /** The seam, in px from the top: the rule is drawn along it. */
+  seam: number;
+  markWidth: number;
+  markTop: number;
+}
+
+/** Whole pixels throughout, so the rule never straddles two rows. */
+function measureFrame(): Frame {
+  const markWidth = Math.round(Math.min(560, Math.max(232, window.innerWidth * 0.4)));
+  const seam = Math.round(window.innerHeight / 2);
+  const markTop = Math.round(seam - markWidth * GAP_RATIO - markWidth * MARK_RATIO);
+  return { seam, markWidth, markTop };
+}
+
+interface Landing {
+  /** How far the head rises: its rule lands on the header's own rule. */
+  rise: number;
+  x: number;
+  y: number;
+  scale: number;
+}
+
+/**
+ * Where the header's wordmark and rule sit. Positions are taken relative to
+ * the header, so a transform on it (hidden by scroll, say) cannot skew them.
+ */
+function measureLanding(frame: Frame, mark: HTMLElement): Landing | null {
+  const header = document.querySelector('header');
+  const logo = header?.querySelector('a[href="#/"] svg');
+  if (!header || !logo) return null;
+
+  const head = header.getBoundingClientRect();
+  const target = logo.getBoundingClientRect();
+  const from = mark.getBoundingClientRect();
+
+  return {
+    // The header's border sits below its bar: the last pixel of its box.
+    rise: head.height - 1 - frame.seam,
+    x: target.left - head.left + target.width / 2 - (from.left + from.width / 2),
+    y: target.top - head.top + target.height / 2 - (from.top + from.height / 2),
+    scale: target.width / from.width,
+  };
+}
+
 interface LoadingScreenProps {
-  /** Fired once, mid-resolve, to mount the site behind the field. */
+  /** Fired once, before the page parts, to mount the site behind it. */
   onDone: () => void;
 }
 
+/**
+ * The running head. The wordmark sits over a rule that is drawn out from the
+ * centre as the site really loads. At 100 the page parts along that rule:
+ * the lower half falls away and the upper half rises until it is the header,
+ * its wordmark and rule landing exactly on the real ones, and then gives way
+ * to it. The loader does not leave the page; it becomes its first line.
+ */
 export function LoadingScreen({ onDone }: LoadingScreenProps) {
-  const { lang } = useLanguage();
+  const { t } = useLanguage();
   const lenis = useLenisInstance();
   const reduce = useReducedMotion() ?? false;
 
   const [phase, setPhase] = useState<Phase>('loading');
+  const [frame, setFrame] = useState(measureFrame);
+  const [scope, animate] = useAnimate<HTMLDivElement>();
+  const headRef = useRef<HTMLDivElement>(null);
+  const bottomRef = useRef<HTMLDivElement>(null);
+  const markRef = useRef<HTMLDivElement>(null);
 
-  const [faceIn, setFaceIn] = useState(false);
-  useEffect(() => {
-    let live = true;
-    facePainted.then(() => {
-      if (live) setFaceIn(true);
-    });
-    return () => {
-      live = false;
-    };
-  }, []);
-
-  // Raised from inside the rAF loop the frame the counter reaches 100.
+  // Raised from inside the rAF loop the frame the rule reaches the edges.
   const resolve = useCallback(() => {
     setPhase((prev) => (prev === 'loading' ? 'resolved' : prev));
   }, []);
 
   const progress = usePreloadProgress({
     assets: ASSETS,
-    minDuration: 1500,
-    gate: countGate,
+    minDuration: 1600,
     onComplete: resolve,
   });
 
   const exiting = phase === 'exiting';
-
-  // The figure changes about a hundred times on the way up. Writing it
-  // straight to the DOM keeps all of that off React's render path.
-  const digitRefs = useRef<(HTMLSpanElement | null)[]>([]);
-  const lastValue = useRef(-1);
-
-  useMotionValueEvent(progress, 'change', (p) => {
-    const value = Math.round(p * 100);
-    if (value === lastValue.current) return;
-    lastValue.current = value;
-
-    const text = String(value).padStart(3, '0');
-    const leading = 3 - String(value).length;
-    for (let i = 0; i < 3; i += 1) {
-      const el = digitRefs.current[i];
-      if (!el) continue;
-      if (el.textContent !== text[i]) el.textContent = text[i];
-      el.classList.toggle(styles.digitGhost, value < 100 && i < leading);
-    }
-  });
 
   // Phase machine
   const handedOff = useRef(false);
@@ -171,7 +219,38 @@ export function LoadingScreen({ onDone }: LoadingScreenProps) {
     return () => clearTimeout(c);
   }, [phase, reduce]);
 
-  // Hold the page still until the field has parted
+  // The composition follows the window until the page starts to part.
+  useEffect(() => {
+    if (phase !== 'loading') return;
+    const onResize = () => setFrame(measureFrame());
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, [phase]);
+
+  // The part. The site has mounted by now, so the header can be measured;
+  // this runs before paint, so it starts from exactly the frame on screen.
+  useLayoutEffect(() => {
+    const head = headRef.current;
+    const bottom = bottomRef.current;
+    const mark = markRef.current;
+    if (phase !== 'exiting' || reduce || !head || !bottom || !mark) return;
+
+    // Without a header to land in, the head simply parts off the top.
+    const to = measureLanding(frame, mark) ?? {
+      rise: -(frame.seam + 1),
+      x: 0,
+      y: -(frame.seam + 1),
+      scale: 1,
+    };
+
+    animate(bottom, { y: '100%' }, MOVE);
+    animate(head, { y: to.rise }, MOVE);
+    animate(head, { opacity: 0 }, SETTLE);
+    animate(mark, { x: to.x, y: to.y, scale: to.scale }, MOVE);
+    animate(mark, { opacity: 0 }, SETTLE);
+  }, [phase, reduce, frame, animate]);
+
+  // Hold the page still until the head has become the header
   const lenisRef = useRef(lenis);
   useEffect(() => {
     lenisRef.current = lenis;
@@ -184,9 +263,18 @@ export function LoadingScreen({ onDone }: LoadingScreenProps) {
     else lenis?.stop();
   }, [phase, lenis]);
 
+  // The header keeps its ribbon furled until the loader has gone, then lets
+  // it drop onto the current page as the last beat.
+  useEffect(() => {
+    const root = document.documentElement;
+    if (phase !== 'done') root.dataset.loading = '';
+    else delete root.dataset.loading;
+  }, [phase]);
+
   useEffect(
     () => () => {
       document.body.style.overflow = '';
+      delete document.documentElement.dataset.loading;
       lenisRef.current?.start();
     },
     []
@@ -196,59 +284,31 @@ export function LoadingScreen({ onDone }: LoadingScreenProps) {
 
   return (
     <motion.div
+      ref={scope}
       className={`${styles.overlay} ${exiting ? styles.overlayExiting : ''}`}
       aria-hidden={exiting}
+      initial={{ opacity: 1 }}
       animate={{ opacity: reduce && exiting ? 0 : 1 }}
       transition={{ duration: 0.45, ease: 'linear' }}
     >
       <span className={styles.srOnly} role="status">
-        {lang === 'ru' ? 'Загрузка' : 'Loading'}
+        {t('loader.status')}
       </span>
 
-      {/* The field, split from the start so it can part on the centre line */}
-      <motion.div
-        className={`${styles.half} ${styles.halfTop}`}
-        animate={{ y: !reduce && exiting ? '-100%' : '0%' }}
-        transition={{ duration: 0.82, delay: 0.16, ease: EASE_PART }}
-      >
-        <span className={styles.grain} aria-hidden="true" />
-      </motion.div>
-      <motion.div
-        className={`${styles.half} ${styles.halfBottom}`}
-        animate={{ y: !reduce && exiting ? '100%' : '0%' }}
-        transition={{ duration: 0.82, delay: 0.16, ease: EASE_PART }}
-      >
-        <span className={styles.grain} aria-hidden="true" />
-      </motion.div>
+      <div ref={bottomRef} className={styles.bottom} style={{ top: frame.seam + 1 }} />
 
-      <motion.div
-        className={styles.counterWrap}
+      <div ref={headRef} className={styles.head} style={{ height: frame.seam + 1 }}>
+        <motion.span className={styles.rule} style={{ scaleX: progress }} />
+      </div>
+
+      <div
+        ref={markRef}
+        className={styles.mark}
         aria-hidden="true"
-        initial={{ opacity: 0, y: 12 }}
-        animate={{
-          opacity: exiting || !faceIn ? 0 : 1,
-          y: exiting ? -12 : 0,
-        }}
-        transition={
-          exiting
-            ? { duration: 0.45, ease: EASE }
-            : { duration: 0.5, ease: EASE }
-        }
+        style={{ top: frame.markTop, width: frame.markWidth, marginLeft: -frame.markWidth / 2 }}
       >
-        <span className={styles.counter}>
-          {[0, 1, 2].map((i) => (
-            <span
-              key={i}
-              ref={(el) => {
-                digitRefs.current[i] = el;
-              }}
-              className={`${styles.digit} ${i < 2 ? styles.digitGhost : ''}`}
-            >
-              0
-            </span>
-          ))}
-        </span>
-      </motion.div>
+        <Wordmark className={styles.wordmark} />
+      </div>
     </motion.div>
   );
 }

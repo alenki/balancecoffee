@@ -1,169 +1,226 @@
-import { useRef } from 'react';
-import { Link } from 'react-router-dom';
-import { motion, useInView } from 'motion/react';
-import { Logo } from '../common/Logo';
+import { useRef, type CSSProperties } from 'react';
+import { Link, NavLink, useLocation } from 'react-router-dom';
+import { motion, useInView, useReducedMotion } from 'motion/react';
+import { WORDMARK, WORDMARK_GAPS, WORDMARK_VIEWBOX } from '../common/brandMarks';
 import { useLanguage } from '../../context/LanguageContext';
-import { contactInfo, cities } from '../../data/locations';
+import { useLenisInstance } from '../../hooks/useLenis';
+import { useOpenStatus } from '../../hooks/useOpenStatus';
+import { cafe, formatHour } from '../../data/cafe';
+import { toRoman } from '../../utils/format';
 import styles from './Footer.module.css';
 
 const ease = [0.16, 1, 0.3, 1] as const;
 
-function AnimatedSection({ children, className, delay = 0 }: {
-  children: React.ReactNode;
-  className?: string;
-  delay?: number;
-}) {
-  const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: true, margin: '-60px' });
+const [, , MARK_W, MARK_H] = WORDMARK_VIEWBOX.split(' ').map(Number);
+
+/**
+ * The wordmark cut into its ten letters, so each can rise on its own. Each
+ * letter keeps the wordmark's full height and its own slice of the width, so
+ * set side by side they rebuild the mark exactly.
+ */
+const LETTERS = (() => {
+  const edges = [0, ...WORDMARK_GAPS, MARK_W];
+  const paths = WORDMARK_GAPS.map(() => '').concat('');
+  for (const subpath of WORDMARK.split(/(?=M)/)) {
+    const x = parseFloat(subpath.slice(1));
+    paths[WORDMARK_GAPS.filter((gap) => gap < x).length] += subpath;
+  }
+  return paths.map((d, i) => ({
+    d,
+    x: edges[i],
+    w: edges[i + 1] - edges[i],
+    // The middle letters first, then outward to both ends.
+    order: Math.floor(Math.abs(i - (paths.length - 1) / 2)),
+  }));
+})();
+
+const ExternalArrow = () => (
+  <svg className={styles.arrow} width="12" height="12" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+    <path d="M4 10L10 4M10 4H5M10 4V9" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
+
+/**
+ * Lumako's mark, signing the page at the foot of the address. Its period
+ * catches the gold once, the first time it comes fully into view.
+ */
+function Credit() {
+  const { t } = useLanguage();
+  const ref = useRef<HTMLAnchorElement>(null);
+  const seen = useInView(ref, { once: true, amount: 1 });
 
   return (
-    <motion.div
+    <a
       ref={ref}
-      className={className}
-      initial={{ opacity: 0, y: 30 }}
-      animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-      transition={{ duration: 0.8, ease, delay }}
+      href="https://lumako.ru"
+      className={styles.credit}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label={t('footer.creditAria')}
+      data-signed={seen || undefined}
     >
-      {children}
-    </motion.div>
+      <span className={styles.creditMark}>
+        Lumako<span className={styles.creditDot}>.</span>
+      </span>
+    </a>
   );
 }
 
+/**
+ * The wordmark drawn as wide as the page, and the last thing on it: nothing
+ * stands beneath it. As it comes into view the letters rise up out of the
+ * page's bottom edge, middle first.
+ */
+function TitleLine() {
+  const { t } = useLanguage();
+  const lenis = useLenisInstance();
+  const reduce = useReducedMotion();
+  const ref = useRef<HTMLDivElement>(null);
+  const inView = useInView(ref, { once: true, amount: 0.6 });
+
+  return (
+    <div className={styles.title} ref={ref}>
+      <Link
+        to="/"
+        onClick={() => lenis?.scrollTo(0, { duration: 1.2 })}
+        className={styles.titleLink}
+        aria-label={t('nav.homeAria')}
+      >
+        <span className={styles.letters}>
+          {LETTERS.map((letter, i) => (
+            <motion.span
+              key={i}
+              className={styles.letter}
+              style={{ width: `${(letter.w / MARK_W) * 100}%` }}
+              // Far enough down to clear the margin under the mark as well.
+              initial={reduce ? false : { y: '180%' }}
+              animate={inView ? { y: '0%' } : undefined}
+              transition={{ duration: 1.2, ease, delay: 0.1 + letter.order * 0.07 }}
+            >
+              <svg viewBox={`${letter.x} 0 ${letter.w} ${MARK_H}`} aria-hidden="true" focusable="false">
+                <path d={letter.d} fill="currentColor" fillRule="evenodd" />
+              </svg>
+            </motion.span>
+          ))}
+        </span>
+      </Link>
+    </div>
+  );
+}
+
+/**
+ * The book's last page. Russian books keep their contents at the back, so the
+ * navigation is set as one, chapter numerals and all.
+ */
 export function Footer() {
   const { t } = useLanguage();
+  const { pathname } = useLocation();
+  const { opensAt, closesAt } = useOpenStatus();
   const currentYear = new Date().getFullYear();
-  const brandRef = useRef<HTMLDivElement>(null);
-  const brandInView = useInView(brandRef, { once: true, margin: '-40px' });
+
+  const external = (label: string) => `${label}, ${t('common.newTab')}`;
+
+  const chapters = [
+    { to: '/', label: t('nav.home') },
+    { to: '/menu', label: t('nav.menu') },
+    { to: '/reading-room', label: t('nav.readingRoom') },
+    { to: '/reviews', label: t('nav.guestBook') },
+  ];
+  const current = chapters.findIndex(({ to }) => to === pathname);
+
+  const socials = [
+    { href: cafe.whatsapp, label: 'WhatsApp' },
+    { href: cafe.instagram, label: 'Instagram' },
+    { href: cafe.vk, label: 'VK' },
+  ];
 
   return (
     <footer className={styles.footer}>
-      {/* Brand Band */}
-      <div className={styles.brandBand} ref={brandRef}>
-        <motion.div
-          className={styles.brandInner}
-          initial={{ opacity: 0, scale: 0.96 }}
-          animate={brandInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.96 }}
-          transition={{ duration: 1, ease }}
-        >
-          <span className={styles.brandLabel}>Specialty Coffee</span>
-          <h2 className={styles.brandText}>BALANCE COFFEE</h2>
-          <p className={styles.brandTagline}>{t('footer.tagline')}</p>
-        </motion.div>
-      </div>
+      <span className={styles.cloth} aria-hidden="true" />
 
-      {/* Triptych Panels */}
-      <div className={styles.container}>
-        <div className={styles.triptych}>
-          <AnimatedSection className={`${styles.panel} ${styles.panelCompact}`} delay={0}>
-            <span className={styles.panelLabel}>{t('footer.geography')}</span>
-            <h3 className={styles.panelHeading}>{t('footer.ourCafes').split('\n').map((line, i) => <span key={i}>{line}{i === 0 && <br />}</span>)}</h3>
-            <div className={styles.panelContent}>
-              <div className={styles.cityGrid}>
-                {cities.map((city) => (
-                  <div key={city.id} className={styles.cityCard}>
-                    <span className={styles.cityCardCount}>{city.locations.length}</span>
-                    <span className={styles.cityCardName}>{city.name}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </AnimatedSection>
+      <div className={styles.page}>
+        <div className={styles.top}>
+          <nav className={styles.contents} aria-label={t('footer.contents')}>
+            {/* Hangs from the head of the page down to the chapter you are
+                in, as the header's ribbon hangs over the current page */}
+            {current >= 0 && (
+              <span
+                className={styles.ribbon}
+                style={{ '--chapter': current } as CSSProperties}
+                aria-hidden="true"
+              />
+            )}
+            <ol className={styles.toc}>
+              {chapters.map(({ to, label }, i) => (
+                <li key={to}>
+                  <NavLink to={to} end={to === '/'} className={styles.chapter}>
+                    <span className={styles.numeral} aria-hidden="true">{toRoman(i + 1)}</span>
+                    <span className={styles.chapterTitle}>{label}</span>
+                  </NavLink>
+                </li>
+              ))}
+            </ol>
+          </nav>
 
-          <AnimatedSection className={styles.panel} delay={0.1}>
-            <span className={styles.panelLabel}>{t('footer.navigation')}</span>
-            <h3 className={styles.panelHeading}>{t('footer.ourPages').split('\n').map((line, i) => <span key={i}>{line}{i === 0 && <br />}</span>)}</h3>
-            <nav className={styles.panelContent}>
-              <Link to="/" className={styles.navLink}>
-                <span>{t('footer.home')}</span>
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                  <path d="M6 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </Link>
-              <Link to="/menu" className={styles.navLink}>
-                <span>{t('footer.menu')}</span>
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                  <path d="M6 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </Link>
-              <Link to="/daily" className={styles.navLink}>
-                <span>Daily</span>
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                  <path d="M6 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </Link>
-              <Link to="/reviews" className={styles.navLink}>
-                <span>{t('footer.reviews')}</span>
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                  <path d="M6 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </Link>
-            </nav>
-          </AnimatedSection>
-
-          <AnimatedSection className={styles.panel} delay={0.2}>
-            <span className={styles.panelLabel}>{t('footer.contacts')}</span>
-            <h3 className={styles.panelHeading}>{t('footer.contactUs').split('\n').map((line, i) => <span key={i}>{line}{i === 0 && <br />}</span>)}</h3>
-            <div className={styles.panelContent}>
+          <div>
+            <address className={styles.block}>
+              <span className={styles.lead}>
+                {t('brand.city')}, {t('brand.address')}
+              </span>
+              <span className={styles.note}>{t('brand.addressNote')}</span>
+              <span className={styles.note}>
+                {t('status.daily')}, {formatHour(opensAt)} {t('common.timeRange')} {formatHour(closesAt)}
+              </span>
               <a
-                href="https://www.instagram.com/balancecoffee.ru/"
-                className={styles.contactLink}
+                href={cafe.route}
+                className={styles.link}
                 target="_blank"
                 rel="noopener noreferrer"
+                aria-label={external(t('footer.route'))}
               >
-                Instagram
+                {t('footer.route')}
+                <ExternalArrow />
               </a>
-              <a
-                href={contactInfo.telegram}
-                className={styles.contactLink}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Telegram
-              </a>
-              <a href={contactInfo.phoneHref} className={styles.contactLink}>
-                {contactInfo.phone}
-              </a>
+            </address>
+            <div className={styles.maker}>
+              <Credit />
             </div>
-            <div className={styles.panelFooter}>
-              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                <circle cx="8" cy="8" r="6.5" stroke="currentColor" strokeWidth="1.5"/>
-                <path d="M8 4.5V8L10.5 10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-              </svg>
-              <span>{contactInfo.deliveryHours.start} {t('common.timeRange')} {contactInfo.deliveryHours.end}</span>
+          </div>
+
+          <div className={styles.block}>
+            <a href={cafe.phoneHref} className={`${styles.lead} ${styles.phone}`}>
+              {cafe.phone}
+            </a>
+            <div className={styles.socials}>
+              {socials.map(({ href, label }) => (
+                <a
+                  key={label}
+                  href={href}
+                  className={styles.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={external(label)}
+                >
+                  {label}
+                  <ExternalArrow />
+                </a>
+              ))}
             </div>
-          </AnimatedSection>
+
+            {/* The imprint, in small type under the numbers */}
+            <div className={styles.imprint}>
+              <p>{t('footer.entrepreneur')}</p>
+              <p className={styles.legal}>
+                <span>{t('footer.inn')} {cafe.legal.inn}</span>
+                <span>{t('footer.ogrnip')} {cafe.legal.ogrnip}</span>
+              </p>
+              <p className={styles.copyright}>&copy; {currentYear} Biblioteka</p>
+            </div>
+          </div>
         </div>
 
-        {/* Brand Row */}
-        <AnimatedSection className={styles.brandRow} delay={0.3}>
-          <div className={styles.brandRowLeft}>
-            <span className={styles.brandRowDescriptor}>{t('footer.descriptor')}</span>
-          </div>
-          <div className={styles.brandRowCenter}>
-            <Logo size="lg" variant="light" />
-          </div>
-          <div className={styles.brandRowRight}>
-            <span className={styles.brandRowDescriptor}>Specialty Coffee · Open 7/7</span>
-          </div>
-        </AnimatedSection>
-
-        {/* Colophon */}
-        <AnimatedSection className={styles.colophon} delay={0.35}>
-          <p className={styles.copyright}>
-            &copy; {currentYear} Balance Coffee
-          </p>
-          <a
-            href="https://lumako.ru"
-            className={styles.credit}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label={t('footer.creditAria')}
-          >
-            <span className={styles.creditMark}>
-              Lumako<span className={styles.creditDot}>.</span>
-            </span>
-          </a>
-        </AnimatedSection>
+        {/* Once per page: the footer stays mounted across routes */}
+        <TitleLine key={pathname} />
       </div>
     </footer>
   );

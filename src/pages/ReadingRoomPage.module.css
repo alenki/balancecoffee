@@ -1,0 +1,218 @@
+.page {
+  background: var(--c-paper);
+}
+
+.hero {
+  padding: calc(var(--header-h) + var(--space-12)) var(--gutter) var(--space-12);
+  text-align: center;
+}
+
+@media (min-width: 1024px) {
+  .hero {
+    padding: calc(var(--header-h) + var(--space-20)) var(--gutter) var(--space-20);
+  }
+}
+
+.title {
+  font-size: clamp(3.25rem, 9vw, 7.5rem);
+  font-weight: 300;
+  line-height: 0.92;
+  letter-spacing: -0.03em;
+}
+
+.subtitle {
+  margin: var(--space-6) auto 0;
+  max-width: 36rem;
+  font-family: var(--font-serif);
+  font-size: var(--text-lg);
+  font-style: italic;
+  line-height: 1.65;
+  color: var(--c-ink-soft);
+}
+
+/* ============================================
+   THE WALL
+   ============================================ */
+/* Wider than the gutter on purpose: the wall hangs with a generous margin and
+   the same air between frames as around them. */
+.gridSection {
+  padding: 0 var(--space-4) var(--space-32);
+}
+
+.masonry {
+  columns: 2;
+  column-gap: var(--space-4);
+}
+
+.card {
+  break-inside: avoid;
+  margin-bottom: var(--space-8);
+  overflow: hidden;
+}
+
+@media (min-width: 641px) {
+  .gridSection {
+    padding: 0 var(--space-12) 10rem;
+  }
+
+  .masonry {
+    column-gap: var(--space-12);
+  }
+
+  .card {
+    margin-bottom: var(--space-12);
+  }
+}
+
+@media (min-width: 1025px) {
+  .gridSection {
+    padding: 0 var(--space-16) 15rem;
+  }
+
+  .masonry {
+    columns: 3;
+    column-gap: var(--space-16);
+  }
+
+  .card {
+    margin-bottom: var(--space-16);
+  }
+}
+
+.photoCard {
+  background: var(--c-paper-deep);
+  line-height: 0;
+}
+
+.photo {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* A guest's note, written on the page itself */
+.quoteCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 180px;
+  padding: var(--space-8) var(--space-5);
+  text-align: center;
+  background: var(--c-paper-bright);
+}
+
+@media (min-width: 768px) {
+  .quoteCard {
+    min-height: 280px;
+    padding: var(--space-12) var(--space-8);
+  }
+}
+
+.quoteMark {
+  display: block;
+  font-family: var(--font-serif);
+  font-size: 2.5rem;
+  font-style: italic;
+  line-height: 0.5;
+  color: var(--c-stamp);
+  opacity: 0.6;
+  margin-bottom: var(--space-4);
+}
+
+@media (min-width: 768px) {
+  .quoteMark {
+    font-size: 4rem;
+  }
+}
+
+.quoteText p {
+  max-width: 90%;
+  margin-inline: auto;
+  font-family: var(--font-serif);
+  font-size: clamp(1.0625rem, 1.6vw, 1.375rem);
+  font-weight: 400;
+  font-style: italic;
+  line-height: 1.6;
+  color: var(--c-ink);
+}
+
+.quoteSource {
+  margin-top: var(--space-5);
+  font-size: var(--text-xs);
+  color: var(--c-ink-muted);
+}
+
+/* ============================================
+   MORE, ON INSTAGRAM
+   ============================================ */
+.more {
+  position: relative;
+  overflow: hidden;
+  padding: var(--space-20) var(--gutter);
+  background: var(--c-binding);
+  color: var(--c-on-binding);
+  text-align: center;
+}
+
+.cloth {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.02) 0 1px, transparent 1px 3px),
+    repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.06) 0 1px, transparent 1px 3px);
+}
+
+.moreInner {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 36rem;
+  margin: 0 auto;
+}
+
+.moreEmblem {
+  width: auto;
+  height: 72px;
+  color: var(--c-foil);
+}
+
+.moreTitle {
+  margin-top: var(--space-6);
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 300;
+  color: var(--c-foil);
+}
+
+.moreText {
+  margin-top: var(--space-4);
+  font-family: var(--font-serif);
+  font-size: var(--text-lg);
+  line-height: 1.6;
+  color: var(--c-on-binding-muted);
+}
+
+.moreCta {
+  display: inline-flex;
+  align-items: center;
+  min-height: 52px;
+  margin-top: var(--space-8);
+  padding: 0 var(--space-6);
+  border-radius: var(--radius-full);
+  background: var(--c-foil);
+  color: var(--c-binding-deep);
+  font-size: var(--text-base);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  transition: background-color var(--transition-base);
+}
+
+.moreCta:hover {
+  background: var(--c-foil-bright);
+}
+
+.moreCta:focus-visible {
+  outline-color: var(--c-foil);
+}

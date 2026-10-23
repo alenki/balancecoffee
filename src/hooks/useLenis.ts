@@ -44,6 +44,9 @@ export function useLenis() {
     });
 
     lenisRef.current = instance;
+    // The instance owns window listeners, so it can only be born here, in
+    // the effect that also destroys it; state is how consumers receive it.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setLenis(instance);
 
     let frame = 0;

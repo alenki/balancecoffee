@@ -17,7 +17,7 @@
 }
 
 /* Reserves the image's own aspect ratio in flow (set inline from the manifest),
-   which is what keeps the Daily masonry from reflowing as images arrive. */
+   which is what keeps the reading room masonry from reflowing as images arrive. */
 .frameIntrinsic {
   position: relative;
   width: 100%;

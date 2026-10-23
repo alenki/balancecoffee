@@ -1,0 +1,66 @@
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6em;
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.ink {
+  color: var(--c-ink);
+}
+
+.paper {
+  color: var(--c-on-binding);
+}
+
+.dot {
+  position: relative;
+  flex: none;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  color: var(--c-stamp);
+}
+
+.paper .dot {
+  color: var(--c-foil);
+}
+
+/* Open: a solid dot with a slow halo, a light left on. Closed: an empty
+   ring, still. */
+.open .dot {
+  background: currentColor;
+}
+
+.open .dot::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 1px solid currentColor;
+  opacity: 0;
+  animation: halo 2.8s ease-out infinite;
+}
+
+.closed .dot {
+  box-shadow: inset 0 0 0 1.5px currentColor;
+}
+
+.note {
+  font-weight: 450;
+  opacity: 0.75;
+}
+
+@keyframes halo {
+  0% {
+    opacity: 0.7;
+    transform: scale(0.6);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.6);
+  }
+}

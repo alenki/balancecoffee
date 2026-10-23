@@ -1,76 +1,61 @@
-# React + TypeScript + Vite
+# Biblioteka
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Website for **Biblioteka** (BIBΛIOTEKA), a coffee and books café on the ground
+floor of the business centre at 35 Pushkina Street, Nalchik. Open daily from
+8:00 to 22:00; delivery on +7 928 916-88-77.
 
-Currently, two official plugins are available:
+React 19, TypeScript and Vite. Russian first, with an English edition.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Pages
 
-## React Compiler
+| Route | Page |
+|---|---|
+| `#/` | Title page, foreword, menu preview, the reading room band, how to find us |
+| `#/menu` | The full menu as a grid of cards, one per item. `#/menu?chapter=lemonades` opens at a section |
+| `#/reading-room` | Photographs and guest quotes |
+| `#/reviews` | Guest book: composes the review into a WhatsApp message to the café |
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Commands
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
+npm run dev       # dev server (regenerates images first)
+npm run build     # type-check and production build into dist/
+npm run preview   # serve the production build
+npm run lint
+npm run images    # regenerate responsive images and the manifest
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+`public/img/` and `src/generated/` are build outputs and are gitignored, so a
+fresh clone runs `npm run images` (or any `dev`/`build`, which do it first).
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Keeping it current
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+| What changes | Where |
+|---|---|
+| Prices, items, chapters | `src/data/menu.ts` and `src/data/menu.en.ts` (ids, prices and photos must match) |
+| Phone, WhatsApp, socials, hours, Ramadan hours | `src/data/cafe.ts` |
+| Copy in both languages | `src/context/LanguageContext.tsx` |
+| Guest quotes | `src/data/guestQuotes.ts` |
+| Reading room photographs and their alt text | `src/data/gallery.ts` |
+| Photographs | drop originals in `assets-src/<area>/`, run `npm run images`, reference by key |
 
-## Frontend aesthetics
-You tend to converge toward generic, "on distribution" outputs. In frontend design, this creates what users call the "AI slop" aesthetic. Avoid this: make creative, distinctive frontends that surprise and delight. Focus on: Typography: Choose fonts that are beautiful, unique, and interesting. Avoid generic fonts like Arial and Inter; opt instead for distinctive choices that elevate the frontend's aesthetics. Color & Theme: Commit to a cohesive aesthetic. Use CSS variables for consistency. Dominant colors with sharp accents outperform timid, evenly-distributed palettes. Draw from IDE themes and cultural aesthetics for inspiration. Motion: Use animations for effects and micro-interactions. Prioritize CSS-only solutions for HTML. Use Motion library for React when available. Focus on high-impact moments: one well-orchestrated page load with staggered reveals (animation-delay) creates more delight than scattered micro-interactions. Backgrounds: Create atmosphere and depth rather than defaulting to solid colors. Layer CSS gradients, use geometric patterns, or add contextual effects that match the overall aesthetic. Avoid generic AI-generated aesthetics:- Overused font families (Inter, Roboto, Arial, system fonts)- Clichéd color schemes (particularly purple gradients on white backgrounds)- Predictable layouts and component patterns- Cookie-cutter design that lacks context-specific character Interpret creatively and make unexpected choices that feel genuinely designed for the context. Vary between light and dark themes, different fonts, different aesthetics. You still tend to converge on common choices (Space Grotesk, for example) across generations. Avoid this: it is critical that you think outside the box! 
+Opening status ("Открыто до 22:00") is computed live on Moscow time, and
+switches to the Ramadan schedule automatically from the Islamic calendar.
+
+The menu note at the bottom of `#/menu` says the prices were checked against
+the board at the counter in October 2026. Update that line when prices change.
+
+## Before going live
+
+- `index.html` carries `noindex, nofollow`. Remove that meta tag once the site
+  should appear in search.
+- Make `og:image` an absolute URL on the final domain; Telegram and WhatsApp
+  previews need one.
+
+## Sources
+
+Menu, prices, hours, address, coordinates, photographs and guest quotes come
+from the café's own Yandex Maps listing (org 26863601865), its Yandex Business
+page and its Instagram (@bibliotekanalchik), checked October 2026. The logo
+marks are vector traces of the café's logo master.

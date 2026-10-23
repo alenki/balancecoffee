@@ -1,294 +1,787 @@
 /* ============================================
-   HERO SECTION: Bold Editorial Cinema
-   Video card with massive typography,
-   asymmetric bottom-anchored layout,
-   and cinematic grain overlay
+   HERO: the book
+
+   A clothbound hardback lies shut on the page,
+   tipped away from the reader so the depth of
+   its pages shows. Scroll swings the front board
+   open on its joint onto the room and the title
+   page, while the camera rises over the book and
+   the spread is drawn up until it fills the
+   screen.
+
+   It is built the way a book is bound: a back
+   board, the pages, a front board, each with the
+   faces a reader can see. Its frame: x right,
+   y down, z towards the reader, with the title
+   page at z = 0, so the finished spread lies
+   flat on the screen and its type stays crisp.
+   Landscape the book is bound on its left edge;
+   portrait it is bound at the head and opens
+   upward, so the spread fits a phone. Either way
+   the reader sees its bottom and right sides,
+   so those are the only sides it has.
+
+   Scroll writes on the stage: --open (0 to 1),
+   --lift (peaks as the board stands upright),
+   --fall (how far past upright it has gone),
+   --scale, --pitch and --yaw (the camera),
+   --lens and --details. The layout
+   writes the book's make, in pixels.
+
+   No flattening properties (opacity, filter,
+   overflow, clip-path, mask, blend modes) on
+   .book, .body or .cover: any of them collapses
+   the 3D and the cover stops turning. The faces
+   are leaves and may use them, and so may
+   .scene, which holds the lens.
    ============================================ */
+
+/* Animated by the arrival and by a hand, so they must interpolate */
+@property --drop {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 0;
+}
+
+@property --peek {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 0;
+}
 
 .hero {
+  /* Timed for the first visit: the book is set down as the loader's head
+     settles into the header, so the page is never empty between them */
+  --intro-at: 0.8s;
+
   position: relative;
-  min-height: 100vh;
-  min-height: 100svh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: calc(var(--space-6) + 64px) var(--space-6) var(--space-6);
-  background: #ffffff;
+  height: 280svh;
+  background: var(--c-paper);
 }
 
-@media (min-width: 768px) {
-  .hero {
-    padding: calc(var(--space-12) + 72px) var(--space-12) var(--space-12);
-  }
+/* Back on the home page later, with no loader to wait for */
+.again {
+  --intro-at: 0.2s;
 }
 
-@media (min-width: 1200px) {
-  .hero {
-    padding: calc(var(--space-16) + 72px) var(--space-16) var(--space-16);
-  }
+/* Motion reduced: no pinned scroll, the book simply lies open */
+.still {
+  height: 100svh;
 }
 
-/* ============================================
-   VIDEO CARD
-   ============================================ */
-.heroCard {
-  position: relative;
-  width: 100%;
-  height: calc(100vh - var(--space-12) - 64px);
-  height: calc(100svh - var(--space-12) - 64px);
-  border-radius: var(--radius-xl);
+.stage {
+  /* Written by scroll */
+  --open: 0;
+  --lift: 0;
+  --fall: 0;
+  --scale: 0.7;
+  --pitch: 24deg;
+  --yaw: -16deg;
+  --lens: 1800px;
+  --details: 0;
+
+  /* Written by the layout: the book's make */
+  --page-w: 24rem;
+  --page-h: 32rem;
+  --page-x: 0px;
+  --page-y: 9px;
+  --board-w: calc(var(--page-w) + 9px);
+  --board-h: calc(var(--page-h) + 18px);
+  --square: 9px;
+  --board: 6px;
+  --block: 44px;
+  --joint: 17px;
+  --ribbon-x: 18px;
+  --ribbon-drape: 40px;
+  --ribbon-angle: 72deg;
+
+  /* The ribbon's width, and the length of it that lies out on the page:
+     never more than the 4rem the stage keeps clear below the open book */
+  --ribbon-w: clamp(7px, calc(var(--page-h) * 0.021), 15px);
+  --ribbon-len: clamp(2.25rem, calc(var(--page-h) * 0.045 + 1.5rem), 3.5rem);
+
+  /* The boards' corners at the fore-edge, worn soft */
+  --round: 2px;
+
+  /* The cloth: the café's red, with a grain the eye reads as its weave. A
+     tileable raster at twice the density it is shown at, soft-lit over the
+     red. It must stay a raster: an SVG filter image (feTurbulence) as a
+     background costs every face that wears it its antialiased edges in
+     Chrome's 3D compositing, so the book's silhouette steps. */
+  --cloth: url('/cloth.webp') 0 0 / 96px;
+
+  /* Orientation: away from the spine across a page; the corners at the
+     fore-edge, seen from outside the cover and from inside it; and the cloth
+     turned in round the endpaper */
+  --from-spine: to right;
+  --corners: 0 var(--round) var(--round) 0;
+  --corners-inside: var(--round) 0 0 var(--round);
+  --plate-inset: var(--square) 0 var(--square) var(--square);
+
+  position: sticky;
+  top: 0;
+  display: grid;
+  place-items: center;
+  height: 100svh;
+  /* Below, whatever of the ribbon's length the gutter cannot hold */
+  padding: var(--header-h) 0 max(0px, 4rem - var(--gutter));
   overflow: hidden;
-  box-shadow:
-    0 4px 6px rgba(0, 0, 0, 0.03),
-    0 10px 20px rgba(0, 0, 0, 0.04);
 }
 
-@media (min-width: 768px) {
-  .heroCard {
-    height: calc(100vh - var(--space-24) - 72px);
-    height: calc(100svh - var(--space-24) - 72px);
-    border-radius: var(--radius-2xl);
+@media (orientation: portrait) {
+  .stage {
+    --from-spine: to bottom;
+    --corners: 0 0 var(--round) var(--round);
+    --corners-inside: var(--round) var(--round) 0 0;
+    --plate-inset: var(--square) var(--square) 0 var(--square);
   }
 }
 
-@media (min-width: 1200px) {
-  .heroCard {
-    height: calc(100vh - var(--space-32) - 72px);
-    height: calc(100svh - var(--space-32) - 72px);
-    border-radius: 32px;
+/* The lens, and the fade the book arrives in */
+.scene {
+  perspective: var(--lens);
+  animation: appear 0.6s ease-out var(--intro-at) backwards;
+}
+
+.book {
+  /* Centred shut; centred on the spine once open */
+  --shift-x: calc(var(--open) * var(--board-w) / 2);
+  --shift-y: 0px;
+  /* How high the book is held before it is set down */
+  --held: calc(var(--board-h) * 0.16);
+
+  position: relative;
+  width: var(--board-w);
+  height: var(--board-h);
+  transform-style: preserve-3d;
+  transform:
+    scale(var(--scale))
+    rotateX(var(--pitch))
+    rotateY(var(--yaw))
+    translate3d(var(--shift-x), var(--shift-y), calc(var(--drop) * var(--held)))
+    rotateZ(calc(var(--drop) * -2.5deg));
+  animation: setDown 1.6s var(--ease-out) var(--intro-at) backwards;
+  transition: --peek 0.9s var(--ease-out);
+}
+
+@media (orientation: portrait) {
+  .book {
+    --shift-x: 0px;
+    --shift-y: calc(var(--open) * var(--board-h) / 2);
   }
 }
 
-/* ============================================
-   VIDEO BACKGROUND + OVERLAYS
-   ============================================ */
-.heroBackground {
+/* Shut, a hand on the book lifts the board a crack */
+@media (hover: hover) {
+  .stage[data-shut] .book:hover {
+    --peek: 1;
+  }
+}
+
+/* Painted last, though it lies beneath the boards. Firefox sorts the book by
+   cutting each face along the planes of the faces painted before it, and
+   draws a face it has cut with harder edges, so the silhouette steps. The
+   edges of the pages and the drape stand across the front board, the title
+   page and the endpaper; painted after them, their planes cut nothing that
+   shows. */
+.body {
   position: absolute;
   inset: 0;
-  z-index: 0;
+  z-index: 1;
+  transform-style: preserve-3d;
 }
 
-.heroImage {
+/* ============================================
+   ON THE PAGE
+   The book's shadow, and the open board's,
+   which grows out from the spine as the board
+   comes down past upright. Both stay on the
+   page while the book is held above it.
+   ============================================ */
+.shadow,
+.fallShadow {
+  --on-page: translateZ(calc(-1 * (var(--block) + var(--board) + var(--drop) * var(--held)) - 0.5px));
+
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+/* Hollow: only the ring outside the book is ever seen, so the book itself
+   hides the rest */
+.shadow {
+  border-radius: var(--round);
+  box-shadow:
+    0 0 1px 0.5px rgba(40, 18, 8, 0.2),
+    0 calc(var(--board-h) * 0.012) calc(var(--board-h) * 0.03) rgba(40, 20, 10, 0.18),
+    0 calc(var(--board-h) * 0.045) calc(var(--board-h) * 0.11) calc(var(--board-h) * -0.015)
+      rgba(40, 20, 10, 0.3);
+  opacity: calc(1 - var(--drop) * 0.65);
+  transform: var(--on-page) scale(calc(1 + var(--drop) * 0.06));
+}
+
+/* Solid, since it is seen while the board is still in the air above it */
+.fallShadow {
+  inset: 2% 100% 2% -97%;
+  background: rgba(40, 20, 10, 0.2);
+  filter: blur(calc(var(--board-h) * 0.025));
+  transform-origin: right center;
+  opacity: calc(var(--fall) * (1 - var(--drop) * 0.65));
+  transform: var(--on-page) scaleX(var(--fall));
+}
+
+@media (orientation: portrait) {
+  .fallShadow {
+    inset: -97% 2% 100% 2%;
+    transform-origin: center bottom;
+    transform: var(--on-page) scaleY(var(--fall));
+  }
+}
+
+/* ============================================
+   THE BACK BOARD
+   Seen round the pages as the squares: the
+   cloth the boards stand out by, shaded where
+   the pages stand on it.
+   ============================================ */
+.back {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--corners);
+  background: var(--cloth), var(--c-binding);
+  background-blend-mode: soft-light;
+  backface-visibility: hidden;
+  transform: translateZ(calc(var(--block) * -1));
+}
+
+.back::after {
+  content: '';
+  position: absolute;
+  top: var(--page-y);
+  left: var(--page-x);
+  width: var(--page-w);
+  height: var(--page-h);
+  box-shadow: 0 0 calc(var(--square) * 0.7) rgba(40, 0, 8, 0.5);
+}
+
+/* The two edges of each board a reader can see. The cloth rounds over onto
+   them from the face, so they catch a line of light there. */
+.backBottom,
+.coverBottom,
+.backRight,
+.coverRight {
+  position: absolute;
+  backface-visibility: hidden;
+}
+
+.backBottom,
+.coverBottom {
+  top: 100%;
+  left: 0;
+  width: 100%;
+  height: var(--board);
+  transform-origin: top;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.16), transparent 55%),
+    var(--c-binding-deep);
+}
+
+.backRight,
+.coverRight {
+  top: 0;
+  left: 100%;
+  width: var(--board);
+  height: 100%;
+  transform-origin: left;
+  background:
+    linear-gradient(to right, rgba(255, 255, 255, 0.12), transparent 55%),
+    #8c0016;
+}
+
+.backBottom {
+  transform: translateZ(calc(var(--block) * -1)) rotateX(-90deg);
+}
+
+.backRight {
+  transform: translateZ(calc(var(--block) * -1)) rotateY(90deg);
+}
+
+/* ============================================
+   THE PAGES
+   Their edges, a fine stack of leaves, in the
+   shade of the front board above and the back
+   board below; the headbands at either end of
+   the spine; and the ribbon where it leaves
+   them.
+   ============================================ */
+.pagesBottom,
+.pagesRight {
+  position: absolute;
+  backface-visibility: hidden;
+}
+
+.pagesBottom {
+  top: calc(var(--page-y) + var(--page-h));
+  left: var(--page-x);
+  width: var(--page-w);
+  height: var(--block);
+  transform-origin: top;
+  transform: rotateX(-90deg);
+  background:
+    linear-gradient(rgba(70, 45, 20, 0.2), transparent 24%, transparent 78%, rgba(70, 45, 20, 0.18)),
+    repeating-linear-gradient(transparent 0, rgba(255, 255, 255, 0.5) 0.8px, transparent 1.6px 2.5px),
+    repeating-linear-gradient(transparent 0, rgba(120, 95, 60, 0.15) 0.9px, transparent 1.8px 3.5px),
+    #e6e0d3;
+}
+
+.pagesRight {
+  top: var(--page-y);
+  left: calc(var(--page-x) + var(--page-w));
+  width: var(--block);
+  height: var(--page-h);
+  transform-origin: left;
+  transform: rotateY(90deg);
+  background:
+    linear-gradient(to right, rgba(70, 45, 20, 0.22), transparent 24%, transparent 78%, rgba(70, 45, 20, 0.2)),
+    repeating-linear-gradient(to right, transparent 0, rgba(255, 255, 255, 0.45) 0.8px, transparent 1.6px 2.5px),
+    repeating-linear-gradient(to right, transparent 0, rgba(120, 95, 60, 0.15) 0.9px, transparent 1.8px 3.5px),
+    #ddd6c7;
+}
+
+/* A little silk at the head and tail of the spine, seen at the gutter once
+   the book is open */
+.headband {
+  position: absolute;
+  left: calc(var(--square) * -0.6);
+  width: calc(var(--square) * 1.2);
+  height: calc(var(--square) * 0.66);
+  border-radius: calc(var(--square) * 0.33);
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.35), transparent 45%, rgba(40, 0, 8, 0.4)),
+    repeating-linear-gradient(to right, var(--c-binding-deep) 0 1px, #efe7d5 1px 2px);
+  backface-visibility: hidden;
+  opacity: clamp(0, var(--open) * 8 - 0.2, 1);
+  transform: translateZ(0.5px);
+}
+
+.headbandHead {
+  top: calc(var(--page-y) - var(--square) * 0.66);
+}
+
+.headbandTail {
+  top: calc(var(--page-y) + var(--page-h));
+}
+
+@media (orientation: portrait) {
+  .headband {
+    width: calc(var(--square) * 0.66);
+    height: calc(var(--square) * 1.2);
+    background:
+      linear-gradient(to right, rgba(255, 255, 255, 0.35), transparent 45%, rgba(40, 0, 8, 0.4)),
+      repeating-linear-gradient(var(--c-binding-deep) 0 1px, #efe7d5 1px 2px);
+  }
+
+  .headbandHead,
+  .headbandTail {
+    top: calc(var(--square) * -0.6);
+  }
+
+  .headbandHead {
+    left: calc(var(--page-x) - var(--square) * 0.66);
+  }
+
+  .headbandTail {
+    left: calc(var(--page-x) + var(--page-w));
+  }
+}
+
+/* The ribbon leaving the pages partway down the stack and falling over the
+   back board's edge, in the shade of the pages */
+.drape {
+  position: absolute;
+  top: calc(var(--page-y) + var(--page-h));
+  left: var(--ribbon-x);
+  width: var(--ribbon-w);
+  height: var(--ribbon-drape);
+  margin-left: calc(var(--ribbon-w) / -2);
+  transform-origin: top;
+  transform: translateZ(calc(var(--block) * -0.4)) rotateX(calc(var(--ribbon-angle) * -1));
+  background: linear-gradient(to right, #7d0013, #a3011c 45%, #7d0013);
+  backface-visibility: hidden;
+}
+
+/* ============================================
+   THE TITLE PAGE
+   The first leaf, curving down into the gutter
+   at the spine.
+   ============================================ */
+.page {
+  position: absolute;
+  top: var(--page-y);
+  left: var(--page-x);
+  width: var(--page-w);
+  height: var(--page-h);
+  container-type: inline-size;
+  background: var(--c-paper-bright);
+  backface-visibility: hidden;
+}
+
+/* The shadow the lifting board throws, and the leaf curving into the gutter */
+.page::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(var(--from-spine), rgba(40, 20, 10, calc(0.32 * var(--lift))), transparent 62%),
+    linear-gradient(
+      var(--from-spine),
+      rgba(40, 20, 10, 0.22) 0,
+      rgba(40, 20, 10, 0.11) 1%,
+      rgba(40, 20, 10, 0.05) 3%,
+      rgba(40, 20, 10, 0.02) 6%,
+      transparent 11%
+    );
+}
+
+.place {
+  position: absolute;
+  top: 9cqw;
+  right: 9cqw;
+  left: 9cqw;
+  font-family: var(--font-sans);
+  font-size: max(0.625rem, 2.3cqw);
+  font-weight: 650;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--c-ink-muted);
+}
+
+.title {
+  position: absolute;
+  top: 42%;
+  right: 9cqw;
+  left: 9cqw;
+  transform: translateY(-50%);
+  font-size: 15cqw;
+  font-weight: 300;
+  line-height: 0.98;
+  letter-spacing: -0.02em;
+  color: var(--c-ink);
+}
+
+.title span {
+  display: block;
+}
+
+.details {
+  position: absolute;
+  right: 9cqw;
+  bottom: 8cqw;
+  left: 9cqw;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2) var(--space-4);
+  opacity: var(--details);
+}
+
+.stage:not([data-details]) .details {
+  visibility: hidden;
+}
+
+.menuLink {
+  /* A full-height target without moving the type off its line */
+  padding: var(--space-3) 0;
+  margin: calc(var(--space-3) * -1) 0;
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  font-weight: 650;
+  color: var(--c-ink);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.35em;
+  text-decoration-color: var(--rule-strong);
+  transition: text-decoration-color var(--transition-base);
+}
+
+.menuLink:hover {
+  text-decoration-color: currentColor;
+}
+
+/* ============================================
+   THE FRONT BOARD
+   Hinged at the joint. Its face is the stamped
+   cloth; inside it, the cloth is turned in
+   round the endpaper.
+   ============================================ */
+.cover {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  transform-origin: left center;
+  transform: rotateY(calc(var(--open) * -180deg - var(--peek) * 3deg));
+}
+
+@media (orientation: portrait) {
+  .cover {
+    transform-origin: center top;
+    transform: rotateX(calc(var(--open) * 180deg + var(--peek) * 3deg));
+  }
+}
+
+.coverBottom {
+  transform: translateZ(var(--board)) rotateX(-90deg);
+}
+
+.coverRight {
+  transform: translateZ(var(--board)) rotateY(90deg);
+}
+
+.front,
+.inside {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  backface-visibility: hidden;
+}
+
+.front {
+  container-type: inline-size;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6cqw;
+  /* The stamping is centred on the board beyond the joint */
+  padding-left: var(--joint);
+  border-radius: var(--corners);
+  background:
+    linear-gradient(170deg, rgba(255, 255, 255, 0.07), transparent 42%, rgba(40, 0, 8, 0.16)),
+    var(--cloth),
+    var(--c-binding);
+  background-blend-mode: normal, soft-light;
+  color: var(--c-foil);
+  transform: translateZ(var(--board));
+}
+
+@media (orientation: portrait) {
+  .front {
+    padding-top: var(--joint);
+    padding-left: 0;
+  }
+}
+
+.stage[data-shut] .front {
+  cursor: pointer;
+}
+
+/* The cloth turning over onto the spine, then the joint pressed in beside it */
+.front::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    var(--from-spine),
+    rgba(30, 0, 6, 0.36) 0,
+    rgba(255, 255, 255, 0.07) calc(var(--joint) * 0.3),
+    transparent calc(var(--joint) * 0.62),
+    rgba(30, 0, 6, 0.34) var(--joint),
+    rgba(255, 255, 255, 0.1) calc(var(--joint) + 2px),
+    transparent calc(var(--joint) + 6px)
+  );
+}
+
+/* The light falling off as the board turns away from it */
+.front::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    var(--from-spine),
+    rgba(30, 0, 6, calc(0.2 * var(--lift))),
+    rgba(30, 0, 6, calc(0.55 * var(--lift)))
+  );
+}
+
+/* The blind-stamped border: pressed into the cloth, not foiled, the light
+   catching its lower lip */
+.rule {
+  position: absolute;
+  inset: 5.5cqw 5.5cqw 5.5cqw calc(var(--joint) + 3.5cqw);
+  border: 1px solid rgba(60, 0, 12, 0.42);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.09),
+    inset 0 1px 0 rgba(255, 255, 255, 0.09);
+}
+
+@media (orientation: portrait) {
+  .rule {
+    inset: calc(var(--joint) + 3.5cqw) 5.5cqw 5.5cqw;
+  }
+}
+
+.emblem {
+  width: 34cqw;
+  margin-top: -4cqw;
+}
+
+.wordmark {
+  width: 64cqw;
+}
+
+.motto {
+  max-width: 64cqw;
+  margin-top: -2cqw;
+  font-family: var(--font-sans);
+  font-size: max(0.5625rem, 2.4cqw);
+  font-weight: 650;
+  line-height: 1.7;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  text-align: center;
+  text-wrap: balance;
+  color: var(--c-on-binding-muted);
+}
+
+/* On a cover as small as a landscape phone's, the motto shrinks with the
+   board rather than breaking over four lines */
+@container (max-width: 220px) {
+  .motto {
+    font-size: 2.4cqw;
+  }
+}
+
+.inside {
+  border-radius: var(--corners-inside);
+  background: var(--cloth), var(--c-binding);
+  background-blend-mode: soft-light;
+  transform: rotateY(180deg);
+}
+
+@media (orientation: portrait) {
+  .inside {
+    transform: rotateX(180deg);
+  }
+}
+
+/* Where the endpaper folds into the joint, and the shade while the board is
+   still in the air */
+.inside::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(var(--from-spine), transparent 93%, rgba(30, 15, 8, 0.06) 97%, rgba(30, 15, 8, 0.26)),
+    linear-gradient(rgba(30, 15, 8, calc(0.5 * var(--lift))), rgba(30, 15, 8, calc(0.5 * var(--lift))));
+}
+
+/* The endpaper, pasted down on the cloth turned in round it */
+.plate {
+  position: absolute;
+  inset: var(--plate-inset);
+  box-shadow: 0 0 0 0.5px rgba(50, 15, 8, 0.3);
+}
+
+.image {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: left center;
-}
-
-@media (min-width: 768px) {
-  .heroImage {
-    object-position: center;
-  }
-}
-
-/* Cinematic multi-layer gradient:
-   - Vignette from edges for depth
-   - Heavy bottom fade for headline readability
-   - Subtle top darken for corner text */
-.heroOverlay {
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(
-      ellipse at center,
-      rgba(0, 0, 0, 0.05) 0%,
-      rgba(0, 0, 0, 0.18) 55%,
-      rgba(0, 0, 0, 0.4) 100%
-    ),
-    linear-gradient(
-      to top,
-      rgba(0, 0, 0, 0.6) 0%,
-      rgba(0, 0, 0, 0.25) 35%,
-      rgba(0, 0, 0, 0.0) 60%
-    ),
-    linear-gradient(
-      to bottom,
-      rgba(0, 0, 0, 0.15) 0%,
-      rgba(0, 0, 0, 0.0) 18%
-    );
-  pointer-events: none;
-}
-
-/* Grain texture: matching About section */
-.grain {
-  position: absolute;
-  inset: 0;
-  opacity: 0.04;
-  pointer-events: none;
-  z-index: 1;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  background-size: 200px 200px;
+  object-position: 50% 40%;
 }
 
 /* ============================================
-   CORNER ACCENTS
+   THE RIBBON
+   Bound in at the spine, it leaves the pages at
+   the foot and lies out on the page: beside the
+   spine when the book opens sideways, mid foot
+   when it opens upward. The length lying on the
+   page is the button.
    ============================================ */
-.cornerTopLeft {
+.ribbon {
   position: absolute;
-  top: var(--space-6);
-  left: var(--space-6);
-  z-index: 3;
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
+  top: calc(var(--board-h) + var(--board) / 2);
+  left: var(--ribbon-x);
+  width: 2.75rem;
+  height: calc(var(--ribbon-len) + 0.75rem);
+  margin-left: -1.375rem;
+  transform: translateZ(calc(-1 * (var(--block) + var(--board)) + 0.5px));
 }
 
-@media (min-width: 768px) {
-  .cornerTopLeft {
-    top: var(--space-10);
-    left: var(--space-10);
-  }
-}
-
-@media (min-width: 1200px) {
-  .cornerTopLeft {
-    top: var(--space-12);
-    left: var(--space-12);
-  }
-}
-
-@media (max-width: 600px) {
-  .cornerTopLeft {
-    display: none;
-  }
-}
-
-.cornerLabel {
-  font-family: var(--font-primary);
-  font-size: var(--text-xs);
-  font-weight: var(--font-medium);
-  color: rgba(255, 255, 255, 0.55);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-
-@media (min-width: 768px) {
-  .cornerLabel {
-    font-size: var(--text-sm);
-  }
-}
-
-/* ============================================
-   BOTTOM RIGHT LOGO
-   ============================================ */
-.bottomRightLogo {
+.ribbon::before {
+  content: '';
   position: absolute;
-  z-index: 3;
-  top: var(--space-6);
-  right: var(--space-6);
-  height: clamp(24px, 4vw, 36px);
-  width: auto;
-  opacity: 0.7;
+  top: 0;
+  left: 50%;
+  width: var(--ribbon-w);
+  height: var(--ribbon-len);
+  margin-left: calc(var(--ribbon-w) / -2);
+  /* Satin: a sheen down its length */
+  background: linear-gradient(to right, #a30019, #c4071f 30%, #d6283d 50%, #c4071f 70%, #a30019);
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% calc(100% - var(--ribbon-w) * 0.6), 0 100%);
+  transform-origin: top;
+  transition: transform 0.5s var(--ease-out);
 }
 
-@media (min-width: 768px) {
-  .bottomRightLogo {
-    top: var(--space-10);
-    right: var(--space-10);
-    height: clamp(28px, 3.5vw, 44px);
-  }
+.ribbon:hover::before {
+  transform: scaleY(1.12);
 }
 
-/* Stays top-right at every width: it balances the "Specialty Coffee"
-   eyebrow opposite it and leaves the bottom band to the headline alone.
-   Dropped to the bottom corner it crowded the serif line and read as a
-   second copy of the header logo. */
-@media (min-width: 1200px) {
-  .bottomRightLogo {
-    top: var(--space-12);
-    right: var(--space-12);
-    height: clamp(32px, 2.6vw, 42px);
-  }
-}
-
-/* ============================================
-   HEADLINE BLOCK: Massive editorial type
-   Bottom-left anchored, stacked lines with
-   masked slide-up reveal animation.
-
-   Lines 1-2: Bold sans-serif (heavy weight)
-   Line 3: Playfair Display italic (contrast)
-   ============================================ */
-/* This is the page <h1>; the per-line spans own every type decision,
-   so the global heading styles are neutralised here. */
-.headlineBlock {
+/* A drop running down a thread: scroll */
+.cue {
   position: absolute;
-  z-index: 3;
-  bottom: var(--space-10);
-  left: var(--space-6);
-  right: var(--space-6);
-  max-width: 85%;
-  margin: 0;
-  font-size: inherit;
-  font-weight: inherit;
-  line-height: inherit;
-  letter-spacing: normal;
-  text-transform: none;
-  text-wrap: wrap;
-  color: inherit;
+  bottom: clamp(1.25rem, 3.5vh, 2.25rem);
+  left: 50%;
+  width: 1px;
+  height: 3rem;
+  background: var(--c-ink);
+  opacity: calc(0.55 - var(--open) * 6);
+  animation: cue 2.4s var(--ease-out) calc(var(--intro-at) + 0.9s) infinite backwards;
 }
 
-@media (min-width: 768px) {
-  .headlineBlock {
-    bottom: var(--space-14);
-    left: var(--space-10);
-    right: auto;
-    max-width: 70%;
+@keyframes appear {
+  from {
+    opacity: 0;
   }
 }
 
-@media (min-width: 1200px) {
-  .headlineBlock {
-    bottom: var(--space-20);
-    left: var(--space-12);
-    max-width: 65%;
+/* Held a hand's breadth above the page, then set down on it */
+@keyframes setDown {
+  from {
+    --drop: 1;
   }
 }
 
-/* Each line wrapped in overflow:hidden for
-   the masked reveal effect */
-.lineReveal {
-  display: block;
-  overflow: hidden;
-  /* Slight negative margin to tighten line spacing */
-  margin-bottom: -0.05em;
+@keyframes cue {
+  0% {
+    transform: scaleY(0);
+    transform-origin: top;
+  }
+  45% {
+    transform: scaleY(1);
+    transform-origin: top;
+  }
+  55% {
+    transform: scaleY(1);
+    transform-origin: bottom;
+  }
+  100% {
+    transform: scaleY(0);
+    transform-origin: bottom;
+  }
 }
 
-.lineReveal:last-child {
-  margin-bottom: 0;
-}
-
-/* Bold sans-serif lines (lines 1 and 2) */
-.headlineBold {
-  display: block;
-  font-family: var(--font-primary);
-  font-size: clamp(2.2rem, 9vw, 6.5rem);
-  font-weight: var(--font-heavy);
-  line-height: 1.0;
-  color: rgba(255, 255, 255, 0.95);
-  text-transform: uppercase;
-  letter-spacing: -0.03em;
-}
-
-/* Serif italic line (line 3): typographic contrast */
-.headlineSerif {
-  display: block;
-  font-family: var(--font-serif);
-  font-size: clamp(1.8rem, 7.5vw, 5.5rem);
-  font-weight: 400;
-  font-style: italic;
-  line-height: 1.15;
-  color: rgba(255, 255, 255, 0.85);
-  letter-spacing: -0.01em;
-  padding-top: 0.08em;
-}
-
-/* ============================================
-   REDUCED MOTION
-   ============================================ */
 @media (prefers-reduced-motion: reduce) {
-  .headlineBold,
-  .headlineSerif {
-    transform: none;
+  .scene,
+  .book {
+    animation: none;
+  }
+
+  .cue {
+    display: none;
   }
 }

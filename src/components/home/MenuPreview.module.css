@@ -1,131 +1,60 @@
 /* ============================================
-   MENU PREVIEW: Editorial Product Showcase
-   Inspired by White Coffee's "Carefully Selected"
-   Light editorial block with product grid
+   MENU PREVIEW
+   A centred two-line title, then six of the
+   menu page's own cards and a way into the rest.
    ============================================ */
 
 .section {
   position: relative;
-  background: var(--color-bg-white);
-  overflow: hidden;
-}
-
-/* Container: Full-width, edge-to-edge */
-.container {
-  position: relative;
-  z-index: 1;
-  width: 100%;
-  padding: clamp(5rem, 10vw, 8rem) var(--space-4) clamp(4rem, 8vw, 7rem);
-}
-
-@media (min-width: 640px) {
-  .container {
-    padding-left: var(--space-6);
-    padding-right: var(--space-6);
-  }
-}
-
-@media (min-width: 768px) {
-  .container {
-    padding-left: var(--space-12);
-    padding-right: var(--space-12);
-  }
-}
-
-@media (min-width: 1200px) {
-  .container {
-    padding-left: var(--space-16);
-    padding-right: var(--space-16);
-  }
-}
-
-/* Corner Accents */
-.cornerAccent {
-  position: absolute;
-  z-index: 2;
-  font-family: var(--font-primary);
-  font-size: var(--text-xs);
-  font-weight: var(--font-medium);
-  color: var(--color-text-muted);
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-}
-
-.cornerTL {
-  top: var(--space-8);
-  left: var(--space-8);
-}
-
-.cornerTR {
-  top: var(--space-8);
-  right: var(--space-8);
-}
-
-@media (max-width: 600px) {
-  .cornerAccent {
-    display: none;
-  }
-}
-
-@media (min-width: 768px) {
-  .cornerTL {
-    top: var(--space-10);
-    left: var(--space-12);
-  }
-  .cornerTR {
-    top: var(--space-10);
-    right: var(--space-12);
-  }
+  padding: clamp(5rem, 10vw, 8rem) var(--gutter) clamp(4rem, 8vw, 7rem);
+  border-top: 1px solid var(--rule);
+  background: var(--c-paper-bright);
 }
 
 /* ============================================
-   EDITORIAL HEADER: Two-line typographic hero
+   TITLE
    ============================================ */
 .header {
-  text-align: center;
   margin-bottom: clamp(var(--space-12), 6vw, var(--space-24));
+  text-align: center;
 }
 
-.headerItalic {
-  display: block;
+.lead {
+  margin-bottom: var(--space-3);
   font-family: var(--font-serif);
   font-size: clamp(1.1rem, 2.5vw, 1.5rem);
-  font-weight: 400;
   font-style: italic;
-  color: var(--color-text-muted);
-  letter-spacing: 0.02em;
   line-height: 1.4;
-  margin-bottom: var(--space-3);
+  color: var(--c-ink-muted);
 }
 
-.headerBold {
-  display: block;
-  font-family: var(--font-display);
-  font-size: clamp(2.5rem, 7vw, 5.5rem);
-  font-weight: var(--font-heavy);
-  color: var(--color-text-dark);
+.title {
+  font-size: clamp(2.25rem, 7vw, 5.5rem);
+  /* Room for the breve on Й under the line above */
+  line-height: 1.12;
+  letter-spacing: 0.03em;
   text-transform: uppercase;
-  letter-spacing: -0.02em;
-  line-height: 1.05;
 }
 
-.headerBoldAccent {
-  color: var(--color-primary);
+.titleAccent {
+  color: var(--c-stamp);
 }
 
 /* ============================================
-   PRODUCT GRID: 3 Column Editorial Layout
+   GRID
+   The menu page's grid, column for column, so
+   MENU_CARD_SIZES holds here too.
    ============================================ */
 .grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: var(--space-8) var(--space-4);
   margin-bottom: clamp(var(--space-12), 5vw, var(--space-16));
+  list-style: none;
 }
 
 @media (min-width: 640px) {
   .grid {
-    grid-template-columns: repeat(2, 1fr);
     gap: var(--space-8);
   }
 }
@@ -138,233 +67,14 @@
 }
 
 /* ============================================
-   PRODUCT CARD: Editorial Minimal
-   ============================================ */
-.card {
-  cursor: pointer;
-}
-
-.cardLink {
-  display: block;
-  text-decoration: none;
-  color: inherit;
-}
-
-/* Image Container */
-.imageWrapper {
-  position: relative;
-  aspect-ratio: 4 / 5;
-  overflow: hidden;
-  background: #c8bfb8;
-  margin-bottom: var(--space-5);
-  border-radius: 2px;
-}
-
-@media (max-width: 639px) {
-  .imageWrapper {
-    aspect-ratio: 3 / 4;
-    margin-bottom: var(--space-2);
-  }
-}
-
-/* Warm neutral tone tint overlays: each card gets a distinct warm tone */
-.card:nth-child(1) .imageWrapper::before { background: rgba(139, 120, 106, 0.08); }
-.card:nth-child(2) .imageWrapper::before { background: rgba(168, 148, 130, 0.10); }
-.card:nth-child(3) .imageWrapper::before { background: rgba(180, 160, 140, 0.07); }
-.card:nth-child(4) .imageWrapper::before { background: rgba(150, 130, 115, 0.09); }
-.card:nth-child(5) .imageWrapper::before { background: rgba(160, 140, 125, 0.08); }
-.card:nth-child(6) .imageWrapper::before { background: rgba(170, 150, 135, 0.10); }
-
-.imageWrapper::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-  mix-blend-mode: multiply;
-  border-radius: 2px;
-}
-
-.image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.card:hover .image {
-  transform: scale(1.04);
-}
-
-/* Subtle inner shadow for depth on the image */
-.imageWrapper::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  box-shadow: inset 0 0 60px rgba(0, 0, 0, 0.06);
-  pointer-events: none;
-  border-radius: 2px;
-}
-
-/* Card Info Row */
-.cardInfo {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: var(--space-4);
-}
-
-@media (max-width: 639px) {
-  .cardInfo {
-    flex-direction: column;
-    gap: var(--space-1);
-  }
-}
-
-.cardTextCol {
-  flex: 1;
-  min-width: 0;
-}
-
-.cardTitle {
-  font-family: var(--font-primary);
-  font-size: clamp(0.85rem, 1.2vw, 1rem);
-  font-weight: var(--font-bold);
-  color: var(--color-text-dark);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  line-height: 1.3;
-  margin-bottom: var(--space-1);
-}
-
-@media (max-width: 639px) {
-  .cardTitle {
-    font-size: 0.72rem;
-    letter-spacing: 0.02em;
-    margin-bottom: 0;
-  }
-}
-
-.cardDescription {
-  font-family: var(--font-primary);
-  font-size: clamp(0.78rem, 1vw, 0.9rem);
-  font-weight: var(--font-normal);
-  color: var(--color-text-muted);
-  line-height: 1.45;
-  letter-spacing: 0.01em;
-}
-
-@media (max-width: 639px) {
-  .cardDescription {
-    font-size: 0.7rem;
-    line-height: 1.35;
-  }
-}
-
-.cardPrice {
-  flex-shrink: 0;
-  font-family: var(--font-primary);
-  font-size: clamp(0.8rem, 1.1vw, 0.95rem);
-  font-weight: var(--font-medium);
-  color: var(--color-text-body);
-  white-space: nowrap;
-  padding-top: 1px;
-  position: relative;
-}
-
-@media (max-width: 639px) {
-  .cardPrice {
-    font-size: 0.72rem;
-  }
-}
-
-/* Subtle underline on price */
-.cardPrice::after {
-  content: '';
-  position: absolute;
-  bottom: -2px;
-  left: 0;
-  width: 100%;
-  height: 1px;
-  background: var(--color-border-strong);
-}
-
-/* Badge */
-.badge {
-  position: absolute;
-  top: var(--space-4);
-  left: var(--space-4);
-  padding: var(--space-1) var(--space-3);
-  background: var(--color-bg-dark);
-  color: var(--color-text-on-dark);
-  font-family: var(--font-primary);
-  font-size: 0.65rem;
-  font-weight: var(--font-semibold);
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  border-radius: 1px;
-}
-
-@media (max-width: 639px) {
-  .badge {
-    top: var(--space-2);
-    left: var(--space-2);
-    padding: 2px var(--space-2);
-    font-size: 0.55rem;
-  }
-}
-
-.badgeNew {
-  background: var(--color-primary);
-  color: var(--color-text-on-dark);
-}
-
-/* ============================================
-   BOTTOM CTA
-   ============================================ */
-.action {
-  display: flex;
-  justify-content: center;
-}
-
-.ctaButton {
-  display: inline-block;
-  padding: var(--space-4) var(--space-10);
-  background: transparent;
-  border: 1px solid var(--color-text-dark);
-  font-family: var(--font-primary);
-  font-size: var(--text-xs);
-  font-weight: var(--font-medium);
-  color: var(--color-text-dark);
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  text-decoration: none;
-  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-  cursor: pointer;
-}
-
-.ctaButton:hover {
-  background: var(--color-text-dark);
-  border-color: var(--color-text-dark);
-  color: var(--color-text-on-dark);
-}
-
-@media (min-width: 768px) {
-  .ctaButton {
-    padding: var(--space-5) var(--space-12);
-    font-size: var(--text-sm);
-  }
-}
-
-/* ============================================
-   DIVIDER LINE: Subtle horizontal accent
+   WAY IN
    ============================================ */
 .divider {
   width: 100%;
   max-width: 120px;
   height: 1px;
-  background: var(--color-border-strong);
   margin: 0 auto var(--space-10);
+  background: var(--c-stamp);
 }
 
 @media (min-width: 768px) {
@@ -374,14 +84,36 @@
   }
 }
 
-/* ============================================
-   REDUCED MOTION
-   ============================================ */
-@media (prefers-reduced-motion: reduce) {
-  .image {
-    transition: none;
-  }
-  .ctaButton {
-    transition: none;
+.action {
+  display: flex;
+  justify-content: center;
+}
+
+.cta {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-4) var(--space-10);
+  border: 1px solid var(--c-binding);
+  background: var(--c-binding);
+  font-family: var(--font-sans);
+  font-size: var(--text-xs);
+  font-weight: 650;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--c-on-binding);
+  transition:
+    background-color 0.35s var(--ease-out),
+    border-color 0.35s var(--ease-out);
+}
+
+.cta:hover {
+  border-color: var(--c-binding-deep);
+  background: var(--c-binding-deep);
+}
+
+@media (min-width: 768px) {
+  .cta {
+    padding: var(--space-5) var(--space-12);
+    font-size: var(--text-sm);
   }
 }

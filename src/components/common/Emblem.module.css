@@ -1,0 +1,59 @@
+.emblem {
+  display: block;
+  height: auto;
+  overflow: visible;
+}
+
+.mote {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+/* Stirred up out of the cup, nearest the spoon first, then left to shimmer. */
+.alive .mote {
+  opacity: 0;
+  animation:
+    moteRise 0.9s var(--ease-out) calc(var(--dust-delay) + var(--rise-delay)) forwards,
+    moteTwinkle var(--twinkle-duration) ease-in-out
+      calc(var(--dust-delay) + var(--rise-delay) + 0.9s + var(--twinkle-delay)) infinite;
+}
+
+/* Stirred up out of the cup, then stamped where it lands. The rise fills
+   backwards only, so once it ends nothing is left running: on a 3D face
+   that matters, since a running animation inside a plane costs it its
+   antialiased edges in Chrome. */
+.settle .mote {
+  animation: moteRise 0.9s var(--ease-out) calc(var(--dust-delay) + var(--rise-delay)) backwards;
+}
+
+@keyframes moteRise {
+  from {
+    opacity: 0;
+    transform: translate(6px, 10px) scale(0.4);
+  }
+  to {
+    opacity: 1;
+    transform: translate(0, 0) scale(1);
+  }
+}
+
+@keyframes moteTwinkle {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.28;
+    transform: scale(0.72);
+  }
+}
+
+/* The global reduced-motion rule collapses durations; this makes sure the
+   dust settles visible rather than on a twinkle's dim frame. */
+@media (prefers-reduced-motion: reduce) {
+  .alive .mote,
+  .settle .mote {
+    animation: none;
+    opacity: 1;
+  }
+}

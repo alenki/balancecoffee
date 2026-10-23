@@ -1,0 +1,109 @@
+/* ============================================
+   FOREWORD
+
+   The previous site's manifesto, set on the
+   cover's cloth like the footer: two lines in
+   the reading face, then three figures.
+   ============================================ */
+
+.section {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 70vh;
+  padding: clamp(5rem, 12vw, 10rem) var(--gutter);
+  background: var(--c-binding);
+  color: var(--c-on-binding);
+}
+
+.cloth {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.02) 0 1px, transparent 1px 3px),
+    repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.06) 0 1px, transparent 1px 3px);
+}
+
+/* The measure of the two lines, not of the section */
+.inner {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 1100px;
+}
+
+.lines {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(var(--space-4), 3vw, var(--space-8));
+  margin-bottom: clamp(var(--space-16), 8vw, var(--space-32));
+}
+
+.line {
+  max-width: none;
+  font-family: var(--font-serif);
+  font-size: clamp(1.5rem, 4vw, 2.75rem);
+  font-weight: 300;
+  line-height: 1.5;
+  letter-spacing: -0.005em;
+  color: var(--c-on-binding-muted);
+}
+
+.em {
+  font-style: italic;
+  color: var(--c-foil-bright);
+}
+
+/* ============================================
+   FIGURES
+   ============================================ */
+.stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-8) clamp(var(--space-8), 5vw, var(--space-16));
+}
+
+.stat {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+/* Figure first, then a hairline, then its label */
+.statValue {
+  order: -1;
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  font-family: var(--font-serif);
+  font-size: clamp(2.5rem, 6vw, 4rem);
+  font-weight: 300;
+  font-style: italic;
+  line-height: 1;
+  color: var(--c-foil);
+}
+
+.statValue::after {
+  content: '';
+  width: 1px;
+  height: 28px;
+  background: var(--rule-on-binding);
+}
+
+@media (min-width: 768px) {
+  .statValue::after {
+    height: 36px;
+  }
+}
+
+.statLabel {
+  font-family: var(--font-sans);
+  font-size: 0.6875rem;
+  font-weight: 650;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--c-on-binding-muted);
+}

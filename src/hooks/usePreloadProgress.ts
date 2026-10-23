@@ -17,12 +17,6 @@ interface PreloadOptions {
   maxDuration?: number;
   /** Fired once, from the rAF loop, on the frame progress reaches 1. */
   onComplete: () => void;
-  /**
-   * Timing does not begin until this settles. Whatever the readout is set in
-   * is itself part of loading, so the count must not start without it, or a
-   * first visit shows the figure appear already mid climb.
-   */
-  gate?: Promise<unknown>;
 }
 
 const VIDEO = /\.(mp4|webm|mov|m4v)$/i;
@@ -53,17 +47,16 @@ function warm(url: string): Promise<void> {
 /**
  * Honest load progress, smoothed for the eye.
  *
- * Real completion is the ceiling: the counter never claims more than has
+ * Real completion is the ceiling: the readout never claims more than has
  * actually landed. Elapsed time is the floor: it never sprints past the
  * choreography on a warm cache. A rAF lerp sits between the two so the
- * number always drifts and never jumps, stalls, or snaps.
+ * readout always drifts and never jumps, stalls, or snaps.
  */
 export function usePreloadProgress({
   assets,
   minDuration = 1800,
   maxDuration = 6000,
   onComplete,
-  gate,
 }: PreloadOptions): MotionValue<number> {
   const progress = useMotionValue(0);
 
@@ -75,22 +68,9 @@ export function usePreloadProgress({
   useEffect(() => {
     let frame = 0;
     let cancelled = false;
-
-    // Held frames do not count against the floor, so the readout always gets
-    // its full climb no matter how late the gate settles.
-    let open = !gate;
     let start = 0;
-    gate?.then(
-      () => {
-        open = true;
-      },
-      () => {
-        open = true;
-      }
-    );
 
-    // Every asset, plus webfonts; the counter is set in Playfair, so it
-    // must not resolve while the face is still swapping underneath it.
+    // Every asset, plus webfonts, so the page is never revealed mid swap.
     const total = assets.length + 1;
     let settled = 0;
     const land = () => {
@@ -107,16 +87,11 @@ export function usePreloadProgress({
 
     const loop = (now: number) => {
       if (cancelled) return;
-
-      if (!open) {
-        frame = requestAnimationFrame(loop);
-        return;
-      }
       if (start === 0) start = now;
 
       const elapsed = now - start;
 
-      // Time floor, shaped so the counter leaves the gate with intent.
+      // Time floor, shaped so the readout sets off with intent.
       const paced = Math.min(1, elapsed / minDuration);
       const pacedEased = 1 - Math.pow(1 - paced, 1.55);
 

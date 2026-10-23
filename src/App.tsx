@@ -6,7 +6,7 @@ import { Footer } from './components/layout/Footer';
 import { LoadingScreen } from './components/layout/LoadingScreen';
 import { HomePage } from './pages/HomePage';
 import { MenuPage } from './pages/MenuPage';
-import { DailyPage } from './pages/DailyPage';
+import { ReadingRoomPage } from './pages/ReadingRoomPage';
 import { ReviewsPage } from './pages/ReviewsPage';
 import { NotFoundPage } from './pages/NotFoundPage';
 import { LanguageProvider, useLanguage } from './context/LanguageContext';
@@ -17,8 +17,8 @@ function AppContent() {
   const lenis = useLenis();
   const { t } = useLanguage();
 
-  // The site mounts mid-resolve, while the loading field is still closed,
-  // so the hero's own entrance choreography runs as the field parts.
+  // The site mounts mid-resolve, while the loader still covers it, so the
+  // hero's own opening runs as the loader's head rises into the header.
   const [loading, setLoading] = useState(true);
   const reveal = useCallback(() => setLoading(false), []);
 
@@ -43,7 +43,7 @@ function AppContent() {
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/menu" element={<MenuPage />} />
-            <Route path="/daily" element={<DailyPage />} />
+            <Route path="/reading-room" element={<ReadingRoomPage />} />
             <Route path="/reviews" element={<ReviewsPage />} />
             <Route path="*" element={<NotFoundPage />} />
           </Routes>

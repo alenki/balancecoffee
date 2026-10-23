@@ -1,0 +1,119 @@
+.scale {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+/* The numbers keep together as one group. The margins leave room for the
+   ring, which reaches a little past its number's box on both sides. */
+.marks {
+  position: relative;
+  display: inline-flex;
+  align-items: baseline;
+  margin-left: 0.35em;
+  vertical-align: baseline;
+  white-space: nowrap;
+}
+
+.mark {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  cursor: pointer;
+}
+
+.scale:disabled .mark {
+  cursor: default;
+}
+
+.input {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  cursor: inherit;
+}
+
+.face {
+  font-size: 1.2em;
+  line-height: 1;
+  font-variant-numeric: lining-nums;
+  color: var(--c-ink);
+  transition: color var(--transition-base);
+}
+
+/* Once a number is circled, the others step back */
+.scale[data-chosen] .face {
+  color: var(--c-ink-muted);
+}
+
+.scale[data-chosen] .input:checked + .face,
+.mark:hover .face {
+  color: var(--c-ink);
+}
+
+/* Keyboard focus is a short red stroke under the number: the ring already
+   means "chosen", so focus needs a mark of its own. */
+.input:focus-visible + .face {
+  text-decoration-line: underline;
+  text-decoration-thickness: 2px;
+  text-decoration-color: var(--c-stamp);
+  text-underline-offset: 0.22em;
+}
+
+.ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 2.5em;
+  height: 2em;
+  font-size: 1.2em;
+  translate: -50% -50%;
+  color: var(--c-stamp);
+  overflow: visible;
+  pointer-events: none;
+}
+
+/* The word for the mark, written beside the ring. On hover it previews the
+   number under the pointer, in pencil rather than ink. */
+.word {
+  margin-left: 0.6em;
+  font-style: italic;
+  color: var(--c-stamp);
+  transition: color var(--transition-base);
+}
+
+.word[data-preview] {
+  color: var(--c-ink-muted);
+}
+
+/* Phones: the numbers take a line of their own under the words, so the word
+   that appears beside a circled number has room and nothing jumps. The first
+   number lines up with the text above it. Once the letter is sent, the one
+   mark left closes up to the words again. */
+@media (max-width: 479px) {
+  .scale:not(:disabled) .marks {
+    display: flex;
+    flex-wrap: wrap;
+    margin-left: -0.8em;
+  }
+}
+
+/* The narrowest phones: slimmer numbers, so the longest word for a mark
+   still fits beside the ring at 320px */
+@media (max-width: 359px) {
+  .mark {
+    width: 37px;
+  }
+
+  .scale:not(:disabled) .marks {
+    margin-left: -0.7em;
+  }
+
+  .word {
+    margin-left: 0.5em;
+  }
+}

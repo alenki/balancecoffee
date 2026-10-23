@@ -1,0 +1,45 @@
+/* Pressed into the paper, not laid on it: multiply lets the ink of any line
+   it lands on show through. */
+.postmark {
+  --size: 7.25rem;
+  position: absolute;
+  top: 50%;
+  right: -0.5rem;
+  width: var(--size);
+  height: var(--size);
+  margin-top: calc(var(--size) / -2);
+  color: var(--c-stamp);
+  mix-blend-mode: multiply;
+  overflow: visible;
+  pointer-events: none;
+}
+
+@media (max-width: 479px) {
+  .postmark {
+    --size: 6.25rem;
+    right: -0.25rem;
+  }
+}
+
+@media (max-width: 359px) {
+  .postmark {
+    --size: 5.5rem;
+    right: -0.75rem;
+  }
+}
+
+/* Sizes are in the drawing's own units, so the type scales with the mark */
+.ring {
+  font-family: var(--font-sans);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+}
+
+.date {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.08em;
+}

@@ -1,8 +1,9 @@
 import { readFileSync } from 'node:fs'
 import { defineConfig, type Plugin } from 'vite'
 import react from '@vitejs/plugin-react'
+import { HERO_SIZES } from './src/components/common/imageSizes'
 
-const HERO = 'cafe/image'
+const HERO = 'hall/counter'
 
 interface ManifestEntry {
   base: string
@@ -20,7 +21,7 @@ interface ManifestEntry {
  */
 function heroPreload(): Plugin {
   return {
-    name: 'balance-hero-preload',
+    name: 'hero-preload',
     transformIndexHtml(html) {
       let hero: ManifestEntry | undefined
       try {
@@ -45,7 +46,7 @@ function heroPreload(): Plugin {
               as: 'image',
               type: 'image/avif',
               imagesrcset: widths.map((w) => `${base}-${w}.avif ${w}w`).join(', '),
-              imagesizes: '100vw',
+              imagesizes: HERO_SIZES,
               fetchpriority: 'high',
             },
             injectTo: 'head-prepend',
@@ -59,4 +60,16 @@ function heroPreload(): Plugin {
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), heroPreload()],
+  build: {
+    rollupOptions: {
+      output: {
+        // Libraries change far less often than the site, so they get their
+        // own long-lived chunks instead of riding in every content deploy.
+        manualChunks: {
+          react: ['react', 'react-dom', 'react-dom/client', 'react-router-dom'],
+          motion: ['motion', 'lenis'],
+        },
+      },
+    },
+  },
 })
