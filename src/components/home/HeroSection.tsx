@@ -323,8 +323,6 @@ export function HeroSection() {
               <span className={styles.backRight} />
               <span className={styles.pagesBottom} />
               <span className={styles.pagesRight} />
-              {/* After the faces its turn-in stands across, as Firefox
-                  cuts a face along the planes painted before it */}
               <span className={styles.spineEnd} />
               <span className={styles.spineTurnIn} />
               <span className={styles.drape} />

@@ -108,22 +108,28 @@ make in whole pixels; CSS draws the 3D. `--spine` is worked out from the
 camera itself: the end of the spine is seen only from below the foot (or
 beside the side, bound at the head), so it fades as the camera rises past
 and is then taken out, since its turn-in, facing across, would linger
-edge-on as a splinter at the gutter. Keep `opacity`, `filter`, `overflow`,
-`clip-path`, masks and blend modes off `.book`, `.body` and `.cover`: any of
-them flattens the 3D and the cover stops turning. The faces are leaves and may
-use them, and so may `.scene`, which holds the perspective. Two things cost a
-face its antialiased edges in Chrome, so the book's silhouette steps: an SVG
+edge-on as a splinter at the gutter. The book is not a 3D context (no
+`preserve-3d`): Firefox's WebRender draws every face of one without
+antialiasing its edges, and Chrome draws any face another face's plane cuts
+the same way, so the silhouette stepped. Instead each face is set alone
+through the lens: `.book` defines `--in-book` (the perspective, centred on the
+book, and the book's lie), `.cover` adds its hinge as `--in-cover`, and every
+face takes one of them, then its own place measured from the book's top left
+corner. Nothing sorts the faces, so they are painted in a fixed order, back to
+front (PAINT ORDER in `HeroSection.module.css`), which holds because the
+camera only ever sees the book from in front, below and to its right; a new
+face joins that order and the list of faces beside it. `.body` and `.cover`
+only gather faces in the source, so keep them from becoming stacking contexts
+(no `z-index`, `opacity`, `filter`, `transform`), or their faces stop
+interleaving with the rest; the faces themselves may use anything. Two things
+cost a face its antialiased edges in Chrome, so the book's silhouette steps: an SVG
 filter image as its background (the cloth grain is a raster tile,
 `public/cloth.webp`, for this reason), and any keyframe animation running
 inside it (the cover's stardust uses `dust="settle"`, which rises once and
 then leaves nothing running). The ribbon's tug and the scroll hint beside
 it come only once the spread lies flat (`data-flat` on the stage), where no
 edge can step; the stage keeps 4.5rem clear below the book so the ribbon,
-drawn out its furthest, never meets the screen's edge. Firefox sorts the book by cutting each face
-along the planes of the faces painted before it, and draws a face it has cut
-with harder edges, so `.body`, whose page edges and drape stand across the
-boards and the title page, paints last (`z-index: 1`); a new face that stands
-across others belongs after them in paint order. Firefox also draws a face
+drawn out its furthest, never meets the screen's edge. Firefox also draws a face
 clipped to a rounded corner see-through along any thin column repainted
 across it, and the scroll cue repaints one through the middle of the shut
 book, so keep `border-radius` off the boards: their corners are square. The
@@ -131,6 +137,9 @@ book's size comes from
 the stage's own 100svh height, not `innerHeight`, so a phone's sliding
 toolbars never resize it mid scroll. Playwright's WebKit paints its
 screenshots in software and flattens all 3D, so check the book in real Safari.
+Playwright's Firefox paints its screenshots in software too, with smooth edges
+WebRender never draws: to see Firefox's real edges, capture the window as
+Windows composites it (`PrintWindow` with `PW_RENDERFULLCONTENT`).
 
 The open spread's two pages share one grid, in `cqw` of the page (`--head`,
 `--side`, `--title-cap`, `--imprint-baseline` and the rest in

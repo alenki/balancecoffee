@@ -30,12 +30,23 @@
    sees). The layout writes the book's make,
    in pixels.
 
-   No flattening properties (opacity, filter,
-   overflow, clip-path, mask, blend modes) on
-   .book, .body or .cover: any of them collapses
-   the 3D and the cover stops turning. The faces
-   are leaves and may use them, and so may
-   .scene, which holds the lens.
+   The book is not a 3D context: Firefox draws
+   the faces of one without antialiasing their
+   edges, and Chrome draws any face another cuts
+   the same way, so the silhouette stepped. Each
+   face is set alone, through the lens: first
+   --in-book (or --in-cover, which adds the
+   board's hinge), then its own place, measured
+   from the book's top left corner. With nothing
+   to sort them, the faces are painted in a
+   fixed order, back to front (see PAINT ORDER),
+   which holds because the reader only ever sees
+   the book from in front, below and to its
+   right. So keep .body and .cover from becoming
+   stacking contexts (no z-index, opacity,
+   filter, transform), or their faces stop
+   interleaving with the rest. The faces may use
+   any of them.
 
    No border-radius on the boards: Firefox draws
    a face clipped to a rounded corner see-through
@@ -146,9 +157,8 @@
   }
 }
 
-/* The lens, and the fade the book arrives in */
+/* The fade the book arrives in. The lens is in --in-book. */
 .scene {
-  perspective: var(--lens);
   animation: appear 0.6s ease-out var(--intro-at) backwards;
 }
 
@@ -158,17 +168,23 @@
   --shift-y: 0px;
   /* How high the book is held before it is set down */
   --held: calc(var(--board-h) * 0.16);
-
-  position: relative;
-  width: var(--board-w);
-  height: var(--board-h);
-  transform-style: preserve-3d;
-  transform:
+  /* How the book lies before the lens, which stands over its centre. Every
+     face is set through it, from the book's top left corner. */
+  --in-book:
+    translate(calc(var(--board-w) / 2), calc(var(--board-h) / 2))
+    perspective(var(--lens))
     scale(var(--scale))
     rotateX(var(--pitch))
     rotateY(var(--yaw))
     translate3d(var(--shift-x), var(--shift-y), calc(var(--drop) * var(--held)))
-    rotateZ(calc(var(--drop) * -2.5deg));
+    rotateZ(calc(var(--drop) * -2.5deg))
+    translate(calc(var(--board-w) / -2), calc(var(--board-h) / -2));
+
+  position: relative;
+  width: var(--board-w);
+  height: var(--board-h);
+  /* The faces keep their paint order among themselves */
+  isolation: isolate;
   animation: setDown 1.6s var(--ease-out) var(--intro-at) backwards;
   transition: --peek 0.9s var(--ease-out);
 }
@@ -189,17 +205,98 @@
   }
 }
 
-/* Painted last, though it lies beneath the boards. Firefox sorts the book by
-   cutting each face along the planes of the faces painted before it, and
-   draws a face it has cut with harder edges, so the silhouette steps. The
-   edges of the pages and the drape stand across the front board, the title
-   page and the endpaper; painted after them, their planes cut nothing that
-   shows. */
+/* Everything under the first leaf, gathered for the source only: its faces
+   are painted in among the others, so it is no stacking context */
 .body {
   position: absolute;
   inset: 0;
+}
+
+/* Every face stands at the book's top left corner and is set in place by
+   its transform alone: through the lens, then to its own place in the
+   book. A new face joins this list and the paint order. */
+.ribbon,
+.hint,
+.shadow,
+.fallShadow,
+.back,
+.backBottom,
+.backRight,
+.spineEnd,
+.spineTurnIn,
+.pagesBottom,
+.pagesRight,
+.drape,
+.page,
+.front,
+.coverBottom,
+.coverRight,
+.inside {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: 0 0;
+}
+
+/* ============================================
+   PAINT ORDER
+   Back to front, since nothing sorts the
+   faces. What lies on the page comes first,
+   the ribbon over the shadows; then the back
+   board, the edges of the pages and the end of
+   the spine below them, the ribbon falling
+   over those, the title page, and last the
+   front board, which stands in front of all of
+   them until it lies open beside them.
+   ============================================ */
+.shadow {
   z-index: 1;
-  transform-style: preserve-3d;
+}
+
+.fallShadow {
+  z-index: 2;
+}
+
+.ribbon,
+.hint {
+  z-index: 3;
+}
+
+.back {
+  z-index: 4;
+}
+
+.backBottom,
+.backRight {
+  z-index: 5;
+}
+
+.pagesBottom,
+.pagesRight {
+  z-index: 6;
+}
+
+.spineTurnIn {
+  z-index: 7;
+}
+
+.spineEnd {
+  z-index: 8;
+}
+
+.drape {
+  z-index: 9;
+}
+
+.page {
+  z-index: 10;
+}
+
+.inside,
+.coverBottom,
+.coverRight,
+.front {
+  z-index: 11;
 }
 
 /* ============================================
@@ -213,38 +310,53 @@
 .fallShadow {
   --on-page: translateZ(calc(-1 * (var(--block) + var(--board) + var(--drop) * var(--held)) - 0.5px));
 
-  position: absolute;
-  inset: 0;
   pointer-events: none;
 }
 
 /* Hollow: only the ring outside the book is ever seen, so the book itself
-   hides the rest */
+   hides the rest. It spreads from the book's centre as the book is lifted. */
 .shadow {
+  inset: 0;
   box-shadow:
     0 0 1px 0.5px rgba(40, 18, 8, 0.2),
     0 calc(var(--board-h) * 0.012) calc(var(--board-h) * 0.03) rgba(40, 20, 10, 0.18),
     0 calc(var(--board-h) * 0.045) calc(var(--board-h) * 0.11) calc(var(--board-h) * -0.015)
       rgba(40, 20, 10, 0.3);
   opacity: calc(1 - var(--drop) * 0.65);
-  transform: var(--on-page) scale(calc(1 + var(--drop) * 0.06));
+  transform:
+    var(--in-book)
+    var(--on-page)
+    translate(calc(var(--board-w) / 2), calc(var(--board-h) / 2))
+    scale(calc(1 + var(--drop) * 0.06))
+    translate(calc(var(--board-w) / -2), calc(var(--board-h) / -2));
 }
 
-/* Solid, since it is seen while the board is still in the air above it */
+/* Solid, since it is seen while the board is still in the air above it. It
+   lies beside the book, nearly as large, and grows out from the spine. */
 .fallShadow {
-  inset: 2% 100% 2% -97%;
+  width: calc(var(--board-w) * 0.97);
+  height: calc(var(--board-h) * 0.96);
   background: rgba(40, 20, 10, 0.2);
   filter: blur(calc(var(--board-h) * 0.025));
-  transform-origin: right center;
   opacity: calc(var(--fall) * (1 - var(--drop) * 0.65));
-  transform: var(--on-page) scaleX(var(--fall));
+  transform:
+    var(--in-book)
+    translateY(calc(var(--board-h) * 0.02))
+    var(--on-page)
+    scaleX(var(--fall))
+    translateX(calc(var(--board-w) * -0.97));
 }
 
 @media (orientation: portrait) {
   .fallShadow {
-    inset: -97% 2% 100% 2%;
-    transform-origin: center bottom;
-    transform: var(--on-page) scaleY(var(--fall));
+    width: calc(var(--board-w) * 0.96);
+    height: calc(var(--board-h) * 0.97);
+    transform:
+      var(--in-book)
+      translateX(calc(var(--board-w) * 0.02))
+      var(--on-page)
+      scaleY(var(--fall))
+      translateY(calc(var(--board-h) * -0.97));
   }
 }
 
@@ -255,12 +367,11 @@
    the pages stand on it.
    ============================================ */
 .back {
-  position: absolute;
   inset: 0;
   background: var(--cloth), var(--c-binding);
   background-blend-mode: soft-light;
   backface-visibility: hidden;
-  transform: translateZ(calc(var(--block) * -1));
+  transform: var(--in-book) translateZ(calc(var(--block) * -1));
 }
 
 .back::after {
@@ -279,40 +390,43 @@
 .coverBottom,
 .backRight,
 .coverRight {
-  position: absolute;
   backface-visibility: hidden;
 }
 
+/* Turned down from the board's foot */
 .backBottom,
 .coverBottom {
-  top: 100%;
-  left: 0;
-  width: 100%;
+  width: var(--board-w);
   height: var(--board);
-  transform-origin: top;
   background:
     linear-gradient(rgba(255, 255, 255, 0.16), transparent 55%),
     var(--c-binding-deep);
 }
 
+/* Turned back from the board's side */
 .backRight,
 .coverRight {
-  top: 0;
-  left: 100%;
   width: var(--board);
-  height: 100%;
-  transform-origin: left;
+  height: var(--board-h);
   background:
     linear-gradient(to right, rgba(255, 255, 255, 0.12), transparent 55%),
     #8c0016;
 }
 
 .backBottom {
-  transform: translateZ(calc(var(--block) * -1)) rotateX(-90deg);
+  transform:
+    var(--in-book)
+    translateY(var(--board-h))
+    translateZ(calc(var(--block) * -1))
+    rotateX(-90deg);
 }
 
 .backRight {
-  transform: translateZ(calc(var(--block) * -1)) rotateY(90deg);
+  transform:
+    var(--in-book)
+    translateX(var(--board-w))
+    translateZ(calc(var(--block) * -1))
+    rotateY(90deg);
 }
 
 /* The end of the spine: its cloth running round the backs of the pages from
@@ -330,7 +444,6 @@
    as a splinter at the gutter. */
 .spineEnd,
 .spineTurnIn {
-  position: absolute;
   backface-visibility: hidden;
   opacity: var(--spine);
 }
@@ -341,47 +454,41 @@
 }
 
 .spineEnd {
-  top: 100%;
-  left: 0;
   width: var(--board);
   height: var(--block);
-  transform-origin: top;
-  transform: rotateX(-90deg);
+  transform: var(--in-book) translateY(var(--board-h)) rotateX(-90deg);
   background:
     linear-gradient(to right, rgba(255, 255, 255, 0.16), transparent 55%),
     var(--c-binding-deep);
 }
 
 .spineTurnIn {
-  top: calc(var(--page-y) + var(--page-h));
-  left: var(--board);
   width: var(--block);
   height: var(--square);
-  transform-origin: left;
-  transform: rotateY(90deg);
+  transform:
+    var(--in-book)
+    translate(var(--board), calc(var(--page-y) + var(--page-h)))
+    rotateY(90deg);
   background: #7d0013;
 }
 
 @media (orientation: portrait) {
   .spineEnd {
-    top: 0;
-    left: 100%;
     width: var(--block);
     height: var(--board);
-    transform-origin: left;
-    transform: rotateY(90deg);
+    transform: var(--in-book) translateX(var(--board-w)) rotateY(90deg);
     background:
       linear-gradient(rgba(255, 255, 255, 0.12), transparent 55%),
       #8c0016;
   }
 
   .spineTurnIn {
-    top: var(--board);
-    left: calc(var(--page-x) + var(--page-w));
     width: var(--square);
     height: var(--block);
-    transform-origin: top;
-    transform: rotateX(-90deg);
+    transform:
+      var(--in-book)
+      translate(calc(var(--page-x) + var(--page-w)), var(--board))
+      rotateX(-90deg);
   }
 }
 
@@ -394,17 +501,16 @@
    ============================================ */
 .pagesBottom,
 .pagesRight {
-  position: absolute;
   backface-visibility: hidden;
 }
 
 .pagesBottom {
-  top: calc(var(--page-y) + var(--page-h));
-  left: calc(var(--page-x) + var(--spine-x));
   width: calc(var(--page-w) - var(--spine-x));
   height: var(--block);
-  transform-origin: top;
-  transform: rotateX(-90deg);
+  transform:
+    var(--in-book)
+    translate(calc(var(--page-x) + var(--spine-x)), calc(var(--page-y) + var(--page-h)))
+    rotateX(-90deg);
   background:
     linear-gradient(rgba(70, 45, 20, 0.2), transparent 24%, transparent 78%, rgba(70, 45, 20, 0.18)),
     repeating-linear-gradient(transparent 0, rgba(255, 255, 255, 0.5) 0.8px, transparent 1.6px 2.5px),
@@ -413,12 +519,12 @@
 }
 
 .pagesRight {
-  top: calc(var(--page-y) + var(--spine-y));
-  left: calc(var(--page-x) + var(--page-w));
   width: var(--block);
   height: calc(var(--page-h) - var(--spine-y));
-  transform-origin: left;
-  transform: rotateY(90deg);
+  transform:
+    var(--in-book)
+    translate(calc(var(--page-x) + var(--page-w)), calc(var(--page-y) + var(--spine-y)))
+    rotateY(90deg);
   background:
     linear-gradient(to right, rgba(70, 45, 20, 0.22), transparent 24%, transparent 78%, rgba(70, 45, 20, 0.2)),
     repeating-linear-gradient(to right, transparent 0, rgba(255, 255, 255, 0.45) 0.8px, transparent 1.6px 2.5px),
@@ -429,14 +535,13 @@
 /* The ribbon leaving the pages partway down the stack and falling over the
    back board's edge, in the shade of the pages */
 .drape {
-  position: absolute;
-  top: calc(var(--page-y) + var(--page-h));
-  left: var(--ribbon-x);
   width: var(--ribbon-w);
   height: var(--ribbon-drape);
-  margin-left: calc(var(--ribbon-w) / -2);
-  transform-origin: top;
-  transform: translateZ(calc(var(--block) * -0.4)) rotateX(calc(var(--ribbon-angle) * -1));
+  transform:
+    var(--in-book)
+    translate(calc(var(--ribbon-x) - var(--ribbon-w) / 2), calc(var(--page-y) + var(--page-h)))
+    translateZ(calc(var(--block) * -0.4))
+    rotateX(calc(var(--ribbon-angle) * -1));
   background: linear-gradient(to right, #7d0013, #a3011c 45%, #7d0013);
   backface-visibility: hidden;
 }
@@ -494,14 +599,12 @@
 }
 
 .page {
-  position: absolute;
-  top: var(--page-y);
-  left: var(--page-x);
   width: var(--page-w);
   height: var(--page-h);
   container-type: inline-size;
   background: var(--c-paper-bright);
   backface-visibility: hidden;
+  transform: var(--in-book) translate(var(--page-x), var(--page-y));
 }
 
 /* The type area, inside the margins. Its own box, so the page it measures
@@ -723,32 +826,43 @@
    cloth; inside it, the cloth is turned in
    round the endpaper.
    ============================================ */
+/* Gathered for the source only, like .body: its faces are set through the
+   book and then the hinge, which turns on the spine's edge of the book */
 .cover {
+  --in-cover:
+    var(--in-book)
+    rotateY(calc(var(--open) * -180deg - var(--peek) * (1 - var(--open)) * 3deg));
+
   position: absolute;
   inset: 0;
-  transform-style: preserve-3d;
-  transform-origin: left center;
-  transform: rotateY(calc(var(--open) * -180deg - var(--peek) * (1 - var(--open)) * 3deg));
 }
 
 @media (orientation: portrait) {
   .cover {
-    transform-origin: center top;
-    transform: rotateX(calc(var(--open) * 180deg + var(--peek) * (1 - var(--open)) * 3deg));
+    --in-cover:
+      var(--in-book)
+      rotateX(calc(var(--open) * 180deg + var(--peek) * (1 - var(--open)) * 3deg));
   }
 }
 
 .coverBottom {
-  transform: translateZ(var(--board)) rotateX(-90deg);
+  transform:
+    var(--in-cover)
+    translateY(var(--board-h))
+    translateZ(var(--board))
+    rotateX(-90deg);
 }
 
 .coverRight {
-  transform: translateZ(var(--board)) rotateY(90deg);
+  transform:
+    var(--in-cover)
+    translateX(var(--board-w))
+    translateZ(var(--board))
+    rotateY(90deg);
 }
 
 .front,
 .inside {
-  position: absolute;
   inset: 0;
   overflow: hidden;
   backface-visibility: hidden;
@@ -769,7 +883,7 @@
     var(--c-binding);
   background-blend-mode: normal, soft-light;
   color: var(--c-foil);
-  transform: translateZ(var(--board));
+  transform: var(--in-cover) translateZ(var(--board));
 }
 
 @media (orientation: portrait) {
@@ -861,15 +975,16 @@
   }
 }
 
+/* Turned about the board's middle, so it faces the other way */
 .inside {
   background: var(--cloth), var(--c-binding);
   background-blend-mode: soft-light;
-  transform: rotateY(180deg);
+  transform: var(--in-cover) translateX(var(--board-w)) rotateY(180deg);
 }
 
 @media (orientation: portrait) {
   .inside {
-    transform: rotateX(180deg);
+    transform: var(--in-cover) translateY(var(--board-h)) rotateX(180deg);
   }
 }
 
@@ -1061,13 +1176,12 @@
    page is the button.
    ============================================ */
 .ribbon {
-  position: absolute;
-  top: calc(var(--board-h) + var(--board) / 2);
-  left: var(--ribbon-x);
   width: 2.75rem;
   height: calc(var(--ribbon-len) + 0.75rem);
-  margin-left: -1.375rem;
-  transform: translateZ(calc(-1 * (var(--block) + var(--board)) + 0.5px));
+  transform:
+    var(--in-book)
+    translate(calc(var(--ribbon-x) - 1.375rem), calc(var(--board-h) + var(--board) / 2))
+    translateZ(calc(-1 * (var(--block) + var(--board)) + 0.5px));
 }
 
 .ribbon::before {
@@ -1103,9 +1217,12 @@
    goes on. Set as the imprint is, on the title page's own plane, so the type
    stays crisp. */
 .hint {
-  position: absolute;
-  top: calc(var(--board-h) + var(--board) / 2 + var(--ribbon-len) / 2 - 0.5em);
-  left: calc(var(--ribbon-x) + var(--ribbon-w) / 2 + 0.9rem);
+  transform:
+    var(--in-book)
+    translate(
+      calc(var(--ribbon-x) + var(--ribbon-w) / 2 + 0.9rem),
+      calc(var(--board-h) + var(--board) / 2 + var(--ribbon-len) / 2 - 0.5em)
+    );
   font-family: var(--font-sans);
   font-size: max(0.625rem, calc(var(--page-w) * 0.022));
   font-weight: 650;
