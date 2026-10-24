@@ -40,8 +40,12 @@ interface ImageProps {
   style?: CSSProperties;
 }
 
+// The manifest's paths are rooted at the site; the site itself may be served
+// from a subfolder (BASE_URL, set by `base` in vite.config.ts).
+const at = (base: string) => `${import.meta.env.BASE_URL}${base.replace(/^\//, '')}`;
+
 const srcSetFor = (base: string, widths: number[], ext: string) =>
-  widths.map((w) => `${base}-${w}.${ext} ${w}w`).join(', ');
+  widths.map((w) => `${at(base)}-${w}.${ext} ${w}w`).join(', ');
 
 export function Image({
   name,
@@ -79,7 +83,7 @@ export function Image({
     sizes,
     className: imgClass,
     // Widest WebP rung is the ultimate fallback; srcSet handles everything modern.
-    src: `${meta.base}-${meta.widths[meta.widths.length - 1]}.webp`,
+    src: `${at(meta.base)}-${meta.widths[meta.widths.length - 1]}.webp`,
     srcSet: srcSetFor(meta.base, meta.widths, 'webp'),
     width: meta.w,
     height: meta.h,

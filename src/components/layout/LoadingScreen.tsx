@@ -46,7 +46,7 @@ function warmFaces(): Promise<unknown> {
 
 /** Warmed before the page parts, so nothing pops in behind it. */
 const ASSETS = [
-  '/cloth.webp', // the hero book's cloth grain
+  `${import.meta.env.BASE_URL}cloth.webp`, // the hero book's cloth grain
   warmFaces, // title and running head
 ] as const;
 

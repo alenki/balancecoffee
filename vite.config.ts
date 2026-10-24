@@ -3,6 +3,8 @@ import react from '@vitejs/plugin-react'
 
 // https://vite.dev/config/
 export default defineConfig({
+  // Served from lumako.ru/biblioteka/ (reg.ru shared hosting).
+  base: '/biblioteka/',
   plugins: [react()],
   build: {
     rollupOptions: {

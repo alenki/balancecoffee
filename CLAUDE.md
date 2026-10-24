@@ -29,7 +29,7 @@ removing or renaming an original, delete `public/img/` and rerun.
 ## Architecture
 
 - **Entry point**: `index.html` → `src/main.tsx` → `src/App.tsx`
-- **Build output**: `dist/`
+- **Build output**: `dist/`, built for `https://lumako.ru/biblioteka/` (`base` in `vite.config.ts`; reg.ru shared hosting, Apache, with `public/.htaccess`). Any public file referenced from TS must go through `import.meta.env.BASE_URL`; CSS and `index.html` are rewritten by Vite, except `og:image`, which is an absolute URL.
 - **Image originals**: `assets-src/` (never served; the source the pipeline reads)
 - **Static assets**: `public/` (favicon, touch icon, `og-image.jpg`)
 
