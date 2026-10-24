@@ -5,7 +5,7 @@ import { ForewordSection } from '../components/home/ForewordSection';
 import { MenuPreview } from '../components/home/MenuPreview';
 import { NightSection } from '../components/home/NightSection';
 import { VisitSection } from '../components/home/VisitSection';
-import { FirstLineGame } from '../components/home/FirstLineGame';
+import { CatchphraseGame } from '../components/home/CatchphraseGame';
 import { useLenisInstance } from '../hooks/useLenis';
 
 export function HomePage() {
@@ -36,13 +36,13 @@ export function HomePage() {
   }, [toGame, key, lenis]);
 
   return (
-    <main id="main">
+    <main id="main" data-ends-on-cloth>
       <HeroSection />
       <ForewordSection />
       <MenuPreview />
       <NightSection />
       <VisitSection />
-      <FirstLineGame />
+      <CatchphraseGame />
     </main>
   );
 }

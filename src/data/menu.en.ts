@@ -7,7 +7,7 @@ export const menuDataEn: MenuCategory[] = [
     name: 'Coffee',
     description: 'Espresso classics',
     items: [
-      { id: 'espresso', name: 'Espresso', size: '36 to 40 ml', price: 190 },
+      { id: 'espresso', name: 'Espresso', size: '36 to 40 ml', price: 190, image: 'menu/espresso' },
       { id: 'americano', name: 'Americano', size: '250 ml', price: 190 },
       {
         id: 'cappuccino',
@@ -17,6 +17,7 @@ export const menuDataEn: MenuCategory[] = [
           { size: '350 ml', price: 250 },
         ],
         isPopular: true,
+        image: 'menu/cappuccino',
       },
       { id: 'latte', name: 'Latte', size: '350 ml', price: 260, image: 'menu/latte-croissant' },
       { id: 'flat-white', name: 'Flat white', size: '250 ml', price: 250 },
@@ -59,6 +60,7 @@ export const menuDataEn: MenuCategory[] = [
         name: 'Orange bumble',
         description: 'Espresso and orange juice over ice',
         price: 250,
+        image: 'menu/bumble-orange',
       },
       {
         id: 'bumble-pomegranate',
@@ -72,7 +74,13 @@ export const menuDataEn: MenuCategory[] = [
         description: 'Espresso, tonic and lime',
         price: 270,
       },
-      { id: 'frappe', name: 'Frappé', description: 'Cold coffee blended with ice', price: 350 },
+      {
+        id: 'frappe',
+        name: 'Frappé',
+        description: 'Cold coffee blended with ice',
+        price: 350,
+        image: 'menu/frappe',
+      },
     ],
   },
   {
@@ -217,6 +225,7 @@ export const menuDataEn: MenuCategory[] = [
         name: 'Frambini',
         description: 'Fresh raspberries in white and dark chocolate',
         isNew: true,
+        image: 'menu/frambini',
       },
       { id: 'macarons', name: 'Macarons' },
       { id: 'mochi', name: 'Mochi', size: '2 pcs', image: 'menu/mochi' },
@@ -231,7 +240,7 @@ export const menuDataEn: MenuCategory[] = [
       { id: 'snaq', name: 'Snaq Fabriq protein bars' },
       { id: 'nuts', name: 'Nut cookies with condensed milk', size: '150 g' },
       { id: 'marmalade', name: 'Fruit jellies', size: '180 g' },
-      { id: 'sandwiches', name: 'Sandwiches' },
+      { id: 'sandwiches', name: 'Sandwiches', image: 'menu/sandwiches' },
     ],
   },
   {

@@ -7,10 +7,12 @@ interface OpenStatusProps {
   className?: string;
   /** `ink` on paper, `paper` on the cloth. */
   tone?: 'ink' | 'paper';
+  /** The light beside the words. Off where the words stand alone. */
+  dot?: boolean;
 }
 
 /** "Открыто до 22:00", live, on the café's own clock. */
-export function OpenStatus({ className, tone = 'ink' }: OpenStatusProps) {
+export function OpenStatus({ className, tone = 'ink', dot = true }: OpenStatusProps) {
   const { t } = useLanguage();
   const status = useOpenStatus();
 
@@ -24,7 +26,7 @@ export function OpenStatus({ className, tone = 'ink' }: OpenStatusProps) {
         .filter(Boolean)
         .join(' ')}
     >
-      <span className={styles.dot} aria-hidden="true" />
+      {dot && <span className={styles.dot} aria-hidden="true" />}
       <span>
         {label}
         {status.ramadan && <span className={styles.note}> · {t('status.ramadan')}</span>}

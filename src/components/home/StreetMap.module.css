@@ -111,9 +111,12 @@
   color: var(--c-ink-soft);
 }
 
-/* Phones: the stop's name takes two lines rather than run off the edge */
+/* Phones: the stop's name sets to the left of the stop in a narrow block,
+   leaving the street under Pushkina east of it for the street's own name */
 .tall .stopName {
-  width: 9em;
+  width: 8em;
+  margin-left: calc(-8em - 9px);
+  text-align: right;
   white-space: normal;
 }
 
@@ -173,6 +176,10 @@
 
 .medium .cafeName svg {
   height: 7px;
+}
+
+.tall .cafeName svg {
+  height: 6.5px;
 }
 
 @media (max-width: 1199px) {

@@ -10,27 +10,38 @@ import {
   useTransform,
 } from 'motion/react';
 import { useLanguage } from '../../context/LanguageContext';
-import { getFirstLines } from '../../data/firstLines';
-import styles from './FirstLineGame.module.css';
+import { getCatchphrases } from '../../data/catchphrases';
+import { PEN_RING, PEN_STROKE } from '../common/penMarks';
+import styles from './CatchphraseGame.module.css';
 
 const ease = [0.16, 1, 0.3, 1] as const;
 
-const BEST_KEY = 'biblioteka-first-line-best';
+const BEST_KEY = 'biblioteka-catchphrase-best';
 
 /** Every this many right answers in a row earns a bonus. */
 const SERIES = 5;
 const SERIES_BONUS = 5;
 
+/** How long after the answer's own points a series bonus lands, in seconds. */
+const BONUS_BEAT = 0.85;
+
 /** Spines beyond this many stand off the end of the shelf. */
-const SHELF_MAX = 24;
+const SHELF_MAX = 64;
 
 /**
- * How long a line takes to type, in ms. Short lines slow down and long ones
- * speed up, so every line leaves roughly the same time to think.
+ * How long every round's clock runs, in ms. A phrase is known from its first
+ * words; what takes the time is placing it, so the clock is the same for a
+ * short phrase as for a long one.
  */
-const typingTime = (length: number) => Math.min(7000, Math.max(2600, length * 45));
+const ROUND_TIME = 9000;
 
-/** Three points while under a third is typed, two under two thirds, then one. */
+/**
+ * How long a phrase takes to type, in ms: a typist's pace, held to half the
+ * round, so a long phrase is whole while it still scores.
+ */
+const typingTime = (length: number) => Math.min(ROUND_TIME / 2, length * 80);
+
+/** Three points in the round's first third, two in its second, then one. */
 const worthAt = (progress: number) => (progress < 1 / 3 ? 3 : progress < 2 / 3 ? 2 : 1);
 
 /**
@@ -42,8 +53,17 @@ const SPINES = [
   { w: 15, h: 90 }, { w: 10, h: 68 }, { w: 13, h: 82 },
 ] as const;
 
-/** A four-pointed glint, the shape of the emblem's stardust. */
-const GLINT = 'M5 0 6 4 10 5 6 6 5 10 4 6 0 5 4 4Z';
+/**
+ * The pen's loops round a mark. A series bonus goes round a second time,
+ * wider and at another angle, the way a hand does.
+ */
+const LOOPS = [
+  { rotate: -4, scale: 1, delay: 0.3 },
+  { rotate: 9, scale: 1.07, delay: 0.1 },
+] as const;
+
+/** The bonus rolling the figure on, like a counter's wheel. */
+const ROLL = { type: 'spring', stiffness: 420, damping: 32 } as const;
 
 type Phase = 'idle' | 'reading' | 'answered';
 
@@ -53,19 +73,11 @@ interface Round {
   options: string[];
 }
 
-interface Spark {
-  x: number;
-  y: number;
-  size: number;
-  delay: number;
-}
-
 interface Result {
   picked: string;
   correct: boolean;
   gain: number;
   bonus: number;
-  sparks: Spark[];
 }
 
 function shuffle<T>(items: readonly T[]): T[] {
@@ -75,19 +87,6 @@ function shuffle<T>(items: readonly T[]): T[] {
     [out[i], out[j]] = [out[j], out[i]];
   }
   return out;
-}
-
-function burst(count: number): Spark[] {
-  return Array.from({ length: count }, (_, i) => {
-    const angle = (i / count) * Math.PI * 2 + Math.random() * 0.5;
-    const reach = 46 + Math.random() * 64;
-    return {
-      x: Math.cos(angle) * reach,
-      y: Math.sin(angle) * reach * 0.8,
-      size: 0.6 + Math.random() * 0.9,
-      delay: Math.random() * 0.08,
-    };
-  });
 }
 
 function readBest(): number {
@@ -106,16 +105,90 @@ function writeBest(n: number) {
   }
 }
 
+interface MarkProps {
+  gain: number;
+  bonus: number;
+  reduced: boolean;
+}
+
 /**
- * The home page's game: a book's opening line types itself out and the reader
- * names the book. The sooner, the more it scores; each right answer in a row
- * stands another spine on the shelf, and a wrong one knocks the shelf over.
+ * The points a right answer scored, written in red in the margin of its plate
+ * and circled, as a mark is given in a school exercise book. A series bonus
+ * rolls the figure on to the new total a beat later and circles it again.
  */
-export function FirstLineGame() {
+function Mark({ gain, bonus, reduced }: MarkProps) {
+  const [total, setTotal] = useState(reduced ? gain + bonus : gain);
+
+  useEffect(() => {
+    if (!bonus || reduced) return;
+    const id = window.setTimeout(() => setTotal(gain + bonus), BONUS_BEAT * 1000);
+    return () => window.clearTimeout(id);
+  }, [gain, bonus, reduced]);
+
+  const first = total === gain;
+
+  return (
+    <span className={styles.mark} aria-hidden="true">
+      <span className={styles.figure}>
+        <AnimatePresence initial={!reduced}>
+          <motion.span
+            key={total}
+            className={styles.figureFace}
+            // Written left to right; the bonus rolls in under it like a counter.
+            initial={
+              first
+                ? { clipPath: 'inset(0 100% 0 0)', y: '0%' }
+                : { clipPath: 'inset(0 0% 0 0)', y: '110%' }
+            }
+            animate={{ clipPath: 'inset(0 0% 0 0)', y: '0%' }}
+            exit={{ y: '-110%', transition: ROLL }}
+            transition={first ? { duration: 0.24, delay: 0.08, ease: [0.3, 0.2, 0.3, 1] } : ROLL}
+          >
+            <span className={styles.plus}>+</span>
+            {total}
+          </motion.span>
+        </AnimatePresence>
+      </span>
+      {LOOPS.slice(0, first ? 1 : 2).map((loop, i) => (
+        <svg
+          key={i}
+          className={styles.loop}
+          viewBox="0 0 60 48"
+          style={{ rotate: `${loop.rotate}deg`, scale: loop.scale }}
+          focusable="false"
+        >
+          <motion.path
+            d={PEN_RING}
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={1.75}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            // Hidden until the pen moves, or the round cap shows as a dot.
+            initial={reduced ? false : { pathLength: 0, opacity: 0 }}
+            animate={{ pathLength: 1, opacity: 1 }}
+            transition={{
+              pathLength: { ...PEN_STROKE, delay: loop.delay },
+              opacity: { duration: 0.01, delay: loop.delay },
+            }}
+          />
+        </svg>
+      ))}
+    </span>
+  );
+}
+
+/**
+ * The home page's game: a catchphrase types itself out and the reader names
+ * the book it comes from. The sooner, the more it scores; each right answer
+ * in a row stands another spine on the shelf, and a wrong one knocks the
+ * shelf over.
+ */
+export function CatchphraseGame() {
   const { lang, t, tn } = useLanguage();
   const reduced = useReducedMotion();
-  const lines = getFirstLines(lang);
-  const byId = useMemo(() => new Map(lines.map((l) => [l.id, l])), [lines]);
+  const phrases = getCatchphrases(lang);
+  const byId = useMemo(() => new Map(phrases.map((p) => [p.id, p])), [phrases]);
 
   const [scope, animate] = useAnimate<HTMLElement>();
   const stageRef = useRef<HTMLDivElement>(null);
@@ -137,25 +210,32 @@ export function FirstLineGame() {
   const [run, setRun] = useState(0);
   const [best, setBest] = useState(readBest);
 
-  const book = round ? byId.get(round.id) : undefined;
+  const phrase = round ? byId.get(round.id) : undefined;
   const [open, close] = lang === 'en' ? ['“', '”'] : ['«', '»'];
-  const text = book
-    ? `${open}${book.line}${close}`
+  const text = phrase
+    ? `${open}${phrase.line}${close}`
     : t('game.teaser');
   const shown = phase === 'reading' ? typed : text.length;
 
   const deal = useCallback(() => {
     if (deckRef.current.length === 0) {
-      const deck = shuffle(lines.map((l) => l.id));
-      // A fresh deck never opens with the line just played.
+      const deck = shuffle(phrases.map((p) => p.id));
+      // A fresh deck never opens with the phrase just played.
       if (round && deck[0] === round.id) deck.push(deck.shift()!);
       deckRef.current = deck;
     }
     const id = deckRef.current.shift()!;
-    const shelf = byId.get(id)!.shelf;
-    const decoys = shuffle(lines.filter((l) => l.shelf === shelf && l.id !== id))
-      .slice(0, 3)
-      .map((l) => l.id);
+    const { shelf, title } = byId.get(id)!;
+    // A book can give the shelf several phrases, but it stands among the
+    // answers once: the wrong ones are three other books.
+    const books = new Set([title]);
+    const decoys: string[] = [];
+    for (const p of shuffle(phrases)) {
+      if (decoys.length === 3) break;
+      if (p.shelf !== shelf || books.has(p.title)) continue;
+      books.add(p.title);
+      decoys.push(p.id);
+    }
 
     elapsedRef.current = 0;
     if (fillRef.current) fillRef.current.style.transform = 'scaleX(1)';
@@ -165,7 +245,7 @@ export function FirstLineGame() {
     setRound((r) => ({ n: (r?.n ?? 0) + 1, id, options: shuffle([id, ...decoys]) }));
     setPhase('reading');
     stageRef.current?.focus({ preventScroll: true });
-  }, [lines, byId, round]);
+  }, [phrases, byId, round]);
 
   const answer = useCallback((picked: string) => {
     if (phase !== 'reading' || !round) return;
@@ -174,13 +254,7 @@ export function FirstLineGame() {
     const bonus = correct && nextStreak % SERIES === 0 ? SERIES_BONUS : 0;
     const gain = correct ? worth : 0;
 
-    setResult({
-      picked,
-      correct,
-      gain,
-      bonus,
-      sparks: correct && !reduced ? burst(bonus ? 22 : 12) : [],
-    });
+    setResult({ picked, correct, gain, bonus });
     setPhase('answered');
     setStreak(nextStreak);
     if (!correct && streak > 0) setRun((r) => r + 1);
@@ -189,22 +263,22 @@ export function FirstLineGame() {
       setBest(nextStreak);
       writeBest(nextStreak);
     }
-  }, [phase, round, streak, worth, best, reduced]);
+  }, [phase, round, streak, worth, best]);
 
-  // The typewriter. The clock only runs while the stage is on screen, so
-  // scrolling away never costs points.
+  // The typewriter, and the round's clock running on past it. The clock only
+  // runs while the stage is on screen, so scrolling away never costs points.
   const length = text.length;
   const roundNo = round?.n;
   useEffect(() => {
     if (phase !== 'reading' || !stageInView) return;
-    const duration = typingTime(length);
+    const typing = typingTime(length);
     let last = performance.now();
     let frame = requestAnimationFrame(function tick(now) {
       elapsedRef.current += Math.min(now - last, 100);
       last = now;
-      const progress = Math.min(1, elapsedRef.current / duration);
+      const progress = Math.min(1, elapsedRef.current / ROUND_TIME);
       const w = worthAt(progress);
-      setTyped(reduced ? length : Math.round(progress * length));
+      setTyped(reduced ? length : Math.round(Math.min(1, elapsedRef.current / typing) * length));
       setWorth(w);
       if (fillRef.current) {
         fillRef.current.style.transform = `scaleX(${reduced ? w / 3 : 1 - progress})`;
@@ -232,16 +306,14 @@ export function FirstLineGame() {
     return () => window.removeEventListener('keydown', onKey);
   }, [phase, round, stageInView, answer]);
 
-  // The stamp lands, then the page feels it. A miss shakes the answers.
+  // A miss shakes the answers. A series bonus makes the shelf jump as the
+  // mark rolls on to its total.
   useEffect(() => {
     if (!result || reduced) return;
-    if (result.correct) {
-      animate('[data-stage]', { y: [0, 5, -1, 0] }, { duration: 0.32, delay: 0.12 });
-      if (result.bonus) {
-        animate('[data-spine]', { y: [0, -16, 0] }, { duration: 0.5, delay: stagger(0.035, { startDelay: 0.4 }) });
-      }
-    } else {
+    if (!result.correct) {
       animate('[data-options]', { x: [0, -9, 8, -5, 3, 0] }, { duration: 0.45 });
+    } else if (result.bonus) {
+      animate('[data-spine]', { y: [0, -16, 0] }, { duration: 0.5, delay: stagger(0.035, { startDelay: BONUS_BEAT }) });
     }
   }, [result, reduced, animate]);
 
@@ -261,16 +333,16 @@ export function FirstLineGame() {
     else scoreSpring.set(score);
   }, [score, reduced, scoreSpring]);
 
-  const announcement = !result || !book
+  const announcement = !result || !phrase
     ? ''
     : result.correct
       ? `${t('game.right')}. +${tn('game.points', result.gain + result.bonus)}.`
-      : `${t('game.wrong')}. ${t('game.answerWas')}: ${book.title}, ${book.author}.`;
+      : `${t('game.wrong')}. ${t('game.answerWas')}: ${phrase.title}, ${phrase.author}.`;
 
   const spines = Array.from({ length: Math.min(streak, SHELF_MAX) }, (_, i) => i);
 
   return (
-    <section ref={scope} id="game" className={styles.game} aria-labelledby="first-line-title">
+    <section ref={scope} id="game" className={styles.game} aria-labelledby="catchphrase-title">
       <motion.div
         className={styles.intro}
         initial={{ opacity: 0, y: 24 }}
@@ -278,8 +350,7 @@ export function FirstLineGame() {
         viewport={{ once: true, margin: '-60px' }}
         transition={{ duration: 0.8, ease }}
       >
-        <p className={styles.eyebrow}>{t('game.eyebrow')}</p>
-        <h2 id="first-line-title" className={styles.title}>
+        <h2 id="catchphrase-title" className={styles.title}>
           {t('game.title1')} <em>{t('game.title2')}</em>
         </h2>
         <p className={styles.lede}>{t('game.lede')}</p>
@@ -289,22 +360,8 @@ export function FirstLineGame() {
         <dl className={styles.stats}>
           <div className={styles.stat}>
             <dt>{t('game.score')}</dt>
-            <dd className={styles.scoreValue}>
+            <dd>
               <motion.span>{scoreShown}</motion.span>
-              <AnimatePresence>
-                {result?.correct && (
-                  <motion.span
-                    key={roundNo}
-                    className={styles.gain}
-                    aria-hidden="true"
-                    initial={{ opacity: 0, y: 6 }}
-                    animate={{ opacity: [0, 1, 1, 0], y: -22 }}
-                    transition={{ duration: 1.3, ease: 'easeOut', delay: 0.15 }}
-                  >
-                    +{result.gain + result.bonus}
-                  </motion.span>
-                )}
-              </AnimatePresence>
             </dd>
           </div>
           <div className={styles.stat}>
@@ -319,17 +376,6 @@ export function FirstLineGame() {
 
         <div className={styles.shelf} aria-label={`${t('game.shelf')}: ${streak}`} role="img">
           <AnimatePresence>
-            {spines.length === 0 && (
-              <motion.span
-                key="empty"
-                className={styles.shelfEmpty}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1, transition: { delay: 0.5, duration: 0.4 } }}
-                exit={{ opacity: 0, transition: { duration: 0.15 } }}
-              >
-                {t('game.shelfEmpty')}
-              </motion.span>
-            )}
             {spines.map((i) => {
               const look = SPINES[i % SPINES.length];
               return (
@@ -388,51 +434,35 @@ export function FirstLineGame() {
               </motion.span>
             )}
             <AnimatePresence>
-              {phase === 'answered' && result && (
+              {phase === 'answered' && result && !result.correct && (
                 <motion.span
                   key={roundNo}
-                  className={`${styles.stamp} ${result.correct ? '' : styles.stampMiss}`}
+                  className={styles.stamp}
                   aria-hidden="true"
                   initial={reduced ? { opacity: 0 } : { opacity: 0, scale: 2.6, rotate: -20 }}
-                  animate={{ opacity: 1, scale: 1, rotate: result.correct ? -8 : 6 }}
+                  animate={{ opacity: 1, scale: 1, rotate: 6 }}
                   exit={{ opacity: 0, transition: { duration: 0.15 } }}
                   transition={{ type: 'spring', stiffness: 560, damping: 24, mass: 0.9 }}
                 >
-                  <span className={styles.stampWord}>
-                    {result.correct ? t('game.right') : t('game.wrong')}
-                  </span>
-                  {result.correct && (
-                    <span className={styles.stampPoints}>
-                      +{tn('game.points', result.gain)}
-                      {result.bonus > 0 && ` · +${result.bonus} ${t('game.bonus')}`}
-                    </span>
-                  )}
-                  {result.sparks.map((s, i) => (
-                    <motion.svg
-                      key={i}
-                      viewBox="0 0 10 10"
-                      className={styles.spark}
-                      initial={{ x: 0, y: 0, scale: 0, opacity: 0 }}
-                      animate={{ x: s.x, y: s.y, scale: [0, s.size, 0], opacity: [0, 1, 0], rotate: 90 }}
-                      transition={{ duration: 0.9, delay: 0.1 + s.delay, ease: 'easeOut' }}
-                    >
-                      <path d={GLINT} fill="currentColor" />
-                    </motion.svg>
-                  ))}
+                  <span className={styles.stampWord}>{t('game.wrong')}</span>
                 </motion.span>
               )}
             </AnimatePresence>
           </span>
         </div>
 
-        {/* Set in full and uncovered as it types, so the line never reflows
+        {/* Set in full and uncovered as it types, so the phrase never reflows
             under the reader. Screen readers get it whole. */}
-        <p className={`${styles.line} ${phase === 'idle' ? styles.lineIdle : ''}`} aria-hidden="true">
+        <p
+          className={`${styles.line} ${phase === 'idle' ? styles.lineIdle : ''}`}
+          data-verse={phrase?.line.includes('\n') || undefined}
+          aria-hidden="true"
+        >
           <span>{text.slice(0, shown)}</span>
           {phase !== 'answered' && <span className={styles.caret} />}
           <span className={styles.ghost}>{text.slice(shown)}</span>
         </p>
-        {book && <p className="sr-only">{book.line}</p>}
+        {phrase && <p className="sr-only">{phrase.line}</p>}
 
         {phase === 'idle' ? (
           <button type="button" className={styles.cta} onClick={deal}>
@@ -473,6 +503,9 @@ export function FirstLineGame() {
                       <span className={styles.optionTitle}>{option.title}</span>
                       <span className={styles.optionAuthor}>{option.author}</span>
                     </span>
+                    {state === 'right' && result?.correct && (
+                      <Mark gain={result.gain} bonus={result.bonus} reduced={!!reduced} />
+                    )}
                   </motion.button>
                 );
               })}

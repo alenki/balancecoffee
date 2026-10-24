@@ -3,44 +3,10 @@ import { motion, useAnimate, useReducedMotion } from 'motion/react';
 import { usePreloadProgress } from '../../hooks/usePreloadProgress';
 import { useLenisInstance } from '../../hooks/useLenis';
 import { useLanguage } from '../../context/LanguageContext';
-import { images, type ImageName } from '../../generated/image-manifest';
-import { HERO_SIZES } from '../common/imageSizes';
 import { Wordmark } from '../common/Logo';
 import styles from './LoadingScreen.module.css';
 
 const EASE_PART = [0.76, 0, 0.24, 1] as const;
-
-const srcSet = (base: string, widths: readonly number[], ext: string) =>
-  widths.map((w) => `${base}-${w}.${ext} ${w}w`).join(', ');
-
-/**
- * Pipeline images are responsive, so warming a hardcoded URL would cache a
- * rung the browser then declines to use. This mirrors the real `<picture>`,
- * letting the same selection run twice and land on one file.
- */
-function warm(name: ImageName, sizes: string): () => Promise<void> {
-  return () => {
-    const meta = images[name];
-    return new Promise((resolve) => {
-      const done = () => resolve();
-      const picture = document.createElement('picture');
-
-      const avif = document.createElement('source');
-      avif.type = 'image/avif';
-      avif.srcset = srcSet(meta.base, meta.widths, 'avif');
-      avif.sizes = sizes;
-
-      const img = document.createElement('img');
-      img.sizes = sizes;
-      // The img must already be inside the picture, or the source is ignored.
-      picture.append(avif, img);
-      img.addEventListener('load', done, { once: true });
-      img.addEventListener('error', done, { once: true });
-      img.srcset = srcSet(meta.base, meta.widths, 'webp');
-      img.src = `${meta.base}-${meta.widths[meta.widths.length - 1]}.webp`;
-    });
-  };
-}
 
 /**
  * The faces are declared by Google's stylesheet. Asking for one before that
@@ -80,7 +46,6 @@ function warmFaces(): Promise<unknown> {
 
 /** Warmed before the page parts, so nothing pops in behind it. */
 const ASSETS = [
-  warm('hall/counter', HERO_SIZES), // hero plate, the LCP image
   '/cloth.webp', // the hero book's cloth grain
   warmFaces, // title and running head
 ] as const;

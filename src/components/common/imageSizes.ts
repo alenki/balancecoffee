@@ -14,25 +14,35 @@
  */
 
 /**
- * Hero: the room printed inside the book's front board, one page of the open
- * spread. The page is three quarters as wide as it is tall, and the open
- * book, each page with its boards' squares round it, fills what the window
- * allows less the header, the gutters and the ribbon's room: one board
- * beside the other in landscape, one over the other in portrait. Capped at
- * 750px wide. It is only ever drawn smaller than this while the book opens,
- * never larger.
- * Measured: 390x844 -> 257px, 430x932 -> 290px, 768x1024 -> 320px,
- * 1024x1366 -> 446px, 844x390 -> 167px, 1024x768 -> 445px, 1280x720 -> 386px,
- * 1366x768 -> 421px, 1440x900 -> 518px, 1920x1080 -> 650px,
- * 2000x874 -> 500px, 2560x1440 -> 750px.
+ * Hero: the photograph on the endpaper inside the book's front board, under
+ * the epigraph and facing the title page. A page is three quarters as wide
+ * as it is tall, and the open spread, each page with its boards' squares,
+ * fills what the window allows less the header, the gutters and the
+ * ribbon's room: one page beside the other in landscape, one over the other
+ * in portrait, never more than 750px wide. The print is a 2:3 of the room
+ * between its lines (in landscape from the top of the title's capitals down
+ * to the imprint's baseline, about half the page's width; in portrait from
+ * under the epigraph down to the head margin above the spine), but never
+ * narrower than the verse and its indent, 204px (208px in English, rounded
+ * up), and never wider than the type area, which binds on a phone. On the
+ * smallest pages it takes the verse's own width; on a phone on its side it
+ * is not drawn. It is only ever drawn smaller than this while the book
+ * opens, never larger.
+ * Measured, page then print: 360x640 -> 182/133px, 375x667 -> 192/133px,
+ * 390x844 -> 257/190px, 430x932 -> 290/204px, 768x1024 -> 320/204px,
+ * 820x1180 -> 377/210px, 1024x1366 -> 446/256px, 844x390 -> 167px/none,
+ * 1280x600 -> 299/204px, 1366x657 -> 341/204px, 1280x720 -> 386/204px,
+ * 1024x768 -> 445/228px, 1366x768 -> 421/216px, 1180x820 -> 482/249px,
+ * 1440x900 -> 518/266px, 1920x1080 -> 650/334px, 2000x874 -> 500/256px,
+ * 2560x1440 -> 750/385px.
  */
-export const HERO_SIZES = [
-  '(orientation: landscape) and (min-width: 1200px) min(calc(73.3vh - 140px), calc(49.3vw - 55px), 750px)',
-  '(orientation: landscape) and (min-width: 768px) min(calc(73.3vh - 117px), calc(49.3vw - 31px), 750px)',
-  '(orientation: landscape) min(calc(73.3vh - 108px), calc(49.3vw - 19px))',
-  '(min-width: 1200px) min(calc(37.1vh - 71px), calc(97vw - 108px), 750px)',
-  '(min-width: 768px) min(calc(37.1vh - 59px), calc(97vw - 62px), 750px)',
-  'min(calc(37.1vh - 54px), calc(97vw - 38px))',
+export const FRONTISPIECE_SIZES = [
+  '(orientation: landscape) and (min-width: 1200px) max(min(calc(37.8vh - 72px), calc(25.4vw - 28px), 387px), 208px)',
+  '(orientation: landscape) and (min-width: 768px) max(min(calc(37.8vh - 60px), calc(25.4vw - 15px), 387px), 208px)',
+  '(orientation: landscape) 208px',
+  '(min-width: 1200px) max(min(calc(21.3vh - 40px), calc(55.7vw - 62px), 431px), 208px)',
+  '(min-width: 768px) max(min(calc(22vh - 43px), calc(57.5vw - 45px), 436px), 208px)',
+  'min(calc(27.5vh - 40px), calc(71.8vw - 28px), 208px)',
 ].join(', ');
 
 /**

@@ -4,10 +4,10 @@
    A clothbound hardback lies shut on the page,
    tipped away from the reader so the depth of
    its pages shows. Scroll swings the front board
-   open on its joint onto the room and the title
-   page, while the camera rises over the book and
-   the spread is drawn up until it fills the
-   screen.
+   open on its joint onto the epigraph and the
+   title page, while the camera rises over the
+   book and the spread is drawn up until it fills
+   the screen.
 
    It is built the way a book is bound: a back
    board, the pages, a front board, each with the
@@ -25,8 +25,10 @@
    --lift (peaks as the board stands upright),
    --fall (how far past upright it has gone),
    --scale, --pitch and --yaw (the camera),
-   --lens and --details. The layout
-   writes the book's make, in pixels.
+   --lens, --details and --spine (how much of
+   the end of the spine the camera still
+   sees). The layout writes the book's make,
+   in pixels.
 
    No flattening properties (opacity, filter,
    overflow, clip-path, mask, blend modes) on
@@ -34,6 +36,13 @@
    the 3D and the cover stops turning. The faces
    are leaves and may use them, and so may
    .scene, which holds the lens.
+
+   No border-radius on the boards: Firefox draws
+   a face clipped to a rounded corner see-through
+   along any thin column repainted across it,
+   and the scroll cue repaints one through the
+   middle of the shut book. Their corners are
+   square.
    ============================================ */
 
 /* Animated by the arrival and by a hand, so they must interpolate */
@@ -79,6 +88,7 @@
   --yaw: -16deg;
   --lens: 1800px;
   --details: 0;
+  --spine: 1;
 
   /* Written by the layout: the book's make */
   --page-w: 24rem;
@@ -96,12 +106,10 @@
   --ribbon-angle: 72deg;
 
   /* The ribbon's width, and the length of it that lies out on the page:
-     never more than the 4rem the stage keeps clear below the open book */
+     even drawn out its furthest, never more than the 4.5rem the stage keeps
+     clear below the open book */
   --ribbon-w: clamp(7px, calc(var(--page-h) * 0.021), 15px);
   --ribbon-len: clamp(2.25rem, calc(var(--page-h) * 0.045 + 1.5rem), 3.5rem);
-
-  /* The boards' corners at the fore-edge, worn soft */
-  --round: 2px;
 
   /* The cloth: the café's red, with a grain the eye reads as its weave. A
      tileable raster at twice the density it is shown at, soft-lit over the
@@ -110,13 +118,14 @@
      Chrome's 3D compositing, so the book's silhouette steps. */
   --cloth: url('/cloth.webp') 0 0 / 96px;
 
-  /* Orientation: away from the spine across a page; the corners at the
-     fore-edge, seen from outside the cover and from inside it; and the cloth
-     turned in round the endpaper */
+  /* Orientation: away from the spine across a page; the cloth turned in
+     round the endpaper; and how far the spine reaches into the edges of the
+     pages, along the foot when the book is bound on its left edge, down
+     the side when it is bound at the head */
   --from-spine: to right;
-  --corners: 0 var(--round) var(--round) 0;
-  --corners-inside: var(--round) 0 0 var(--round);
-  --plate-inset: var(--square) 0 var(--square) var(--square);
+  --endpaper-inset: var(--square) 0 var(--square) var(--square);
+  --spine-x: var(--board);
+  --spine-y: 0px;
 
   position: sticky;
   top: 0;
@@ -124,16 +133,16 @@
   place-items: center;
   height: 100svh;
   /* Below, whatever of the ribbon's length the gutter cannot hold */
-  padding: var(--header-h) 0 max(0px, 4rem - var(--gutter));
+  padding: var(--header-h) 0 max(0px, 4.5rem - var(--gutter));
   overflow: hidden;
 }
 
 @media (orientation: portrait) {
   .stage {
     --from-spine: to bottom;
-    --corners: 0 0 var(--round) var(--round);
-    --corners-inside: var(--round) var(--round) 0 0;
-    --plate-inset: var(--square) var(--square) 0 var(--square);
+    --endpaper-inset: var(--square) var(--square) 0 var(--square);
+    --spine-x: 0px;
+    --spine-y: var(--board);
   }
 }
 
@@ -171,9 +180,11 @@
   }
 }
 
-/* Shut, a hand on the book lifts the board a crack */
+/* A hand on the shut book lifts the board a crack. Opening, the board swings
+   on from there and the lift runs out as it goes, so it never sinks back
+   before it rises; open, the hand moves nothing. */
 @media (hover: hover) {
-  .stage[data-shut] .book:hover {
+  .book:hover {
     --peek: 1;
   }
 }
@@ -210,7 +221,6 @@
 /* Hollow: only the ring outside the book is ever seen, so the book itself
    hides the rest */
 .shadow {
-  border-radius: var(--round);
   box-shadow:
     0 0 1px 0.5px rgba(40, 18, 8, 0.2),
     0 calc(var(--board-h) * 0.012) calc(var(--board-h) * 0.03) rgba(40, 20, 10, 0.18),
@@ -247,7 +257,6 @@
 .back {
   position: absolute;
   inset: 0;
-  border-radius: var(--corners);
   background: var(--cloth), var(--c-binding);
   background-blend-mode: soft-light;
   backface-visibility: hidden;
@@ -306,12 +315,81 @@
   transform: translateZ(calc(var(--block) * -1)) rotateY(90deg);
 }
 
+/* The end of the spine: its cloth running round the backs of the pages from
+   one board to the other, seen at the spine's end of the foot when the book
+   is bound on its left edge, and at the head of its side when it is bound
+   at the head. The spine is lined with board, so it is a board thick and
+   stands out past the pages as the boards do; the edges of the pages start
+   inside it. The cloth rounds over onto its end from the spine, so it
+   catches a line of light there, and is turned in over it, so the inner
+   side, standing out past the pages, is cloth too, in their shade.
+
+   Only the camera below the foot (or right of the side) sees it. As the
+   camera rises past, both fade, and once the end has turned away they are
+   taken out: the turn-in faces across, so left in, it would linger edge-on
+   as a splinter at the gutter. */
+.spineEnd,
+.spineTurnIn {
+  position: absolute;
+  backface-visibility: hidden;
+  opacity: var(--spine);
+}
+
+.stage[data-spine-out] .spineEnd,
+.stage[data-spine-out] .spineTurnIn {
+  visibility: hidden;
+}
+
+.spineEnd {
+  top: 100%;
+  left: 0;
+  width: var(--board);
+  height: var(--block);
+  transform-origin: top;
+  transform: rotateX(-90deg);
+  background:
+    linear-gradient(to right, rgba(255, 255, 255, 0.16), transparent 55%),
+    var(--c-binding-deep);
+}
+
+.spineTurnIn {
+  top: calc(var(--page-y) + var(--page-h));
+  left: var(--board);
+  width: var(--block);
+  height: var(--square);
+  transform-origin: left;
+  transform: rotateY(90deg);
+  background: #7d0013;
+}
+
+@media (orientation: portrait) {
+  .spineEnd {
+    top: 0;
+    left: 100%;
+    width: var(--block);
+    height: var(--board);
+    transform-origin: left;
+    transform: rotateY(90deg);
+    background:
+      linear-gradient(rgba(255, 255, 255, 0.12), transparent 55%),
+      #8c0016;
+  }
+
+  .spineTurnIn {
+    top: var(--board);
+    left: calc(var(--page-x) + var(--page-w));
+    width: var(--square);
+    height: var(--block);
+    transform-origin: top;
+    transform: rotateX(-90deg);
+  }
+}
+
 /* ============================================
    THE PAGES
    Their edges, a fine stack of leaves, in the
    shade of the front board above and the back
-   board below; the headbands at either end of
-   the spine; and the ribbon where it leaves
+   board below; and the ribbon where it leaves
    them.
    ============================================ */
 .pagesBottom,
@@ -322,8 +400,8 @@
 
 .pagesBottom {
   top: calc(var(--page-y) + var(--page-h));
-  left: var(--page-x);
-  width: var(--page-w);
+  left: calc(var(--page-x) + var(--spine-x));
+  width: calc(var(--page-w) - var(--spine-x));
   height: var(--block);
   transform-origin: top;
   transform: rotateX(-90deg);
@@ -335,10 +413,10 @@
 }
 
 .pagesRight {
-  top: var(--page-y);
+  top: calc(var(--page-y) + var(--spine-y));
   left: calc(var(--page-x) + var(--page-w));
   width: var(--block);
-  height: var(--page-h);
+  height: calc(var(--page-h) - var(--spine-y));
   transform-origin: left;
   transform: rotateY(90deg);
   background:
@@ -346,53 +424,6 @@
     repeating-linear-gradient(to right, transparent 0, rgba(255, 255, 255, 0.45) 0.8px, transparent 1.6px 2.5px),
     repeating-linear-gradient(to right, transparent 0, rgba(120, 95, 60, 0.15) 0.9px, transparent 1.8px 3.5px),
     #ddd6c7;
-}
-
-/* A little silk at the head and tail of the spine, seen at the gutter once
-   the book is open */
-.headband {
-  position: absolute;
-  left: calc(var(--square) * -0.6);
-  width: calc(var(--square) * 1.2);
-  height: calc(var(--square) * 0.66);
-  border-radius: calc(var(--square) * 0.33);
-  background:
-    linear-gradient(rgba(255, 255, 255, 0.35), transparent 45%, rgba(40, 0, 8, 0.4)),
-    repeating-linear-gradient(to right, var(--c-binding-deep) 0 1px, #efe7d5 1px 2px);
-  backface-visibility: hidden;
-  opacity: clamp(0, var(--open) * 8 - 0.2, 1);
-  transform: translateZ(0.5px);
-}
-
-.headbandHead {
-  top: calc(var(--page-y) - var(--square) * 0.66);
-}
-
-.headbandTail {
-  top: calc(var(--page-y) + var(--page-h));
-}
-
-@media (orientation: portrait) {
-  .headband {
-    width: calc(var(--square) * 0.66);
-    height: calc(var(--square) * 1.2);
-    background:
-      linear-gradient(to right, rgba(255, 255, 255, 0.35), transparent 45%, rgba(40, 0, 8, 0.4)),
-      repeating-linear-gradient(var(--c-binding-deep) 0 1px, #efe7d5 1px 2px);
-  }
-
-  .headbandHead,
-  .headbandTail {
-    top: calc(var(--square) * -0.6);
-  }
-
-  .headbandHead {
-    left: calc(var(--page-x) - var(--square) * 0.66);
-  }
-
-  .headbandTail {
-    left: calc(var(--page-x) + var(--page-w));
-  }
 }
 
 /* The ribbon leaving the pages partway down the stack and falling over the
@@ -413,8 +444,55 @@
 /* ============================================
    THE TITLE PAGE
    The first leaf, curving down into the gutter
-   at the spine.
+   at the spine, set as a Russian title page is:
+   the author at the head, the title, the
+   publisher's device, the imprint at the foot.
+
+   It shares one grid with the facing page, in
+   widths of the page (cqw, since a page is
+   three quarters as wide as it is tall), so
+   each line opposite can be found from here:
+   the epigraph's first line stands on the
+   author's baseline, and the photograph runs
+   from the top of the title's capitals down to
+   the imprint's baseline.
    ============================================ */
+.type,
+.column {
+  /* The head and side margins */
+  --head: 12cqw;
+  --side: 13cqw;
+  /* The author's line, whose capitals fill the wordmark, so its foot is
+     their baseline */
+  --author-w: max(6rem, 30cqw);
+  --author-baseline: calc(var(--head) + var(--author-w) * 106.8 / 1140);
+  /* The title under it: its first baseline, where Literata sets one in a
+     line as deep as its type (0.929 of it, measured), and the top of its
+     capitals (0.748 of the type, measured) */
+  --title-size: 16cqw;
+  --title-gap: 16cqw;
+  --title-baseline: calc(var(--author-baseline) + var(--title-gap) + 0.929 * var(--title-size));
+  --title-cap: calc(var(--title-baseline) - 0.748 * var(--title-size));
+  /* The foot: the catchword's line stands this far off the page's edge,
+     and the imprint this far above the catchword. The imprint's baseline,
+     measured from the foot, sits 0.36 of its type above the bottom of its
+     line (measured). */
+  --foot: 9.7cqw;
+  --catch-size: max(0.875rem, 3.1cqw);
+  --catch-gap: 8.4cqw;
+  --place-size: max(0.625rem, 2.2cqw);
+  --imprint-baseline: calc(
+    var(--foot) + 1.2 * var(--catch-size) + var(--catch-gap) + 0.36 * var(--place-size)
+  );
+  /* The epigraph's type, the top of its first line (Literata sets the
+     baseline of a line 1.45 deep 1.131 of its type down, measured), and how
+     deep it stands: two lines of verse, the space under them, and the poet,
+     who is set as the imprint is */
+  --verse-size: max(0.8125rem, 3.1cqw);
+  --epigraph-top: calc(var(--author-baseline) - 1.131 * var(--verse-size));
+  --epigraph-depth: calc(3.8 * var(--verse-size) + 1.3 * var(--place-size));
+}
+
 .page {
   position: absolute;
   top: var(--page-y);
@@ -424,6 +502,17 @@
   container-type: inline-size;
   background: var(--c-paper-bright);
   backface-visibility: hidden;
+}
+
+/* The type area, inside the margins. Its own box, so the page it measures
+   by stays the whole width of the leaf. */
+.type {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--head) var(--side) var(--foot);
 }
 
 /* The shadow the lifting board throws, and the leaf curving into the gutter */
@@ -444,70 +533,188 @@
     );
 }
 
+/* The author, where a title page names one: the café, in its own capitals */
+.author {
+  flex: none;
+  width: var(--author-w);
+  color: var(--c-ink);
+}
+
+/* Two nouns and a conjunction, set as the classics set theirs, "Война и
+   мир" and the rest: each noun a line of its own, the "и" between them
+   small, italic, and printed in red, the one word in the second colour. */
+.title {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: var(--title-gap);
+  font-size: var(--title-size);
+  font-weight: 300;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  text-align: center;
+  color: var(--c-ink);
+}
+
+.word {
+  display: block;
+}
+
+/* Centred between the lines it joins: from the baseline above to its own
+   x-height, as from its baseline to the x-height of the line below */
+.and {
+  display: block;
+  margin: 0.18em 0 -0.36em;
+  font-size: 0.42em;
+  font-style: italic;
+  line-height: 1.2;
+  letter-spacing: 0;
+  color: var(--c-stamp);
+}
+
+/* English capitalises the line below, and its capital stands well above
+   the x-height, so the line below steps down to clear it */
+.and:lang(en) {
+  margin-bottom: -0.16em;
+}
+
+/* The publisher's device: the café's mark, small, standing over the
+   imprint in whatever room the title leaves. Its stardust is stirred up
+   out of the cup once the spread lies flat, and holds where it lands. */
+.device {
+  flex: none;
+  width: max(2rem, 10cqw);
+  /* Never closer to the title than this, however little room is left */
+  padding-top: 5cqw;
+  margin: auto 0 7.5cqw;
+  color: var(--c-ink);
+}
+
+.device:not([data-stirred]) g {
+  visibility: hidden;
+}
+
+.imprint {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: max(0.375rem, 1.8cqw);
+  margin-bottom: var(--catch-gap);
+  line-height: 1.4;
+  text-align: center;
+}
+
+/* Where a book prints its city, the café's street. The city and the street
+   never break inside themselves; on the narrowest pages each takes a line,
+   as an imprint stacks its city over its publisher. */
 .place {
-  position: absolute;
-  top: 9cqw;
-  right: 9cqw;
-  left: 9cqw;
   font-family: var(--font-sans);
-  font-size: max(0.625rem, 2.3cqw);
+  font-size: var(--place-size);
   font-weight: 650;
   letter-spacing: 0.24em;
   text-transform: uppercase;
   color: var(--c-ink-muted);
 }
 
-.title {
-  position: absolute;
-  top: 42%;
-  right: 9cqw;
-  left: 9cqw;
-  transform: translateY(-50%);
-  font-size: 15cqw;
-  font-weight: 300;
-  line-height: 0.98;
-  letter-spacing: -0.02em;
-  color: var(--c-ink);
+.place > span:not([aria-hidden]) {
+  white-space: nowrap;
 }
 
-.title span {
-  display: block;
-}
-
-.details {
-  position: absolute;
-  right: 9cqw;
-  bottom: 8cqw;
-  left: 9cqw;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-2) var(--space-4);
+/* The live parts, brought up as the spread is drawn up */
+.live {
   opacity: var(--details);
 }
 
-.stage:not([data-details]) .details {
+.stage:not([data-details]) .live {
   visibility: hidden;
 }
 
-.menuLink {
+/* The catchword, under the last line in the corner where the leaf is
+   turned: printers set the first word of the next page there, and the
+   next chapter here is the menu */
+.catchword {
+  align-self: flex-end;
+  display: flex;
+  align-items: baseline;
+  gap: 0.4em;
   /* A full-height target without moving the type off its line */
-  padding: var(--space-3) 0;
-  margin: calc(var(--space-3) * -1) 0;
-  font-family: var(--font-sans);
-  font-size: var(--text-sm);
-  font-weight: 650;
+  padding: var(--space-2) 0;
+  margin: calc(var(--space-2) * -1) 0;
+  font-family: var(--font-serif);
+  font-size: var(--catch-size);
+  font-style: italic;
+  font-weight: 400;
+  line-height: 1.2;
   color: var(--c-ink);
-  text-decoration: underline;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 0.35em;
-  text-decoration-color: var(--rule-strong);
+  text-decoration: underline 1px var(--rule-strong);
+  text-underline-offset: 0.3em;
   transition: text-decoration-color var(--transition-base);
 }
 
-.menuLink:hover {
+.catchword:hover {
   text-decoration-color: currentColor;
+}
+
+.catchArrow {
+  flex: none;
+  width: 0.8em;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: translate 0.4s var(--ease-out);
+}
+
+.catchword:hover .catchArrow {
+  translate: 0.15em 0;
+}
+
+/* On a page as small as a phone's, the type keeps its smallest sizes, so
+   the foot closes up to leave the title its room */
+@container (max-width: 300px) {
+  .type,
+  .column {
+    --catch-gap: 6cqw;
+    --title-gap: 12cqw;
+  }
+
+  .device {
+    width: 1.75rem;
+    margin-bottom: 5cqw;
+  }
+}
+
+/* Wherever the imprint is set at its smallest size, it may run out into
+   the margins and close its tracking rather than break */
+@container (max-width: 340px) {
+  .imprint {
+    margin-inline: calc(var(--side) * -0.6);
+  }
+
+  .place {
+    letter-spacing: 0.16em;
+  }
+}
+
+/* A page as small as a phone's on its side: no room for the device, and
+   the city and the street stand one over the other */
+@container (max-width: 240px) {
+  .device {
+    display: none;
+  }
+
+  .imprint {
+    margin-top: auto;
+  }
+
+  .place > span {
+    display: block;
+  }
+
+  .place > span[aria-hidden] {
+    display: none;
+  }
 }
 
 /* ============================================
@@ -521,13 +728,13 @@
   inset: 0;
   transform-style: preserve-3d;
   transform-origin: left center;
-  transform: rotateY(calc(var(--open) * -180deg - var(--peek) * 3deg));
+  transform: rotateY(calc(var(--open) * -180deg - var(--peek) * (1 - var(--open)) * 3deg));
 }
 
 @media (orientation: portrait) {
   .cover {
     transform-origin: center top;
-    transform: rotateX(calc(var(--open) * 180deg + var(--peek) * 3deg));
+    transform: rotateX(calc(var(--open) * 180deg + var(--peek) * (1 - var(--open)) * 3deg));
   }
 }
 
@@ -556,7 +763,6 @@
   gap: 6cqw;
   /* The stamping is centred on the board beyond the joint */
   padding-left: var(--joint);
-  border-radius: var(--corners);
   background:
     linear-gradient(170deg, rgba(255, 255, 255, 0.07), transparent 42%, rgba(40, 0, 8, 0.16)),
     var(--cloth),
@@ -656,7 +862,6 @@
 }
 
 .inside {
-  border-radius: var(--corners-inside);
   background: var(--cloth), var(--c-binding);
   background-blend-mode: soft-light;
   transform: rotateY(180deg);
@@ -680,18 +885,171 @@
     linear-gradient(rgba(30, 15, 8, calc(0.5 * var(--lift))), rgba(30, 15, 8, calc(0.5 * var(--lift))));
 }
 
-/* The endpaper, pasted down on the cloth turned in round it */
+/* The endpaper, pasted down on the cloth turned in round it: the same
+   paper as the leaves, and the same size, so the two pages share a grid.
+   Measured in both directions, so the photograph can be sized by the room
+   between the lines it keeps. */
+.endpaper {
+  position: absolute;
+  inset: var(--endpaper-inset);
+  container-type: size;
+  background: var(--c-paper-bright);
+  box-shadow: 0 0 0 0.5px rgba(50, 15, 8, 0.3);
+}
+
+/* The column the epigraph and the photograph share, centred on the page.
+   It is as wide as a 2:3 print of the room between the print's lines or,
+   where that would be narrower, as the verse and an indent of three of its
+   type, since a small page keeps the verse at its smallest size; never
+   wider than the type area.
+
+   The print runs down to the imprint's baseline across the gutter, and
+   starts at the top of the title's capitals. Where the epigraph leaves it
+   too little room under it (a small page, whose type keeps its smallest
+   sizes), it steps down to the title's baseline instead, so its top still
+   stands on a line opposite. Multiplying the shortfall by a thousand turns
+   the move between the two lines into a step, so the print never comes to
+   rest between them. */
+.column {
+  --plate-foot: var(--imprint-baseline);
+  --plate-gap: calc(1.5 * var(--verse-size));
+  --plate-room: calc(var(--epigraph-top) + var(--epigraph-depth) + var(--plate-gap));
+  --plate-top: max(
+    var(--title-cap),
+    min(var(--title-baseline), calc(var(--title-cap) + (var(--plate-room) - var(--title-cap)) * 1000)),
+    var(--plate-room)
+  );
+  --plate-w: calc((100cqh - var(--plate-top) - var(--plate-foot)) * 2 / 3);
+
+  position: absolute;
+  top: var(--epigraph-top);
+  right: 0;
+  bottom: var(--plate-foot);
+  left: 0;
+  display: grid;
+  /* The indent, then the epigraph flush right. The indent gives way first
+     when the type area runs short. */
+  grid-template-columns: minmax(0, calc(3 * var(--verse-size))) max-content;
+  justify-content: end;
+  align-content: start;
+  width: max-content;
+  min-width: var(--plate-w);
+  max-width: calc(100% - 2 * var(--side));
+  margin-inline: auto;
+}
+
+/* Bound at the head, the pages stand one over the other and nothing is
+   level across a gutter: the print runs down to the head margin's depth
+   above the spine, the wordmark's below it, and with no line opposite to
+   step to, it simply stands well clear of the epigraph */
+@media (orientation: portrait) {
+  .column {
+    --plate-foot: var(--head);
+    --plate-gap: calc(3 * var(--verse-size));
+    --plate-top: max(var(--title-cap), var(--plate-room));
+  }
+}
+
+/* The epigraph, as a Russian book sets one: flush right, here to the
+   photograph's edge, the verse in the italic of the text and kept to its
+   own lines, and under it the poet's name alone, as Onegin's own epigraphs
+   are signed. Its first line stands on the author's baseline across the
+   gutter. */
+.epigraph {
+  grid-column: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+/* In the ink of the wordmark it shares a baseline with across the gutter */
+.verse {
+  font-family: var(--font-serif);
+  font-size: var(--verse-size);
+  font-style: italic;
+  font-weight: 400;
+  line-height: 1.45;
+  color: var(--c-ink);
+}
+
+/* Each line of verse whole: set on the paragraph itself, which the global
+   text-wrap would otherwise let break */
+.verse p {
+  white-space: nowrap;
+}
+
+/* The poet, set exactly as the imprint opposite: Pushkin on this page, his
+   street on that one. Tracking follows the last letter too, so the line
+   runs out past the edge by that much and its letters stand flush. */
+.poet {
+  --tracking: 0.24em;
+
+  margin: calc(0.9 * var(--verse-size)) calc(-1 * var(--tracking)) 0 0;
+  font-family: var(--font-sans);
+  font-size: var(--place-size);
+  font-weight: 650;
+  line-height: 1.3;
+  letter-spacing: var(--tracking);
+  text-transform: uppercase;
+  color: var(--c-ink-muted);
+}
+
+/* Where the imprint closes its tracking, so does the poet */
+@container (max-width: 340px) {
+  .poet {
+    --tracking: 0.16em;
+  }
+}
+
+/* The photograph, printed into the paper rather than laid on it: the
+   multiply lets the paper's own tone through its whites. It fills the
+   column under the epigraph, which names what it shows; where the column
+   is wider than a 2:3 print, the print is cropped round the book and the
+   cup. */
 .plate {
   position: absolute;
-  inset: var(--plate-inset);
-  box-shadow: 0 0 0 0.5px rgba(50, 15, 8, 0.3);
+  top: calc(var(--plate-top) - var(--epigraph-top));
+  right: 0;
+  bottom: 0;
+  left: 0;
+  mix-blend-mode: multiply;
 }
 
 .image {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: 50% 40%;
+  object-position: 50% 62%;
+}
+
+/* On a page as small as a small phone's, upright or on its side, the verse
+   closes up to keep each line whole, and the column drops its indent, which
+   would be too slight to read as one: the print takes the verse's width */
+@container (max-width: 240px) {
+  .column {
+    --verse-size: 0.625rem;
+
+    grid-template-columns: max-content;
+  }
+
+  .epigraph {
+    grid-column: 1;
+  }
+}
+
+/* On its side, such a page has no room left for the print, which would
+   shrink to a stamp: the epigraph has the page to itself, the rest of it
+   blank, centred since it fills the measure */
+@media (orientation: landscape) {
+  @container (max-width: 240px) {
+    .column {
+      max-width: none;
+    }
+
+    .plate {
+      display: none;
+    }
+  }
 }
 
 /* ============================================
@@ -731,6 +1089,45 @@
   transform: scaleY(1.12);
 }
 
+/* Once the spread lies flat, the ribbon is drawn out a little and slips
+   back, again and again: the page goes on, and the ribbon reads on to it.
+   Never while the book stands at an angle, where an animation running inside
+   it steps its edges. */
+@media (prefers-reduced-motion: no-preference) {
+  .stage[data-flat] .ribbon:not(:hover)::before {
+    animation: tug 2.4s 1.2s infinite;
+  }
+}
+
+/* Beside the ribbon, once the spread lies flat, the plain words: the page
+   goes on. Set as the imprint is, on the title page's own plane, so the type
+   stays crisp. */
+.hint {
+  position: absolute;
+  top: calc(var(--board-h) + var(--board) / 2 + var(--ribbon-len) / 2 - 0.5em);
+  left: calc(var(--ribbon-x) + var(--ribbon-w) / 2 + 0.9rem);
+  font-family: var(--font-sans);
+  font-size: max(0.625rem, calc(var(--page-w) * 0.022));
+  font-weight: 650;
+  line-height: 1;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--c-ink-muted);
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.3s ease,
+    visibility 0s 0.3s;
+}
+
+.stage[data-flat] .hint {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.8s ease 0.6s;
+}
+
 /* A drop running down a thread: scroll */
 .cue {
   position: absolute;
@@ -753,6 +1150,22 @@
 @keyframes setDown {
   from {
     --drop: 1;
+  }
+}
+
+/* Drawn out briskly, let slip back slowly, then a rest */
+@keyframes tug {
+  0% {
+    transform: scaleY(1);
+    animation-timing-function: cubic-bezier(0.3, 0, 0.2, 1);
+  }
+  22% {
+    transform: scaleY(1.15);
+    animation-timing-function: cubic-bezier(0.45, 0, 0.55, 1);
+  }
+  62%,
+  100% {
+    transform: scaleY(1);
   }
 }
 

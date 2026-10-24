@@ -1,15 +1,22 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
+import { useState, useEffect, useLayoutEffect, useCallback, useRef, type CSSProperties } from 'react';
+import { Link, NavLink, useLocation } from 'react-router-dom';
+import { useReducedMotion } from 'motion/react';
 import { Logo } from '../common/Logo';
 import { OpenStatus } from '../common/OpenStatus';
 import { useLanguage, type Lang } from '../../context/LanguageContext';
 import { cafe } from '../../data/cafe';
+import { toRoman } from '../../utils/format';
 import styles from './Header.module.css';
 
 /** Minimum scroll distance before triggering hide (prevents jitter) */
 const SCROLL_THRESHOLD = 8;
 /** How long (ms) user must keep scrolling down before header hides */
 const HIDE_DELAY = 600;
+/** How long the contents stay up once a chapter is chosen in them, for the
+    ribbon to move to it (ms). Matches its move in Header.module.css. */
+const RIBBON_MOVE = 560;
+/** How far the ribbon's points fall below the chapter's baseline (px). */
+const RIBBON_TAIL = 6;
 
 function LangSwitch({ className }: { className?: string }) {
   const { lang, setLang, t } = useLanguage();
@@ -43,17 +50,18 @@ const Arrow = () => (
 
 export function Header() {
   const [hiddenByScroll, setIsHiddenByScroll] = useState(false);
-  const { t } = useLanguage();
-  const location = useLocation();
+  const { lang, t } = useLanguage();
+  const { pathname } = useLocation();
+  const reduceMotion = useReducedMotion();
 
-  // The overlay remembers which page it was opened on, so navigating
-  // anywhere closes it without an effect having to.
-  const [menuOpenOn, setMenuOpenOn] = useState<string | null>(null);
-  const isMobileMenuOpen = menuOpenOn === location.pathname;
-  const setIsMobileMenuOpen = useCallback(
-    (open: boolean) => setMenuOpenOn(open ? location.pathname : null),
-    [location.pathname]
-  );
+  // The contents remember the page they were opened on, so navigating
+  // anywhere (the back button too) closes them without an effect having to.
+  // A chapter chosen in them is let in as well, for the beat the ribbon
+  // takes to move to it before the sheet goes back up.
+  const [menu, setMenu] = useState<{ on: string; to?: string } | null>(null);
+  const isMobileMenuOpen = menu !== null && (menu.on === pathname || menu.to === pathname);
+  const holdTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const toggleRef = useRef<HTMLButtonElement>(null);
 
   const lastScrollY = useRef(0);
   const hideTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -61,7 +69,7 @@ export function Header() {
 
   // The menu page has its own sticky chapter bar under the header, so the
   // header stays put there.
-  const isMenuPage = location.pathname === '/menu';
+  const isMenuPage = pathname === '/menu';
   const isHiddenByScroll = hiddenByScroll && !isMenuPage;
 
   // Scroll-based hide/show (disabled on menu page)
@@ -122,19 +130,42 @@ export function Header() {
     };
   }, [isMobileMenuOpen]);
 
-  // Escape closes the overlay, as it would any dialog
+  const closeMobileMenu = useCallback(() => {
+    clearTimeout(holdTimer.current);
+    setMenu(null);
+  }, []);
+
+  const openMobileMenu = () => {
+    clearTimeout(holdTimer.current);
+    setMenu({ on: pathname });
+  };
+
+  useEffect(() => () => clearTimeout(holdTimer.current), []);
+
+  // Escape closes the contents, as it would any dialog, and hands focus
+  // back to the button that opened them.
   useEffect(() => {
     if (!isMobileMenuOpen) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setIsMobileMenuOpen(false);
+      if (e.key !== 'Escape') return;
+      closeMobileMenu();
+      toggleRef.current?.focus();
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [isMobileMenuOpen, setIsMobileMenuOpen]);
+  }, [isMobileMenuOpen, closeMobileMenu]);
 
-  const closeMobileMenu = useCallback(() => {
-    setIsMobileMenuOpen(false);
-  }, [setIsMobileMenuOpen]);
+  /** A chapter chosen in the contents: the ribbon moves to it while the
+      page changes underneath, then the sheet goes back up. */
+  const choose = (to: string) => {
+    if (!menu || to === pathname || reduceMotion) {
+      closeMobileMenu();
+      return;
+    }
+    setMenu({ on: menu.on, to });
+    clearTimeout(holdTimer.current);
+    holdTimer.current = setTimeout(() => setMenu(null), RIBBON_MOVE);
+  };
 
   const navItems = [
     { to: '/', label: t('nav.home') },
@@ -145,11 +176,50 @@ export function Header() {
     // ribbon: that stays on the page you are on.
     { to: '/?game', label: t('nav.game'), section: true },
   ];
+  const chapters = navItems.filter(({ section }) => !section);
+
+  // The ribbon hangs from under the running head to just below the marked
+  // chapter's baseline, measured from a zero-size point set on it, so it
+  // holds through any wrap, font swap or edition.
+  const leafRef = useRef<HTMLDivElement>(null);
+  const ribbonRef = useRef<HTMLSpanElement>(null);
+  const baselines = useRef<(HTMLSpanElement | null)[]>([]);
+  const marked = chapters.findIndex(({ to }) => to === (menu?.to ?? pathname));
+
+  useLayoutEffect(() => {
+    const leaf = leafRef.current;
+    const ribbon = ribbonRef.current;
+    if (!leaf || !ribbon) return;
+
+    const measure = () => {
+      const baseline = baselines.current[marked];
+      const reach = baseline
+        ? Math.round(baseline.getBoundingClientRect().top - leaf.getBoundingClientRect().top) + RIBBON_TAIL
+        : 0;
+      ribbon.style.setProperty('--reach', `${reach}px`);
+    };
+
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(leaf);
+    document.fonts.addEventListener('loadingdone', measure);
+    return () => {
+      observer.disconnect();
+      document.fonts.removeEventListener('loadingdone', measure);
+    };
+  }, [marked, lang]);
+
+  const external = (label: string) => `${label}, ${t('common.newTab')}`;
+
+  const socials = [
+    { href: cafe.instagram, label: 'Instagram' },
+    { href: cafe.vk, label: 'VK' },
+  ];
 
   return (
     <>
       <header
-        className={`${styles.header} ${isHiddenByScroll && !isMobileMenuOpen ? styles.scrollHidden : ''} ${isMobileMenuOpen ? styles.menuActive : ''}`}
+        className={`${styles.header} ${isHiddenByScroll && !isMobileMenuOpen ? styles.scrollHidden : ''}`}
       >
         <div className={styles.container}>
           <nav className={styles.desktopNav} aria-label={t('nav.mainAria')}>
@@ -165,7 +235,7 @@ export function Header() {
             ))}
           </nav>
 
-          <div className={styles.logoZone}>
+          <div className={styles.logoZone} onClick={closeMobileMenu}>
             <Logo className={styles.logo} />
           </div>
 
@@ -183,9 +253,10 @@ export function Header() {
             </a>
 
             <button
+              ref={toggleRef}
               type="button"
               className={`${styles.menuButton} ${isMobileMenuOpen ? styles.open : ''}`}
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              onClick={isMobileMenuOpen ? closeMobileMenu : openMobileMenu}
               aria-label={isMobileMenuOpen ? t('nav.closeMenu') : t('nav.openMenu')}
               aria-expanded={isMobileMenuOpen}
               aria-controls="mobile-menu"
@@ -197,50 +268,110 @@ export function Header() {
         </div>
       </header>
 
-      {/* Full-screen mobile menu, on the cloth */}
+      {/* The contents, on a sheet drawn down from the running head's rule */}
       <div
         id="mobile-menu"
-        className={`${styles.mobileOverlay} ${isMobileMenuOpen ? styles.open : ''}`}
+        className={[styles.sheet, isMobileMenuOpen && styles.open, menu?.to && styles.turning]
+          .filter(Boolean)
+          .join(' ')}
         aria-hidden={!isMobileMenuOpen}
         inert={!isMobileMenuOpen}
+        data-lenis-prevent
       >
-        <div className={styles.mobileInner}>
-          <nav className={styles.mobileNav} aria-label={t('nav.mainAria')}>
-            {navItems.map(({ to, label, section }, index) => (
-              <NavLink
-                key={to}
-                to={to}
-                end={to === '/'}
-                className={({ isActive }) => `${styles.mobileNavLink} ${isActive && !section ? styles.active : ''}`}
-                onClick={closeMobileMenu}
-                style={{ transitionDelay: isMobileMenuOpen ? `${0.08 + index * 0.06}s` : '0s' }}
-              >
-                <span className={styles.mobileNavLabel}>{label}</span>
-              </NavLink>
-            ))}
-          </nav>
+        <div className={styles.page}>
+          <div className={styles.leaf} ref={leafRef}>
+            <span className={styles.ribbon} ref={ribbonRef} aria-hidden="true" />
 
-          <div
-            className={styles.mobileFooter}
-            style={{ transitionDelay: isMobileMenuOpen ? '0.32s' : '0s' }}
-          >
-            <OpenStatus tone="paper" />
-            <div className={styles.mobileContacts}>
-              <a href={cafe.phoneHref} className={styles.mobileContact}>
-                {cafe.phone}
-              </a>
-              <a
-                href={cafe.whatsapp}
-                className={styles.mobileContact}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={t('nav.deliveryAria')}
+            <nav className={styles.contents} aria-label={t('nav.mainAria')}>
+              <ol className={styles.toc}>
+                {chapters.map(({ to, label }, i) => (
+                  <li key={to} style={{ '--i': i } as CSSProperties}>
+                    <NavLink to={to} end={to === '/'} className={styles.entry} onClick={() => choose(to)}>
+                      <span className={styles.numeral} aria-hidden="true">{toRoman(i + 1)}</span>
+                      <span className={styles.line}>
+                        <span className={styles.title}>{label}</span>
+                        <span
+                          className={styles.baseline}
+                          ref={(el) => {
+                            baselines.current[i] = el;
+                          }}
+                        />
+                      </span>
+                    </NavLink>
+                  </li>
+                ))}
+              </ol>
+
+              {/* A place in the first chapter rather than a chapter of its
+                  own, so it follows unnumbered, as a book's back matter does */}
+              <Link
+                to="/?game"
+                className={`${styles.entry} ${styles.extra}`}
+                style={{ '--i': chapters.length } as CSSProperties}
+                onClick={() => choose('/')}
               >
-                {t('nav.delivery')} <Arrow />
-              </a>
+                <span className={styles.line}>
+                  <span className={styles.title}>{t('nav.game')}</span>
+                </span>
+              </Link>
+            </nav>
+
+            <div className={styles.colophon}>
+              <div className={styles.rows}>
+                <div className={styles.row}>
+                  <a
+                    href={cafe.route}
+                    className={styles.lead}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={external(`${t('brand.address')}, ${t('footer.route')}`)}
+                  >
+                    {t('brand.address')}
+                    <Arrow />
+                  </a>
+                  <OpenStatus className={styles.aside} dot={false} />
+                </div>
+                <div className={styles.row}>
+                  <a href={cafe.phoneHref} className={`${styles.lead} ${styles.phone}`}>
+                    {cafe.phone}
+                  </a>
+                  <a
+                    href={cafe.whatsapp}
+                    className={styles.aside}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={t('nav.deliveryAria')}
+                  >
+                    {t('nav.delivery')}
+                    <Arrow />
+                  </a>
+                </div>
+              </div>
+
+              <div className={styles.foot}>
+                <LangSwitch />
+                <div className={styles.socials}>
+                  {socials.map(({ href, label }) => (
+                    <a
+                      key={label}
+                      href={href}
+                      className={styles.social}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={external(label)}
+                    >
+                      {label}
+                      <Arrow />
+                    </a>
+                  ))}
+                </div>
+              </div>
             </div>
-            <LangSwitch />
           </div>
+        </div>
+
+        <div className={styles.seamTrack} aria-hidden="true">
+          <span className={styles.seam} />
         </div>
       </div>
     </>

@@ -49,8 +49,7 @@ blurred placeholder it dissolves out of.
 Pass `sizes` from `src/components/common/imageSizes.ts`. Those strings are
 measured from the real layouts, not estimated. If you change a grid, re-measure
 the rendered width and update the matching entry, or the browser will keep
-choosing against the old layout. `vite.config.ts` imports `HERO_SIZES` for the
-hero preload, so the two cannot drift.
+choosing against the old layout.
 
 To add an image: drop the original in `assets-src/<area>/` (`hall`, `menu` or
 `street`), run `npm run images`, then reference it by its key (path minus
@@ -71,7 +70,11 @@ the streets around `cafe.coordinates` from OpenStreetMap once, turns them so
 Pushkina runs level, and writes `src/data/streetMap.ts`, which is committed: the
 site never calls a map service. `StreetMap.tsx` draws it in three crops (wide,
 medium, tall for phones) with the street names, the stop and the café laid over
-it as HTML, so type stays one size while the drawing stretches. Label positions
+it as HTML, so type stays one size while the drawing stretches. The phone crop
+does not stretch: it keeps one scale (`scale`, pixels to the metre), so a wider
+phone sees more streets rather than the same ones larger. That scale is the
+smallest at which the café's name clears the side street 83m east of the
+door; below it the name crosses the street. Label positions
 are metres along each street, hand placed per crop to clear the café's mark and
 each other; after changing a crop, check every width down to 320px. Keep the
 "© OpenStreetMap contributors" credit under it: the data's licence requires it.
@@ -100,8 +103,12 @@ content which may have just mounted (the menu's chapter deep link) must call
 The home hero is pinned for about two screens while its book opens. Motion's
 `useScroll` reads the progress and `HeroSection` writes it to the stage as
 custom properties (`--open`, `--lift`, `--fall`, `--scale`, `--pitch`,
-`--yaw`, `--lens`, `--details`), and its layout writes the book's
-make in whole pixels; CSS draws the 3D. Keep `opacity`, `filter`, `overflow`,
+`--yaw`, `--lens`, `--details`, `--spine`), and its layout writes the book's
+make in whole pixels; CSS draws the 3D. `--spine` is worked out from the
+camera itself: the end of the spine is seen only from below the foot (or
+beside the side, bound at the head), so it fades as the camera rises past
+and is then taken out, since its turn-in, facing across, would linger
+edge-on as a splinter at the gutter. Keep `opacity`, `filter`, `overflow`,
 `clip-path`, masks and blend modes off `.book`, `.body` and `.cover`: any of
 them flattens the 3D and the cover stops turning. The faces are leaves and may
 use them, and so may `.scene`, which holds the perspective. Two things cost a
@@ -109,14 +116,48 @@ face its antialiased edges in Chrome, so the book's silhouette steps: an SVG
 filter image as its background (the cloth grain is a raster tile,
 `public/cloth.webp`, for this reason), and any keyframe animation running
 inside it (the cover's stardust uses `dust="settle"`, which rises once and
-then leaves nothing running). Firefox sorts the book by cutting each face
+then leaves nothing running). The ribbon's tug and the scroll hint beside
+it come only once the spread lies flat (`data-flat` on the stage), where no
+edge can step; the stage keeps 4.5rem clear below the book so the ribbon,
+drawn out its furthest, never meets the screen's edge. Firefox sorts the book by cutting each face
 along the planes of the faces painted before it, and draws a face it has cut
 with harder edges, so `.body`, whose page edges and drape stand across the
 boards and the title page, paints last (`z-index: 1`); a new face that stands
-across others belongs after them in paint order. The book's size comes from
+across others belongs after them in paint order. Firefox also draws a face
+clipped to a rounded corner see-through along any thin column repainted
+across it, and the scroll cue repaints one through the middle of the shut
+book, so keep `border-radius` off the boards: their corners are square. The
+book's size comes from
 the stage's own 100svh height, not `innerHeight`, so a phone's sliding
 toolbars never resize it mid scroll. Playwright's WebKit paints its
 screenshots in software and flattens all 3D, so check the book in real Safari.
+
+The open spread's two pages share one grid, in `cqw` of the page (`--head`,
+`--side`, `--title-cap`, `--imprint-baseline` and the rest in
+`HeroSection.module.css`): across the gutter, the epigraph's first line
+stands on the wordmark's baseline, and the photograph under it runs from
+the top of the capitals of «Кофе» down to the imprint's baseline, all
+measured to the pixel, because both pages compute those lines from the same
+variables. On a small page, whose type keeps its smallest sizes, the
+epigraph needs more room, so the print steps down to the baseline of «Кофе»
+instead: its top always stands on a line opposite. In portrait the pages
+stand one over the other, so the print runs instead to the head margin's
+depth above the spine, the wordmark's below it. The endpaper is a size
+container, so the print can be sized from the room between its lines. The
+epigraph and the print share one `.column`, so the verse always keeps flush
+with the print's right edge: the column is as wide as a 2:3 print of the
+room or, where that is narrower, as the verse and an indent, never wider
+than the type area, and the print is cropped round the book and the cup to
+fill it. On the smallest pages the print takes the verse's exact width; on
+a phone on its side there is no room for it, and the epigraph stands alone.
+The poet's line is set exactly as the imprint is, and closes its tracking
+where the imprint does. Change the title page's author line, title, gap or
+imprint through those variables, never inline, and re-measure. The title page's type
+sits in `.type`, inside the page, because padding on the container itself
+would shrink the width its `cqw` are measured from. The live part (the
+catchword) comes up with `--details`; the device's stardust waits for it
+too, since an animation running in a leaf
+while it still stands at an angle steps its edges.
 
 The guest book has no backend: it composes the review into a `wa.me` link to
 the café's WhatsApp number and opens it. Each field sizes itself from an
@@ -133,7 +174,7 @@ src/
   components/
     common/   # Image, Emblem, Logo/Wordmark, OpenStatus, brandMarks, imageSizes
     layout/   # Header, Footer, LoadingScreen (the running head)
-    home/     # HomePage sections: Hero, Foreword, MenuPreview, Night, Visit, FirstLineGame
+    home/     # HomePage sections: Hero, Foreword, MenuPreview, Night, Visit, CatchphraseGame
     menu/     # MenuPage components: CategoryNav, MenuCategory, MenuItem
     reviews/  # ReviewsPage components: MarkScale, Postmark
   context/    # LanguageContext (translations, plural-aware tn())
@@ -177,12 +218,32 @@ the book itself, a clothbound hardback set down shut on the page and tipped
 away from the reader, so the depth of its pages shows: red cloth, the café's
 mark stamped in cream, a red ribbon leaving the pages at the foot and lying
 out on the page. It is drawn the way a book is bound: boards standing out
-past the pages by their squares, the joint pressed in beside the spine, the
-cloth turned in round the endpaper, headbands at the ends of the spine.
-Scrolling swings the front board open on its joint onto the room, printed on
-the endpaper and facing the title page, while the camera rises to straight
+past the pages by their squares, the spine's cloth running round the pages
+from board to board and closing the foot, the joint pressed in beside the
+spine, the cloth turned in round the endpaper.
+Scrolling swings the front board open on its joint onto the endpaper,
+facing the title page, while the camera rises to straight
 overhead and draws the spread up until it fills the screen, flat. On a
-portrait screen it is bound at the head and opens upward. Keep it that bare.
+portrait screen it is bound at the head and opens upward. Once the spread
+lies flat, the page says plainly that it goes on: the ribbon is drawn out a
+little and slips back, again and again, and beside it «Листайте вниз» is
+set as the imprint is («листать» is both to leaf through a book and to
+scroll). Keep it that bare.
+The spread is a real book's opening. Inside the board is the book's
+epigraph, set as a Russian book sets one, flush right: «Привычка свыше нам
+дана: / Замена счастию она.» from Pushkin's "Евгений Онегин", signed with
+his name alone, as Onegin's own epigraphs are, in the imprint's small
+capitals: Pushkin on one page, Pushkin Street on the other. The café
+lives on Pushkin Street, and the line is about habit, the daily coffee.
+Under it, centred and printed into the paper, the habit itself: a guest's
+open book and her coffee in the café's cup. The English edition prints a
+plain translation.
+The title page is set as a Russian one: the wordmark at the head
+where the author's name goes; «Кофе / и / книги» set as the classics set
+"Война и мир", the «и» alone in red; the café's mark as the publisher's
+device, its stardust stirring once as the spread settles; the imprint at
+the foot, the street where a book prints its city. In the corner where a leaf is turned, the
+catchword «Меню», a printer's cue naming the next chapter, opens it.
 The menu is a grid of cards,
 kept from the previous
 version of the site at the owner's request: a photograph where the café has
@@ -191,6 +252,16 @@ in cream, like the café's own posts. The home page's menu preview, also
 restored from that version at the owner's request, shows six of those same
 cards, each linking to its chapter.
 The current page is marked by a red ribbon bookmark hanging from the header.
+On a phone the menu is the book's contents, on paper: the header's rule
+comes loose and draws a sheet down after it, the chapters rise out of their
+lines with red Roman numerals, the game follows them unnumbered (a place in
+chapter I, not a chapter), and last the ribbon drops from under the header
+to the chapter you are in. Choosing another moves the ribbon there while the
+page changes beneath, then the rule carries the sheet back up onto the
+header's own. The ribbon's length is measured from a zero-size point on each
+title's baseline, so it holds through wraps and both editions. Under the
+chapters, a colophon in ruled rows: the address with the live open status,
+the phone and delivery, then the edition and the socials.
 The guest book is a short letter written straight onto the page: no card, no
 boxes, no labels over the fields, the words around each blank saying what
 goes in it ("Ставлю вам", "С уважением,", "P.S. Для ответа:"). The guest

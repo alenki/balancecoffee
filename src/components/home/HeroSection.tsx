@@ -5,9 +5,8 @@ import { useLanguage } from '../../context/LanguageContext';
 import { useLenisInstance } from '../../hooks/useLenis';
 import { Emblem } from '../common/Emblem';
 import { Image } from '../common/Image';
+import { FRONTISPIECE_SIZES } from '../common/imageSizes';
 import { Wordmark } from '../common/Logo';
-import { OpenStatus } from '../common/OpenStatus';
-import { HERO_SIZES } from '../common/imageSizes';
 import styles from './HeroSection.module.css';
 
 /**
@@ -19,6 +18,7 @@ let loaderStillUp = true;
 
 const clamp01 = (v: number) => Math.min(1, Math.max(0, v));
 const easeInOut = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2);
+const easeOut = (t: number) => 1 - (1 - t) ** 2;
 
 interface Beat {
   from: number;
@@ -33,7 +33,7 @@ const DETAILS: Beat = { from: 0.7, span: 0.12 };
 const CAMERA: Beat = { from: 0.06, span: 0.76 };
 /** Where opening the book by hand scrolls to: drawn up, details showing. */
 const OPENED_AT = 0.84;
-/** The tallest a page is laid out, so the photograph never outgrows its file. */
+/** The tallest a page is laid out, so on the largest screens it stays a book. */
 const MAX_PAGE_H = 1000;
 
 /**
@@ -62,9 +62,23 @@ const LIE = {
 const LENS = { near: 1800, far: 40000 };
 
 /**
+ * How far the camera stands outside the face the end of the spine lies in,
+ * in the book's own pixels: the foot when the book is bound on its left
+ * edge, the side when it is bound at the head. The book is centred on the
+ * lens, and opening it slides along that face, never across it, so the
+ * slide drops out of the sum. At zero the end turns edge-on, then away.
+ */
+function spineMargin(portrait: boolean, boardW: number, boardH: number, pitch: number, yaw: number, lens: number) {
+  const tilt = (pitch * Math.PI) / 180;
+  const turn = (yaw * Math.PI) / 180;
+  return portrait ? -lens * Math.cos(tilt) * Math.sin(turn) - boardW / 2 : lens * Math.sin(tilt) - boardH / 2;
+}
+
+/**
  * The book. A clothbound hardback lies shut on the page, the café's mark
  * stamped on the cover. Scrolling swings the front board open on its joint:
- * the room is pasted inside it, facing the title page. The camera rises
+ * inside it, an epigraph and a photograph of the café face the title page.
+ * The camera rises
  * from the table to straight overhead as the open book is drawn up until the
  * spread fills the screen, and the page goes on.
  *
@@ -82,12 +96,23 @@ export function HeroSection() {
   const reduce = useReducedMotion() ?? false;
   const [first] = useState(() => loaderStillUp);
   const [isOpen, setIsOpen] = useState(reduce);
+  // Once the spread lies flat, the cup on the title page is stirred, once
+  const [settled, setSettled] = useState(reduce);
 
   const sectionRef = useRef<HTMLElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
-  // Scale of the book shut, and just opened (drawn up it is always 1), and
-  // the angle the camera first sees it from
-  const geo = useRef({ shut: 0.7, opened: 0.7, ...LIE.landscape });
+  // Scale of the book shut, and just opened (drawn up it is always 1), the
+  // angle the camera first sees it from, and what the end of the spine needs
+  // to fade as the camera rises past it
+  const geo = useRef({
+    shut: 0.7,
+    opened: 0.7,
+    ...LIE.landscape,
+    portrait: false,
+    boardW: 0,
+    boardH: 0,
+    spineFade: 1,
+  });
 
   useEffect(() => {
     loaderStillUp = false;
@@ -107,22 +132,33 @@ export function HeroSection() {
       const drawUp = easeInOut(beat(DRAW_UP));
       const camera = easeInOut(beat(CAMERA));
       const details = beat(DETAILS);
-      const { shut, opened, pitch, yaw } = geo.current;
+      const { shut, opened, pitch, yaw, portrait, boardW, boardH, spineFade } = geo.current;
       const scale = shut + (opened - shut) * open + (1 - opened) * drawUp;
       const swing = open * Math.PI;
+      const tilt = pitch * (1 - camera);
+      const turn = yaw * (1 - camera);
+      const lens = Math.round(LENS.near + (LENS.far - LENS.near) * drawUp ** 3);
+      // The end of the spine fades as the camera rises past it, then is
+      // taken out, turn-in and all: the turn-in faces across, so it would
+      // otherwise linger edge-on as a splinter at the gutter
+      const spine = clamp01(spineMargin(portrait, boardW, boardH, tilt, turn, lens) / spineFade);
 
       const style = stage.style;
       style.setProperty('--open', open.toFixed(4));
       style.setProperty('--lift', Math.sin(swing).toFixed(4));
       style.setProperty('--fall', Math.max(0, -Math.cos(swing)).toFixed(4));
       style.setProperty('--scale', scale.toFixed(4));
-      style.setProperty('--pitch', `${(pitch * (1 - camera)).toFixed(3)}deg`);
-      style.setProperty('--yaw', `${(yaw * (1 - camera)).toFixed(3)}deg`);
-      style.setProperty('--lens', `${Math.round(LENS.near + (LENS.far - LENS.near) * drawUp ** 3)}px`);
+      style.setProperty('--pitch', `${tilt.toFixed(3)}deg`);
+      style.setProperty('--yaw', `${turn.toFixed(3)}deg`);
+      style.setProperty('--lens', `${lens}px`);
       style.setProperty('--details', details.toFixed(3));
+      style.setProperty('--spine', spine.toFixed(3));
       stage.toggleAttribute('data-shut', open === 0);
       stage.toggleAttribute('data-details', details > 0);
+      stage.toggleAttribute('data-flat', drawUp === 1 && camera === 1);
+      stage.toggleAttribute('data-spine-out', spine === 0);
       setIsOpen(open > 0.5);
+      if (details > 0) setSettled(true);
     },
     [reduce]
   );
@@ -172,10 +208,19 @@ export function HeroSection() {
         : Math.min(availH * 0.7, (availW * 0.58 * boardH) / boardW);
       const shut = Math.min(1, shutH / boardH);
       const roomToOpen = portrait ? availH / (2 * boardH) : availW / (2 * boardW);
+      const lie = LIE[portrait ? 'portrait' : 'landscape'];
+      // The end of the spine fades over the last of the camera's climb past
+      // it: a block's depth short of its face, or the whole climb where the
+      // shut book shows the end only barely
+      const shutMargin = spineMargin(portrait, boardW, boardH, lie.pitch, lie.yaw, LENS.near);
       geo.current = {
         shut,
         opened: Math.min(shut, roomToOpen),
-        ...LIE[portrait ? 'portrait' : 'landscape'],
+        ...lie,
+        portrait,
+        boardW,
+        boardH,
+        spineFade: Math.max(1, Math.min(blockT, shutMargin)),
       };
 
       // The ribbon leaves the pages partway down the stack and falls over
@@ -209,15 +254,23 @@ export function HeroSection() {
 
   useMotionValueEvent(scrollYProgress, 'change', render);
 
-  // A shut book asks to be opened: a click scrolls it open.
+  // A shut book asks to be opened: a click scrolls it open. The scroll
+  // starts where the board begins to lift, since the moment the book lies
+  // shut shows nothing, and eases out, so the board answers the hand at
+  // once; the swing's own easing still lifts it gently. Easing in from the
+  // top kept the hand waiting most of a second before the board moved.
   const openBook = () => {
     const section = sectionRef.current;
     const stage = stageRef.current;
     if (!section || !stage) return;
     const top = section.getBoundingClientRect().top + window.scrollY;
-    const target = top + (section.offsetHeight - stage.offsetHeight) * OPENED_AT;
-    if (lenis) lenis.scrollTo(target, { duration: 2.4, easing: easeInOut });
-    else window.scrollTo({ top: target, behavior: 'smooth' });
+    const pinned = section.offsetHeight - stage.offsetHeight;
+    const lifts = top + pinned * SWING.from;
+    const target = top + pinned * OPENED_AT;
+    if (lenis) {
+      if (window.scrollY < lifts) lenis.scrollTo(lifts, { immediate: true });
+      lenis.scrollTo(target, { duration: 2.4, easing: easeOut });
+    } else window.scrollTo({ top: target, behavior: 'smooth' });
   };
 
   // Open, the ribbon reads on. The hash is the route, so the jump moves
@@ -253,9 +306,15 @@ export function HeroSection() {
               aria-label={isOpen ? t('hero.readOn') : t('hero.openBook')}
             />
 
+            {/* Beside it, once the spread lies flat, the plain words: the
+                page goes on */}
+            <span className={styles.hint} aria-hidden="true">
+              {t('hero.scroll')}
+            </span>
+
             {/* Everything under the first leaf: the shadows on the page, the
-                back board, the edges of the pages, the headbands, and the
-                ribbon where it leaves the pages */}
+                back board, the edges of the pages, the end of the spine, and
+                the ribbon where it leaves the pages */}
             <span className={styles.body} aria-hidden="true">
               <span className={styles.shadow} />
               <span className={styles.fallShadow} />
@@ -264,32 +323,55 @@ export function HeroSection() {
               <span className={styles.backRight} />
               <span className={styles.pagesBottom} />
               <span className={styles.pagesRight} />
-              <span className={`${styles.headband} ${styles.headbandHead}`} />
-              <span className={`${styles.headband} ${styles.headbandTail}`} />
+              {/* After the faces its turn-in stands across, as Firefox
+                  cuts a face along the planes painted before it */}
+              <span className={styles.spineEnd} />
+              <span className={styles.spineTurnIn} />
               <span className={styles.drape} />
             </span>
 
-            {/* The title page, the first leaf, under the cover */}
+            {/* The title page, the first leaf, under the cover, set the way
+                a Russian title page is: the author at the head, the title
+                below it, the publisher's device, and the imprint at the
+                foot. The café is the author, its mark the device. */}
             <div className={styles.page}>
-              <p className={styles.place}>
-                {t('brand.city')}, {t('brand.address')}
-              </p>
-              <h1 id="hero-title" className={styles.title}>
-                <span>{t('hero.coffee')}</span>{' '}
-                <span>
-                  {t('hero.and')} {t('hero.books')}
+              <div className={styles.type}>
+                <Wordmark className={styles.author} />
+                <h1 id="hero-title" className={styles.title}>
+                  <span className="sr-only">{t('brand.name')}. </span>
+                  <span className={styles.word}>{t('hero.coffee')}</span>{' '}
+                  <span className={styles.and}>{t('hero.and')}</span>{' '}
+                  <span className={styles.word}>{t('hero.books')}</span>
+                </h1>
+                <span className={styles.device} data-stirred={settled || undefined}>
+                  <Emblem dust={settled && !reduce ? 'settle' : 'still'} delay={0.2} />
                 </span>
-              </h1>
-              <div className={styles.details}>
-                <OpenStatus />
-                <Link to="/menu" className={styles.menuLink}>
-                  {t('hero.ctaMenu')}
+                {/* The imprint: the street where a book gives its city */}
+                <div className={styles.imprint}>
+                  <p className={styles.place}>
+                    <span>{t('brand.city')}</span>
+                    <span aria-hidden="true">&nbsp;· </span>
+                    <span className="sr-only">, </span>
+                    <span>{t('brand.address')}</span>
+                  </p>
+                </div>
+                {/* In the corner where the leaf is turned, the catchword: a
+                    printer's cue naming what comes next, here the menu */}
+                <Link
+                  to="/menu"
+                  className={`${styles.catchword} ${styles.live}`}
+                  aria-label={t('hero.ctaMenu')}
+                >
+                  {t('hero.catchword')}
+                  <svg className={styles.catchArrow} viewBox="0 0 16 10" aria-hidden="true" focusable="false">
+                    <path d="M1 5h13.5M10.5 1l4 4-4 4" />
+                  </svg>
                 </Link>
               </div>
             </div>
 
             {/* The front board: the stamped cloth, its two edges a reader
-                can see, and inside it the room */}
+                can see, and inside it the endpaper */}
             <div className={styles.cover}>
               <div className={styles.front} aria-hidden="true" onClick={openBook}>
                 <span className={styles.rule} />
@@ -299,18 +381,35 @@ export function HeroSection() {
               </div>
               <span className={styles.coverBottom} aria-hidden="true" />
               <span className={styles.coverRight} aria-hidden="true" />
-              {/* The room, printed on the endpaper pasted down inside the
-                  board. The loader warms it, and index.html preloads it, so
-                  it is there before the cover lifts. */}
+              {/* The endpaper, pasted down inside the board, and on it the
+                  book's epigraph, Pushkin on habit from Eugene Onegin, over
+                  the habit itself: a guest's open book and her coffee in
+                  the café's cup. The café lives on his street. The two
+                  share one column, so the verse keeps flush with the
+                  print's edge. */}
               <div className={styles.inside}>
-                <div className={styles.plate}>
-                  <Image
-                    name="hall/counter"
-                    alt={t('hero.plateAlt')}
-                    className={styles.image}
-                    sizes={HERO_SIZES}
-                    priority
-                  />
+                <div className={styles.endpaper}>
+                  <div className={styles.column}>
+                    <figure className={styles.epigraph}>
+                      <blockquote className={styles.verse}>
+                        <p>
+                          {t('hero.epigraph1')}
+                          <br />
+                          {t('hero.epigraph2')}
+                        </p>
+                      </blockquote>
+                      <figcaption className={styles.poet}>{t('hero.epigraphPoet')}</figcaption>
+                    </figure>
+                    <div className={styles.plate}>
+                      <Image
+                        name="hall/book-and-cup"
+                        alt={t('hero.plateAlt')}
+                        className={styles.image}
+                        sizes={FRONTISPIECE_SIZES}
+                        priority
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

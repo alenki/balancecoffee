@@ -31,13 +31,6 @@
   transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Over the cloth overlay, the bar becomes cloth too */
-.header.menuActive {
-  background: var(--c-binding);
-  border-bottom-color: var(--rule-on-binding);
-  color: var(--c-foil);
-}
-
 /* ============================================
    LAYOUT
    ============================================ */
@@ -269,123 +262,461 @@
   }
 }
 
+/* Drawn as a border, not a background: a border's width is snapped to whole
+   device pixels before layout, so both lines come out the same weight
+   wherever they land. A 1.5px background is rounded at its edges instead,
+   and two lines 8.5px apart round differently, one fat and one thin. */
 .menuLine {
   display: block;
   width: 24px;
-  height: 1.5px;
-  background: currentColor;
+  height: 0;
+  border-top: 1.5px solid currentColor;
   transition: transform 0.4s var(--ease-out);
 }
 
+/* Half the gap plus half the line's own snapped weight (50% of its box)
+   meets the two lines at their centres. */
 .menuButton.open .menuLine:first-child {
-  transform: translateY(4.25px) rotate(45deg);
+  transform: translateY(calc(3.5px + 50%)) rotate(45deg);
 }
 
 .menuButton.open .menuLine:last-child {
-  transform: translateY(-4.25px) rotate(-45deg);
+  transform: translateY(calc(-3.5px - 50%)) rotate(-45deg);
 }
 
 /* ============================================
-   MOBILE OVERLAY: on the cloth
+   CONTENTS: the menu on a phone
+
+   A sheet of paper drawn down from the running
+   head: the header's rule comes loose and leads
+   it down the screen, and on the way back up
+   lands on the header's own rule again. On the
+   sheet, the book's contents, chapter numerals
+   in red; the game, a place in the first chapter
+   rather than a chapter, follows unnumbered.
+   Under them the colophon: the address and
+   whether the café is open, the numbers, the
+   edition.
+
+   Last, the ribbon drops from under the head to
+   the chapter you are in. Choose another and it
+   moves there while the page changes beneath,
+   then the sheet goes back up.
    ============================================ */
-.mobileOverlay {
+.sheet {
+  /* The loader's own curve, for the page parting along the rule */
+  --part: cubic-bezier(0.76, 0, 0.24, 1);
+  --draw: 0.72s;
+  --return: 0.5s;
+
   position: fixed;
   inset: 0;
   z-index: var(--z-overlay);
-  background: var(--c-binding);
-  color: var(--c-on-binding);
-  opacity: 0;
+  color: var(--c-ink);
   visibility: hidden;
-  transition:
-    opacity 0.4s ease,
-    visibility 0s linear 0.4s;
+  transition: visibility 0s linear var(--return);
 }
 
-.mobileOverlay.open {
-  opacity: 1;
+.sheet.open {
   visibility: visible;
-  transition:
-    opacity 0.4s ease,
-    visibility 0s;
+  transition: visibility 0s;
 }
 
-.mobileInner {
+/* The paper, cut off at the seam while it comes down */
+.page {
+  position: absolute;
+  inset: var(--header-h) 0 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background: var(--c-paper);
+  clip-path: inset(0 0 100% 0);
+  transition: clip-path var(--return) var(--part);
+}
+
+.open .page {
+  clip-path: inset(0);
+  transition: clip-path var(--draw) var(--part);
+}
+
+/* The rule that leads the sheet. A size container, so it can travel the
+   sheet's whole height on the compositor; it fades as it reaches the foot. */
+.seamTrack {
+  position: absolute;
+  inset: var(--header-h) 0 0;
+  container-type: size;
+  pointer-events: none;
+}
+
+.seam {
+  display: block;
+  height: 0;
+  border-top: 1px solid var(--c-ink);
+  transform: translateY(-1px);
+  transition:
+    transform var(--return) var(--part),
+    opacity 0s;
+}
+
+.open .seam {
+  transform: translateY(100cqh);
+  opacity: 0;
+  transition:
+    transform var(--draw) var(--part),
+    opacity 0.24s linear calc(var(--draw) - 0.22s);
+}
+
+.leaf {
+  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  height: 100%;
-  padding: calc(var(--header-h) + var(--space-10)) var(--gutter) var(--space-10);
-  overflow-y: auto;
+  gap: var(--space-12);
+  min-height: 100%;
+  /* The foot carries its own padding below, so the sheet adds only a sliver */
+  padding: clamp(var(--space-6), 5svh, var(--space-10)) var(--gutter)
+    calc(var(--space-2) + env(safe-area-inset-bottom));
 }
 
-.mobileNav {
-  display: flex;
-  flex-direction: column;
-}
-
-.mobileNavLink {
-  display: flex;
-  align-items: center;
-  gap: var(--space-4);
-  padding: var(--space-4) 0;
-  border-bottom: 1px solid var(--rule-on-binding);
-  font-family: var(--font-serif);
-  font-size: clamp(2rem, 9vw, 2.75rem);
-  font-weight: 300;
-  line-height: 1.15;
-  color: var(--c-on-binding);
+/* While the sheet is down its type stays put: the sheet goes back up over
+   it, and only once it is gone does everything return to its marks. */
+.numeral,
+.row > *,
+.foot {
   opacity: 0;
-  transform: translateY(14px);
-  transition:
-    opacity 0.45s ease,
-    transform 0.6s var(--ease-out),
-    color var(--transition-base);
+  transition: opacity 0s linear var(--return);
 }
 
-.mobileOverlay.open .mobileNavLink {
+/* ============================================
+   THE CHAPTERS
+   ============================================ */
+.contents {
+  /* Sized by the window's height as well as its width, so a phone on its
+     side still shows every chapter. */
+  --size: clamp(1.75rem, min(1rem + 4.8vw, 7.4svh), 3rem);
+  /* The numerals' column, the gap to the titles included */
+  --hang: 3rem;
+}
+
+.toc {
+  list-style: none;
+}
+
+.entry {
+  display: grid;
+  grid-template-columns: var(--hang) minmax(0, 1fr);
+  align-items: baseline;
+  padding-block: 0.14em;
+  font-family: var(--font-serif);
+  font-size: var(--size);
+  font-weight: 300;
+  line-height: 1.14;
+  letter-spacing: -0.02em;
+  color: var(--c-ink);
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Set like the footer's, right-aligned so they end together */
+.numeral {
+  justify-self: end;
+  padding-right: 0.75rem;
+  font-size: max(0.9375rem, 0.36em);
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: 0;
+  color: var(--c-stamp);
+}
+
+.open .numeral {
   opacity: 1;
-  transform: none;
+  transition: opacity 0.6s ease calc(0.3s + var(--i) * 0.06s);
 }
 
-.mobileNavLink.active {
-  color: var(--c-foil);
+/* Each title rises out of its own line. The cut sits a little under the
+   line box, so descenders clear it. */
+.line {
+  grid-column: 2;
+  display: block;
+  clip-path: inset(-0.5em -0.5em -0.3em);
+}
+
+.title {
+  display: inline-block;
+  max-width: 100%;
+  transform: translateY(calc(100% + 0.3em));
+  text-decoration: underline 1px transparent;
+  text-underline-offset: 0.14em;
+  transition:
+    transform 0s linear var(--return),
+    text-decoration-color 0.3s var(--ease-out);
+}
+
+.open .title {
+  transform: none;
+  transition:
+    transform 0.9s var(--ease-out) calc(0.18s + var(--i) * 0.06s),
+    text-decoration-color 0.3s var(--ease-out);
+}
+
+@media (hover: hover) {
+  .entry:hover .title {
+    text-decoration-color: currentColor;
+  }
+}
+
+/* A point on the title's baseline, for the ribbon to measure to */
+.baseline {
+  display: inline-block;
+  width: 0;
+  height: 0;
+}
+
+/* The game, unnumbered after the chapters, and in italic */
+.extra {
+  margin-top: 0.22em;
+}
+
+.extra .title {
   font-style: italic;
 }
 
-.mobileNavLabel {
-  flex: 1;
+/* ============================================
+   THE RIBBON
+   The header's ribbon, hanging from under the
+   running head to just below the chapter's
+   baseline. It drops as the last beat of the
+   sheet coming down, and moves when another
+   chapter is chosen.
+   ============================================ */
+.ribbon {
+  position: absolute;
+  top: 0;
+  left: var(--gutter);
+  width: 9px;
+  height: 0;
+  background: var(--c-stamp);
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% max(0px, 100% - 7px), 0 100%);
+  pointer-events: none;
+  transition: height 0s linear var(--return);
 }
 
-.mobileFooter {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: var(--space-5);
-  padding-top: var(--space-10);
-  opacity: 0;
-  transition: opacity 0.5s ease;
+.open .ribbon {
+  height: var(--reach, 0px);
+  transition: height 0.9s var(--ease-out) 0.62s;
 }
 
-.mobileOverlay.open .mobileFooter {
-  opacity: 1;
+/* Keep the move in step with RIBBON_MOVE in Header.tsx */
+.open.turning .ribbon {
+  transition: height 0.52s cubic-bezier(0.65, 0, 0.35, 1);
 }
 
-.mobileContacts {
+/* ============================================
+   THE COLOPHON
+   ============================================ */
+.colophon {
+  font-family: var(--font-sans);
+  color: var(--c-ink);
+}
+
+.rows {
+  position: relative;
+}
+
+.row {
+  position: relative;
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-3) var(--space-6);
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-2) var(--space-4);
+  padding-block: 1.375rem;
 }
 
-.mobileContact {
+/* A rule over each row and one under the last, drawn out from the centre
+   as the loader draws its rule */
+.row::before,
+.rows::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  border-top: 1px solid var(--rule-strong);
+  transform: scaleX(0);
+  transition: transform 0s linear var(--return);
+}
+
+.rows::after {
+  top: auto;
+  bottom: 0;
+}
+
+.open .row::before,
+.open .rows::after {
+  transform: none;
+  transition: transform 0.9s var(--ease-out) 0.34s;
+}
+
+.open .row:nth-child(2)::before {
+  transition-delay: 0.4s;
+}
+
+.open .rows::after {
+  transition-delay: 0.46s;
+}
+
+.open .row > *,
+.open .foot {
+  opacity: 1;
+  transition: opacity 0.6s ease 0.5s;
+}
+
+.lead {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  font-family: var(--font-sans);
+  gap: 0.4em;
   font-size: var(--text-base);
   font-weight: 600;
-  color: var(--c-foil);
+  letter-spacing: 0.01em;
 }
 
-.mobileFooter .langSwitch {
-  color: var(--c-on-binding);
+.phone {
+  font-variant-numeric: lining-nums tabular-nums;
+  white-space: nowrap;
+}
+
+.aside {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  font-size: var(--text-sm);
+  font-weight: 600;
+}
+
+.lead .arrow,
+.aside .arrow {
+  color: var(--c-stamp);
+}
+
+/* Under a tablet's larger chapters, a step up to keep the page in scale */
+@media (min-width: 768px) {
+  .row .lead {
+    font-size: var(--text-lg);
+  }
+
+  .row .aside {
+    font-size: var(--text-base);
+  }
+}
+
+.foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2) var(--space-6);
+  /* Less the links' own 6px, so the foot stands as tall as a row */
+  padding-block: calc(1.375rem - 6px);
+}
+
+/* The switch's own padding is its hit area; the margin hands it back, so
+   RU stands on the gutter. Unchosen, it keeps full contrast. */
+.foot .langSwitch {
+  margin-left: -4px;
+}
+
+.foot .langOption {
+  opacity: 1;
+  color: var(--c-ink-muted);
+  transition: color var(--transition-base);
+}
+
+.foot .langOption:hover,
+.foot .langActive {
+  color: var(--c-ink);
+}
+
+.socials {
+  display: flex;
+  gap: var(--space-5);
+}
+
+.social {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding-block: 6px;
+  font-size: 0.75rem;
+  font-weight: 650;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.social .arrow {
+  width: 12px;
+  height: 12px;
+}
+
+/* ============================================
+   ON ITS SIDE
+   A phone turned, or a tablet: the chapters on
+   the left, the colophon set at the foot of the
+   right-hand column.
+   ============================================ */
+@media (min-width: 640px) and (orientation: landscape) {
+  .leaf {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+    align-items: end;
+    column-gap: var(--space-12);
+  }
+
+  .contents {
+    align-self: start;
+  }
+}
+
+/* ============================================
+   REDUCED MOTION
+   The sheet is simply there: no seam, no rise,
+   the ribbon already in place.
+   ============================================ */
+@media (prefers-reduced-motion: reduce) {
+  .page {
+    clip-path: none;
+    opacity: 0;
+    transition: opacity 0.2s linear;
+  }
+
+  .open .page {
+    opacity: 1;
+  }
+
+  .seamTrack {
+    display: none;
+  }
+
+  .numeral,
+  .row > *,
+  .foot {
+    opacity: 1;
+    transition: none;
+  }
+
+  .title,
+  .open .title {
+    transform: none;
+    transition: none;
+  }
+
+  .row::before,
+  .rows::after {
+    transform: none;
+    transition: none;
+  }
+
+  .ribbon,
+  .open .ribbon,
+  .open.turning .ribbon {
+    transition: none;
+  }
 }

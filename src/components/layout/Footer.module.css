@@ -28,10 +28,18 @@
 }
 
 .page {
-  --pad-top: clamp(var(--space-16), 7vw, var(--space-24));
+  --pad-top: clamp(var(--space-10), 5vw, var(--space-16));
 
   position: relative;
   padding: var(--pad-top) var(--gutter) 0;
+}
+
+/* After a page that already ends on the cloth (marked `data-ends-on-cloth`
+   on its main) the two reds run together, so the footer needs only a
+   sliver of air at its head. The ribbon follows, since it hangs from
+   --pad-top. */
+:global(main[data-ends-on-cloth]) + .footer .page {
+  --pad-top: var(--space-6);
 }
 
 /* The global ring is the cloth's own red; on the cloth it turns to foil. */

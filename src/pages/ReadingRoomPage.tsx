@@ -86,7 +86,7 @@ export function ReadingRoomPage() {
   const wall = hang(galleryPhotos, getGuestQuotes(lang));
 
   return (
-    <main className={styles.page} id="main">
+    <main className={styles.page} id="main" data-ends-on-cloth>
       <section className={styles.hero}>
         <motion.h1
           className={styles.title}

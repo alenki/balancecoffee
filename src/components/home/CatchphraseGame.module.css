@@ -1,10 +1,11 @@
 /* ============================================
-   FIRST LINE: the home page's game
+   CATCHPHRASE: the home page's game
 
    Set on the cover's cloth, just before the
-   book's last page, so everything is foil on red: the line as it types, the
-   answers, the rubber stamp and a shelf whose
-   spines are the reader's streak.
+   book's last page, so everything is foil on red: the phrase as it types, the
+   answers, the rubber stamp for a miss and a shelf whose spines are the
+   reader's streak. A right answer turns to a foil plate, and its points are
+   written on it in red.
    ============================================ */
 
 .game {
@@ -22,7 +23,7 @@
     'stage'
     'tally';
   gap: var(--space-10);
-  padding: var(--space-16) var(--gutter) var(--space-8);
+  padding: var(--space-16) var(--gutter) 10rem;
 }
 
 @media (min-width: 1024px) {
@@ -34,7 +35,7 @@
       'tally stage';
     column-gap: var(--space-16);
     row-gap: var(--space-10);
-    padding: var(--space-20) var(--gutter) var(--space-12);
+    padding: 10rem var(--gutter) 11.5rem;
   }
 }
 
@@ -50,7 +51,6 @@
   grid-area: intro;
 }
 
-.eyebrow,
 .roundNo,
 .stats dt {
   font-family: var(--font-sans);
@@ -63,7 +63,6 @@
 }
 
 .title {
-  margin-top: var(--space-4);
   font-size: clamp(2rem, 1.35rem + 2.6vw, 3.25rem);
   font-weight: 300;
   line-height: 1.05;
@@ -93,15 +92,11 @@
   gap: var(--space-6);
 }
 
-@media (min-width: 1024px) {
-  .tally {
-    align-self: end;
-  }
-}
-
 .stats {
   display: flex;
+  justify-content: space-between;
   gap: var(--space-8);
+  padding-inline: var(--space-6);
 }
 
 .stat {
@@ -119,23 +114,6 @@
   color: var(--c-foil-bright);
 }
 
-.scoreValue {
-  position: relative;
-}
-
-.gain {
-  position: absolute;
-  left: 100%;
-  top: -0.1em;
-  margin-left: 0.3em;
-  font-family: var(--font-sans);
-  font-size: var(--text-base);
-  font-weight: 700;
-  white-space: nowrap;
-  color: var(--c-foil-bright);
-  pointer-events: none;
-}
-
 /* The plank is a foil rule; spines stand on it. Clipped sideways only, so
    a long streak runs off the end but toppling spines still fall in view. */
 .shelf {
@@ -144,23 +122,23 @@
   align-items: flex-end;
   gap: 2px;
   height: 56px;
-  max-width: 360px;
   padding: 0 2px;
   border-bottom: 1px solid var(--c-foil);
   overflow-x: clip;
   overflow-y: visible;
 }
 
-.shelfEmpty {
-  /* Out of the flow, so the first spine lands at the start of the shelf
-     while this is still fading */
-  position: absolute;
-  left: 0;
-  bottom: var(--space-2);
-  font-family: var(--font-serif);
-  font-size: var(--text-sm);
-  font-style: italic;
-  color: var(--c-on-binding-muted);
+/* Across the page while the game is one column; held to the side column
+   once it has two. */
+@media (min-width: 1024px) {
+  .stats {
+    justify-content: flex-start;
+    padding-inline: 0;
+  }
+
+  .shelf {
+    max-width: 360px;
+  }
 }
 
 .spineSlot {
@@ -258,29 +236,20 @@
   color: var(--c-foil-bright);
 }
 
-/* The guest book's rubber stamp, inked in foil for the cloth. It sits on
-   the cloth's own red so it stays legible over the line. */
+/* A miss: the guest book's rubber stamp, inked in foil for the cloth. It
+   sits on the cloth's own red so it stays legible over the line. */
 .stamp {
   position: absolute;
   right: -4px;
   top: -26px;
   z-index: 2;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 5px;
   padding: 10px 16px 8px;
-  border: 3px double var(--c-foil-bright);
+  border: 2px solid var(--c-foil-bright);
   border-radius: var(--radius-md);
   background: color-mix(in srgb, var(--c-binding) 90%, transparent);
   color: var(--c-foil-bright);
   white-space: nowrap;
   pointer-events: none;
-}
-
-.stampMiss {
-  border-style: solid;
-  border-width: 2px;
 }
 
 .stampWord {
@@ -294,27 +263,8 @@
   margin-right: -0.22em;
 }
 
-.stampPoints {
-  font-family: var(--font-sans);
-  font-size: var(--text-xs);
-  font-weight: 650;
-  font-variant-numeric: lining-nums tabular-nums;
-  letter-spacing: 0.08em;
-}
-
-.spark {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 12px;
-  height: 12px;
-  margin: -6px 0 0 -6px;
-  color: var(--c-foil-bright);
-  overflow: visible;
-}
-
-/* The line is set in full from the start and uncovered as it types, so
-   nothing reflows under the reader. The opening quote mark hangs. */
+/* The phrase is set in full from the start and uncovered as it types, so
+   nothing reflows under the reader. */
 .line {
   position: relative;
   max-width: 34ch;
@@ -323,14 +273,32 @@
   font-size: clamp(1.375rem, 1.05rem + 1.4vw, 2.25rem);
   font-weight: 300;
   line-height: 1.32;
-  text-indent: -0.42em;
+  white-space: pre-line;
   color: var(--c-foil-bright);
 }
 
+/* The opening quote mark hangs. It leads the first span whether typed or
+   not, and an empty span still carries its margin, so nothing moves when
+   the mark is typed. A margin rather than a text indent, which verse needs
+   for its turnovers. */
+.line > :first-child {
+  margin-left: -0.42em;
+}
+
+/* Verse keeps its own line breaks, each line starting under the first
+   letter. A line too long for the measure turns over indented, as a book
+   sets it, so the turn never reads as a line of its own. */
+.line[data-verse] {
+  text-indent: 1em hanging each-line;
+}
+
 .lineIdle {
-  text-indent: 0;
   font-style: italic;
   color: var(--c-on-binding-muted);
+}
+
+.lineIdle > :first-child {
+  margin-left: 0;
 }
 
 .ghost {
@@ -365,6 +333,10 @@
    The numeral is the key that answers it.
    ============================================ */
 .options {
+  /* The size of the figure a right answer is marked with. Every answer
+     keeps room for it and its ring at its end, so nothing rewraps when the
+     mark is written. */
+  --mark-size: 2rem;
   display: grid;
   grid-template-columns: 1fr;
   gap: var(--space-1) var(--space-6);
@@ -374,15 +346,17 @@
 
 @media (min-width: 640px) {
   .options {
+    --mark-size: 2.25rem;
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
 .option {
+  position: relative;
   display: flex;
   align-items: baseline;
   gap: var(--space-4);
-  padding: 12px;
+  padding: 12px calc(var(--mark-size) * 2.15 + 16px) 12px 12px;
   text-align: left;
   border-radius: var(--radius-md);
   color: var(--c-foil-bright);
@@ -459,6 +433,63 @@
 
 .option[data-state='right'] .optionAuthor {
   color: var(--c-binding-deep);
+}
+
+/* ============================================
+   THE MARK: a right answer's points, written in
+   red at the end of its plate and circled.
+   ============================================ */
+/* The ring's box. The pen leaves a margin inside it all round, so the box
+   may stand into the plate's padding while the ink stays clear of the edge. */
+.mark {
+  position: absolute;
+  top: 50%;
+  right: 4px;
+  display: grid;
+  place-items: center;
+  width: calc(var(--mark-size) * 2.4);
+  height: calc(var(--mark-size) * 1.92);
+  translate: 0 -50%;
+  font-size: var(--mark-size);
+  color: var(--c-stamp);
+  pointer-events: none;
+}
+
+/* The window the figure is written into and the bonus rolls through. The
+   faces stack in its one cell, so the old can leave as the new arrives. */
+.figure {
+  position: relative;
+  /* Lining figures sit low in their line; lift them to the ring's centre */
+  top: -0.08em;
+  display: grid;
+  overflow: hidden;
+  padding-block: 0.08em;
+}
+
+.figureFace {
+  grid-area: 1 / 1;
+  display: flex;
+  align-items: flex-start;
+  font-family: var(--font-serif);
+  font-weight: 400;
+  font-variant-numeric: lining-nums tabular-nums;
+  line-height: 1;
+}
+
+/* The plus is set small and high, like a superior figure */
+.plus {
+  margin-top: 0.12em;
+  margin-right: 0.02em;
+  font-size: 0.56em;
+  font-weight: 500;
+}
+
+.loop {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
 }
 
 /* Holds Next's place, so the answers never jump when it arrives */

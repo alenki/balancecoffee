@@ -22,6 +22,12 @@ interface Crop {
   y0: number;
   w: number;
   h: number;
+  /**
+   * Pixels to the metre. A crop with a scale keeps it at every width: x0 and w
+   * are what it shows on a 320px phone, and a wider screen sees more streets
+   * either side of the door instead of the same ones drawn larger.
+   */
+  scale?: number;
   labels: Label[];
 }
 
@@ -61,21 +67,31 @@ const CROPS: Crop[] = [
     ],
   },
   {
-    // Narrow enough that the names stay clear down to a 320px phone
+    // Phones keep one scale, the smallest at which the café's name still
+    // clears the side street 83m east of the door
     name: 'tall',
-    x0: -95,
-    y0: -165,
-    w: 225,
-    h: 360,
+    x0: -105,
+    y0: -210,
+    w: 255,
+    h: 410,
+    scale: 1.1,
     labels: [
       { street: 'lenina', at: 60 },
-      { street: 'pushkina', at: -40, after: true },
+      { street: 'pushkina', at: 70, after: true },
       { street: 'chekhova', at: -55 },
-      { street: 'keshokova', at: 75, after: true },
+      { street: 'keshokova', at: -60, after: true },
       { street: 'shogentsukova', at: 40 },
     ],
   },
 ];
+
+/** The whole drawing, which a crop with a scale lays out at that scale. */
+const BOUNDS = (() => {
+  const xs = STREETS.flatMap((s) => s.points.filter((_, i) => i % 2 === 0));
+  const ys = STREETS.flatMap((s) => s.points.filter((_, i) => i % 2 === 1));
+  const [x0, y0] = [Math.min(...xs), Math.min(...ys)];
+  return { x0, y0, w: Math.max(...xs) - x0, h: Math.max(...ys) - y0 };
+})();
 
 const toPath = (points: readonly number[]) =>
   points.reduce((d, n, i) => d + (i % 2 ? `,${n}` : `${i ? ' L' : 'M'}${n}`), '');
@@ -127,29 +143,46 @@ export function StreetMap({ show }: StreetMapProps) {
   const { t } = useLanguage();
   const reduce = useReducedMotion() ?? false;
 
-  const at = (crop: Crop, x: number, y: number): CSSProperties => ({
-    left: `${((x - crop.x0) / crop.w) * 100}%`,
-    top: `${((y - crop.y0) / crop.h) * 100}%`,
-  });
+  /** A point in metres: a share of the crop, or pixels from the door at a fixed scale. */
+  const at = (crop: Crop, x: number, y: number): CSSProperties =>
+    crop.scale
+      ? {
+          left: `calc(${(-crop.x0 / crop.w) * 100}% + ${x * crop.scale}px)`,
+          top: `${(y - crop.y0) * crop.scale}px`,
+        }
+      : {
+          left: `${((x - crop.x0) / crop.w) * 100}%`,
+          top: `${((y - crop.y0) / crop.h) * 100}%`,
+        };
 
   return (
     <figure>
       <div className={styles.map} role="img" aria-label={t('visit.mapAlt')}>
         {CROPS.map((crop, c) => {
-          const door = `${(-crop.x0 / crop.w) * 100}% ${(-crop.y0 / crop.h) * 100}%`;
+          // At a fixed scale the drawing is the whole map, running far past
+          // the window, so the reveal spreads as far as the crop is tall
+          // rather than by the drawing's own size
+          const frame = crop.scale ? BOUNDS : crop;
+          const door = `${(-frame.x0 / frame.w) * 100}% ${(-frame.y0 / frame.h) * 100}%`;
+          const [from, to] = crop.scale ? ['0px', `${crop.h * crop.scale}px`] : ['0%', '120%'];
           return (
             <div
               key={crop.name}
               className={`${styles.crop} ${styles[crop.name]}`}
-              style={{ aspectRatio: `${crop.w} / ${crop.h}` }}
+              style={crop.scale ? { height: crop.h * crop.scale } : { aspectRatio: `${crop.w} / ${crop.h}` }}
             >
               <motion.svg
                 className={styles.streets}
-                viewBox={`${crop.x0} ${crop.y0} ${crop.w} ${crop.h}`}
+                viewBox={`${frame.x0} ${frame.y0} ${frame.w} ${frame.h}`}
+                style={
+                  crop.scale
+                    ? { ...at(crop, frame.x0, frame.y0), width: frame.w * crop.scale, height: frame.h * crop.scale }
+                    : undefined
+                }
                 aria-hidden="true"
                 focusable="false"
-                initial={reduce ? false : { clipPath: `circle(0% at ${door})` }}
-                animate={show && !reduce ? { clipPath: `circle(120% at ${door})` } : undefined}
+                initial={reduce ? false : { clipPath: `circle(${from} at ${door})` }}
+                animate={show && !reduce ? { clipPath: `circle(${to} at ${door})` } : undefined}
                 transition={{ duration: 2.2, ease }}
               >
                 <path d={MINOR_D} className={styles.minor} />

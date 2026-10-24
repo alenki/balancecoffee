@@ -35,11 +35,8 @@ const PHOTO_ENCODE = {
  * source width itself becomes the top rung: nothing is ever upscaled.
  */
 const ROLES = [
-  // Hero plate: the right-hand page of the opening spread, about half the
-  // viewport on desktop and the full column on phones.
-  { match: (k) => k === 'hall/counter', widths: [640, 960, 1280, 1680] },
-  // Everything else: chapter plates, the night band, the reading room
-  // masonry and the storefront. ~600 CSS px at most.
+  // Chapter plates, the night band, the reading room masonry and the
+  // storefront. ~600 CSS px at most.
   { match: (k) => /^(hall|street|menu)\//.test(k), widths: [320, 480, 640, 960, 1280] },
 ];
 

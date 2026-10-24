@@ -13,7 +13,7 @@ export const menuData: MenuCategory[] = [
     name: 'Кофе',
     description: 'Классика на эспрессо',
     items: [
-      { id: 'espresso', name: 'Эспрессо', size: 'от 36 до 40 мл', price: 190 },
+      { id: 'espresso', name: 'Эспрессо', size: 'от 36 до 40 мл', price: 190, image: 'menu/espresso' },
       { id: 'americano', name: 'Американо', size: '250 мл', price: 190 },
       {
         id: 'cappuccino',
@@ -23,6 +23,7 @@ export const menuData: MenuCategory[] = [
           { size: '350 мл', price: 250 },
         ],
         isPopular: true,
+        image: 'menu/cappuccino',
       },
       { id: 'latte', name: 'Латте', size: '350 мл', price: 260, image: 'menu/latte-croissant' },
       { id: 'flat-white', name: 'Флэт уайт', size: '250 мл', price: 250 },
@@ -65,6 +66,7 @@ export const menuData: MenuCategory[] = [
         name: 'Бамбл апельсин',
         description: 'Эспрессо и апельсиновый сок со льдом',
         price: 250,
+        image: 'menu/bumble-orange',
       },
       {
         id: 'bumble-pomegranate',
@@ -78,7 +80,13 @@ export const menuData: MenuCategory[] = [
         description: 'Эспрессо, тоник и лайм',
         price: 270,
       },
-      { id: 'frappe', name: 'Фраппе', description: 'Холодный кофе, взбитый со льдом', price: 350 },
+      {
+        id: 'frappe',
+        name: 'Фраппе',
+        description: 'Холодный кофе, взбитый со льдом',
+        price: 350,
+        image: 'menu/frappe',
+      },
     ],
   },
   {
@@ -223,6 +231,7 @@ export const menuData: MenuCategory[] = [
         name: 'Фрамбини',
         description: 'Свежая малина в белом и тёмном шоколаде',
         isNew: true,
+        image: 'menu/frambini',
       },
       { id: 'macarons', name: 'Макаруны' },
       { id: 'mochi', name: 'Моти', size: '2 шт.', image: 'menu/mochi' },
@@ -237,7 +246,7 @@ export const menuData: MenuCategory[] = [
       { id: 'snaq', name: 'Протеиновые батончики Snaq Fabriq' },
       { id: 'nuts', name: 'Орешки со сгущёнкой', size: '150 г' },
       { id: 'marmalade', name: 'Мармеладки', size: '180 г' },
-      { id: 'sandwiches', name: 'Сэндвичи' },
+      { id: 'sandwiches', name: 'Сэндвичи', image: 'menu/sandwiches' },
     ],
   },
   {

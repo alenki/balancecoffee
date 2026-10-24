@@ -39,12 +39,15 @@ export interface GuestQuote {
   year: number;
 }
 
-// The footer's first-line game
-export interface FirstLine {
+// The home page's catchphrase game
+export interface Catchphrase {
   id: string;
   /** Which shelf it sits on; wrong answers are drawn from the same one. */
   shelf: 'russian' | 'world';
-  /** The book's opening, quoted without its surrounding quote marks. */
+  /**
+   * The phrase, quoted without its surrounding quote marks. Verse breaks its
+   * lines with `\n`.
+   */
   line: string;
   title: string;
   author: string;
