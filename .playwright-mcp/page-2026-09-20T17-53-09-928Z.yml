@@ -1,0 +1,18 @@
+- generic [ref=e3]:
+  - generic [ref=e4]:
+    - heading "تصفح" [level=2] [ref=e5]
+    - navigation [ref=e6]:
+      - generic [ref=e7]: القائمة
+  - generic [ref=e10]:
+    - heading "الفروع" [level=2] [ref=e11]
+    - generic [ref=e13]:
+      - generic [ref=e14]: قباء
+      - generic [ref=e15]: المدينة
+  - generic [ref=e17]:
+    - heading "تواصل" [level=2] [ref=e18]
+    - generic [ref=e20]:
+      - generic [ref=e21]: اتصل
+      - generic [ref=e22]: +966 55 000 0000
+  - generic [ref=e24]:
+    - heading "قانوني" [level=2] [ref=e25]
+    - paragraph [ref=e28]: شركة بلوم لتحميص البن المحدودة سجل تجاري المدينة المنورة
